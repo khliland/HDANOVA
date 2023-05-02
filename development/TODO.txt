@@ -1,0 +1,9 @@
+alasca
+vegan
+metaboanalyst ?
+MANOVA.RM ?
+multiblock
+
+
+All methods from chap4
+LiMM-PCA
