@@ -1,9 +1,37 @@
-alasca
-vegan
-metaboanalyst ?
-MANOVA.RM ?
-multiblock
 
+-----== Sources: ==-----
+ALASCA	"An R package for longitudinal and cross-sectional analysis of multivariate data by ASCA-based methods.
+ASCA+, RM-ASCA+"
+vegan	PERMANOVA (adonis), Analysis of similarities ANOSIM (anosim)
+ffmanova	50-50 MANOVA
+MANOVA.RM	Resampling-Based Analysis of Multivariate Data and Repeated Measures Designs
+multiblock	ASCA with ellipsoids
+ASCA	MATLAB implementation with permutation testing
+ManonMartin	Thesis material using LiMM-PCA in R
+metaboanalyst ?
+ChemoSpec AoV-PCA
+
+------== Wishlist: ==------
+- LiMM-PCA: Pure effect matrices and augmented (+ error / + denominator matrix for mixed models)
+- Likelihood ratio test (LR), f.eks. lrtest {lmtest}
+- Permutations: Andersson paper. Permute residuals, not the levels of the other effects. Check testing in mixed models.
++ Different codings, sum-to-zero as default (+ ref + weighted)
++ Type 1/2/3 SSQ
 
 All methods from chap4
-LiMM-PCA
+ASCA	- Basic ASCA functionality
+ASCA+	- Unbalanced data
+LiMM-PCA	- Mixed models
+RM-ASCA+	- From ALASCA
+rMANOVA	- Neimegen-people, MATLAB package
+PC-ANOVA
+ANOVA-TP	- Fedes MATLAB-package
+ANOVA-PCA	- APCA
+PERMANOVA	- Vegan package
+PRC	- Principal Response Curves (Vegan?)
+MSCA	- Multi-level ASCA
+VASCA	- Variable selection ASCA
+GASCA	- Group-wise ASCA
+MANOVA	- Ordinary MANOVA
+REP-ASCA	- Repetition ASCA
+AComDim

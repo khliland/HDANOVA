@@ -6,9 +6,9 @@
 \alias{scoreplot.asca}
 \title{ASCA Result Methods}
 \usage{
-loadingplot.asca(object, factor = 1, comps = 1:2, ...)
+\method{loadingplot}{asca}(object, factor = 1, comps = 1:2, ...)
 
-scoreplot.asca(
+\method{scoreplot}{asca}(
   object,
   factor = 1,
   comps = 1:2,
@@ -16,6 +16,7 @@ scoreplot.asca(
   pch.projections = 1,
   gr.col = 1:nlevels(object$effects[[factor]]),
   ellipsoids,
+  confidence,
   xlim,
   ylim,
   xlab,
@@ -41,6 +42,8 @@ scoreplot.asca(
 
 \item{ellipsoids}{\code{character} "confidence" or "data" ellipsoids for balanced fixed effect models.}
 
+\item{confidence}{\code{numeric} vector of ellipsoid confidences, default = c(0.4, 0.68, 0.95).}
+
 \item{xlim}{\code{numeric} x limits.}
 
 \item{ylim}{\code{numeric} y limits.}
@@ -63,9 +66,11 @@ Plot routines are available as
 \code{scoreplot.asca} and \code{loadingplot.asca}.
 }
 \references{
-* Smilde, A., Jansen, J., Hoefsloot, H., Lamers,R., Van Der Greef, J., and Timmerman, M.(2005). ANOVA-Simultaneous Component Analysis (ASCA): A new tool for analyzing designed metabolomics data. Bioinformatics, 21(13), 3043–3048.
-* Liland, K.H., Smilde, A., Marini, F., and Næs,T. (2018). Confidence ellipsoids for ASCA models based on multivariate regression theory. Journal of Chemometrics, 32(e2990), 1–13.
-* Martin, M. and Govaerts, B. (2020). LiMM-PCA: Combining ASCA+ and linear mixed models to analyse high-dimensional designed data. Journal of Chemometrics, 34(6), e3232.
+\itemize{
+\item Smilde, A., Jansen, J., Hoefsloot, H., Lamers,R., Van Der Greef, J., and Timmerman, M.(2005). ANOVA-Simultaneous Component Analysis (ASCA): A new tool for analyzing designed metabolomics data. Bioinformatics, 21(13), 3043–3048.
+\item Liland, K.H., Smilde, A., Marini, F., and Næs,T. (2018). Confidence ellipsoids for ASCA models based on multivariate regression theory. Journal of Chemometrics, 32(e2990), 1–13.
+\item Martin, M. and Govaerts, B. (2020). LiMM-PCA: Combining ASCA+ and linear mixed models to analyse high-dimensional designed data. Journal of Chemometrics, 34(6), e3232.
+}
 }
 \seealso{
 Overviews of available methods, \code{\link{multiblock}}, and methods organised by main structure: \code{\link{basic}}, \code{\link{unsupervised}}, \code{\link{asca}}, \code{\link{supervised}} and \code{\link{complex}}.
