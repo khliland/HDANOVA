@@ -1,0 +1,224 @@
+---
+title: "Caldana"
+author: "Liland"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(multiblock)
+library(HDANOVA)
+```
+
+## Data from csv files
+
+```{r}
+Data <- read.csv("/Users/kristian/Library/CloudStorage/Dropbox/MANOVABook/Main/Datasets/Glycosinolates/Data.csv")
+Design <- read.csv("/Users/kristian/Library/CloudStorage/Dropbox/MANOVABook/Main/Datasets/Glycosinolates/F.csv")
+glyco <- data.frame(time = factor(Design$Time), treatment = factor(Design$Treatment), glycosinolates = I(as.matrix(Data)))
+```
+
+
+## Estimate all
+
+```{r}
+mod <- HDANOVA:::.asca(glycosinolates~treatment*time, glyco, add_error = FALSE, coding = "sum")
+#modM <- multiblock::asca(Y~light*time, caldana)
+expl <- attr(mod$scores$time, "explvar")
+expl
+mod$explvar
+```
+
+## Plots
+
+```{r}
+png("Ellipsoids_glycosinolates.png", 1200,900, pointsize = 36)
+par(mfrow=c(2,1), mar=c(1.5,4,4,1))
+scoreplot(mod, ellipsoids = "confidence", xlim=c(-2,4.5), main = "Treatment",
+          panel.first = abline(v=0,h=0,lty=2, col="gray"), lwd=4, xlab="")
+L <- loadings(mod, "treatment")
+s1 <- 5; s2 <- 3
+for(i in 1:ncol(glyco$glycosinolates)){
+  text(L[i,1]*s1,L[i,2]*s2, colnames(glyco$glycosinolates)[i], cex=0.8)
+}
+par(mar=(c(4,4,1.5,1)))
+scoreplot(mod, ellipsoids = "data", xlim=c(-2,4.5),
+          panel.first = abline(v=0,h=0,lty=2, col="gray"), lwd=4)
+L <- loadings(mod, "treatment")
+s1 <- 5; s2 <- 3
+for(i in 1:ncol(glyco$glycosinolates)){
+  text(L[i,1]*s1,L[i,2]*s2, colnames(glyco$glycosinolates)[i], cex=0.8)
+}
+dev.off()
+#loadingplot(mod, scatter=TRUE, labels=colnames(glyco$glycosinolates))
+```
+
+
+
+## Combine level and light:time
+
+```{r}
+pc <- multiblock::pca(mod$LS$light + mod$LS$`light:time`, ncomp=10)
+rownames(pc$loadings) <-  1:67
+mod2 <- mod
+mod2$scores[[1]] <- pc$scores
+mod2$loadings[[1]] <- pc$loadings
+mod2$projected[[1]] <- mod2$residuals %*% pc$loadings
+mod2$effects[[1]] <- mod2$effects$`light:time`
+
+par(mfrow=c(1,1), mar=c(4,4,1,1))
+scoreplot(mod2)
+
+png("Caldana_ASCA.png", 1000,1200, pointsize = 36)
+par(mfrow=c(3,1), mar=c(2,4,2,1), mgp = c(2.5, 1, 0))
+barplot(t(pc$loadings[,1:2]), beside=TRUE, ylab="loading value", main=paste0("light + time:light (",round(sum(mod$explvar[2:3])*100,2),"%)"),
+        legend.text = c(paste0("Component 1 (",round(pc$explvar[1],1),"%)"), paste0("Component 2 (",round(pc$explvar[2],1),"%)")), names.arg = rep("",67), args.legend = c("x"="topright"), lwd=2)
+graphics::box()
+
+par(mar=c(4,4,0,1))
+means <- tapply(mod2$scores[[1]][,1], mod2$effects$`light:time`, mean)
+x <- c(0,5,10,20,40,80,160)
+plot(1:7, means[seq(1,28, 4)], type="l", ylab = paste0("Score 1 (",round(pc$explvar[1],1),"%)"), xlab = "time", ylim = c(min(means),max(means)), axes = FALSE, lwd=4, panel.first = {abline(h=0, lty=2, col="gray")})
+axis(1, 1:7, x)
+axis(2)
+graphics::box()
+lines(1:7, means[seq(2,28, 4)], type="l", col=2, lty=2, lwd=4)
+lines(1:7, means[seq(3,28, 4)], type="l", col=3, lty=3, lwd=4)
+lines(1:7, means[seq(4,28, 4)], type="l", col=4, lty=4, lwd=4)
+legend("bottomleft", legend=c("Dark","Low light","Light", "High light"),
+       col=1:4, lty=1:4, lwd=rep(4,4))
+
+means <- tapply(mod2$scores[[1]][,2], mod2$effects$`light:time`, mean)
+x <- c(0,5,10,20,40,80,160)
+plot(1:7, means[seq(1,28, 4)], type="l", ylab = paste0("Score 2 (",round(pc$explvar[2],1),"%)"), xlab = "time", ylim = c(min(means),max(means)), axes = FALSE, lwd=4)
+axis(1, 1:7, x)
+axis(2)
+graphics::box()
+lines(1:7, means[seq(2,28, 4)], type="l", col=2, lty=2, lwd=4)
+lines(1:7, means[seq(3,28, 4)], type="l", col=3, lty=3, lwd=4)
+lines(1:7, means[seq(4,28, 4)], type="l", col=4, lty=4, lwd=4)
+#legend("top", legend=c("Dark","Low light","Light", "High light"),
+#       col=1:4, lty=1:4, lwd=rep(4,4))
+dev.off()
+```
+
+# APCA
+
+```{r}
+mod <- HDANOVA:::.asca(Y~light*time, caldana, add_error = TRUE)
+#modM <- multiblock::asca(Y~light*time, caldana)
+expl <- attr(mod$scores$light, "explvar")
+expl
+mod$explvar
+```
+
+## Combine time and light:time
+
+```{r}
+pc <- multiblock::pca(mod$LS$light + mod$LS$`light:time`, ncomp=10)
+rownames(pc$loadings) <-  1:67
+mod2 <- mod
+mod2$scores[[1]] <- pc$scores
+mod2$loadings[[1]] <- pc$loadings
+mod2$projected[[1]] <- mod2$residuals %*% pc$loadings
+mod2$effects[[1]] <- mod2$effects$`light:time`
+
+par(mfrow=c(1,1), mar=c(4,4,1,1))
+scoreplot(mod2)
+
+png("Caldana_APCA.png", 1000,1200, pointsize = 36)
+par(mfrow=c(3,1), mar=c(2,4,2,1), mgp = c(2.5, 1, 0))
+barplot(t(pc$loadings[,1:2]), beside=TRUE, ylab="loading value", main=paste0("light + time:light (",round(sum(mod$explvar[2:3])*100,2),"%)"),
+        legend.text = c(paste0("Component 1 (",round(pc$explvar[1],1),"%)"), paste0("Component 2 (",round(pc$explvar[2],1),"%)")), names.arg = rep("",67), args.legend = c("x"="bottomleft"), lwd=2)
+graphics::box()
+
+par(mar=c(4,4,0,1))
+means <- tapply(mod2$scores[[1]][,1], mod2$effects$`light:time`, mean)
+x <- c(0,5,10,20,40,80,160)
+plot(1:7, means[seq(1,28, 4)], type="l", ylab = paste0("Score 1 (",round(pc$explvar[1],1),"%)"), xlab = "time", ylim = c(min(means),max(means)), axes = FALSE, lwd=4, panel.first = {abline(h=0, lty=2, col="gray")})
+axis(1, 1:7, x)
+axis(2)
+graphics::box()
+lines(1:7, means[seq(2,28, 4)], type="l", col=2, lty=2, lwd=4)
+lines(1:7, means[seq(3,28, 4)], type="l", col=3, lty=3, lwd=4)
+lines(1:7, means[seq(4,28, 4)], type="l", col=4, lty=4, lwd=4)
+legend("bottomleft", legend=c("Dark","Low light","Light", "High light"),
+       col=1:4, lty=1:4, lwd=rep(4,4))
+
+means <- tapply(mod2$scores[[1]][,2], mod2$effects$`light:time`, mean)
+x <- c(0,5,10,20,40,80,160)
+plot(1:7, means[seq(1,28, 4)], type="l", ylab = paste0("Score 2 (",round(pc$explvar[2],1),"%)"), xlab = "time", ylim = c(min(means),max(means)), axes = FALSE, lwd=4)
+axis(1, 1:7, x)
+axis(2)
+graphics::box()
+lines(1:7, means[seq(2,28, 4)], type="l", col=2, lty=2, lwd=4)
+lines(1:7, means[seq(3,28, 4)], type="l", col=3, lty=3, lwd=4)
+lines(1:7, means[seq(4,28, 4)], type="l", col=4, lty=4, lwd=4)
+#legend("bottomright", legend=c("Dark","Low light","Light", "High light"),
+#       col=1:4, lty=1:4, lwd=rep(4,4))
+dev.off()
+```
+
+## PRC
+
+```{r}
+library(vegan)
+level <- caldana$light
+time <- caldana$time
+prc.cal <- prc(caldana$Y, level, time)
+
+png("Caldana_PRC.png", 800,1000, pointsize = 36)
+par(mfrow=c(2,1), mar=c(4,4,1,1))
+plot(prc.cal, species = FALSE, axis = 1, lwd = 4)
+dev.flush()
+plot(prc.cal, species = FALSE, axis = 2, lwd = 4, legpos = "bottomright")
+plot(0)
+dev.off()
+
+# summary(prc.cal)
+prc.cal
+```
+
+```{r}
+plot(prc.cal, species = FALSE, axis = 2, lwd = 4, legpos = "bottomright")
+x <- summary(prc.cal, axis = 2, scaling = "symmetric", correlation = FALSE)
+par(mfrow=c(1,1))
+matplot(colnames(coef(x)), t(coef(x)), lty=2:4, col= 2:4, type="l", lwd=4, xlab="time", ylab="effect")
+lines(c(0,160), c(0,0), lwd=4)
+matplot(colnames(coef(x)), t(coef(x)), lty=2:4, col= 2:4, type="l", lwd=4, add=TRUE)
+```
+
+```{r}
+cca_expl <- prc.cal$CCA$eig/prc.cal$CCA$tot.chi*100
+png("Caldana_PRC.png", 1000,1200, pointsize = 36)
+par(mfrow=c(3,1), mar=c(2,4,2,1), mgp = c(2.5, 1, 0))
+scores(prc.cal)$species
+#barplot(t(prc.cal$CCA$v[,1:2]), beside=TRUE, ylab="Correlation", main=paste0("light +
+barplot(t(scores(prc.cal)$species[,1:2]), beside=TRUE, ylab="loading value", main=paste0("light + time:light (",round(prc.cal$CCA$tot.chi/prc.cal$tot.chi*100,2),"%)"),
+        legend.text = c(paste0("Component 1 (",round(cca_expl[1],1),"%)"), paste0("Component 2 (",round(cca_expl[2],1),"%)")), names.arg = rep("",67), args.legend = c("x"="top"), lwd=2)
+graphics::box()
+
+par(mar=c(4,4,0,1))
+x <- summary(prc.cal, axis = 1, scaling = "symmetric", correlation = FALSE)
+matplot(1:7, t(coef(x)), lty=2:4, col= 2:4, type="l", lwd=4, xlab="time", ylab=paste0("Effect 1 (",round(cca_expl[1],1),"%)"), axes=FALSE)
+lines(c(0,160), c(0,0), lwd=4)
+matplot(1:7, t(coef(x)), lty=2:4, col= 2:4, type="l", lwd=4, add=TRUE, axes=FALSE)
+legend("topleft", legend=c("Dark","Low light","Light", "High light"),
+       col=1:4, lty=1:4, lwd=rep(4,4))
+axis(1, 1:7, colnames(coef(x)))
+axis(2)
+graphics::box()
+
+x <- summary(prc.cal, axis = 2, scaling = "symmetric", correlation = FALSE)
+matplot(1:7, t(coef(x)), lty=2:4, col= 2:4, type="l", lwd=4, xlab="time", ylab=paste0("Effect 2 (",round(cca_expl[2],1),"%)"), axes=FALSE)
+lines(c(0,160), c(0,0), lwd=4)
+matplot(1:7, t(coef(x)), lty=2:4, col= 2:4, type="l", lwd=4, add=TRUE, axes=FALSE)
+axis(1, 1:7, colnames(coef(x)))
+axis(2)
+graphics::box()
+dev.off()
+```
+

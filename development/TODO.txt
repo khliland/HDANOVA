@@ -35,3 +35,10 @@ GASCA	- Group-wise ASCA
 MANOVA	- Ordinary MANOVA
 REP-ASCA	- Repetition ASCA
 AComDim
+
+# Framdrift
++ Nytt navn på .asca -> asca_fit
+- Lag ASCA, +APCA, PC-ANOVA, LiMM-PCA osv. som bruker asca_fit
+- Parallelliser permutasjoner
+- Parameter som skiller mellom "residual", "denominator" og "alpha" (LiMM-PCA)
+- Restricted = TRUE

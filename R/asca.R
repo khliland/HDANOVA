@@ -2,7 +2,7 @@
 #' @aliases asca
 #' @title Analysis of Variance Simultaneous Component Analysis - ASCA
 #'
-#' @param formula Model formula accepting a single response (block) and predictor names separated by + signs.
+#' @param formula Model formula accepting a single response (block) and predictors.
 #' @param data The data set to analyse.
 #' @param subset Expression for subsetting the data before modelling.
 #' @param weights Optional object weights.
@@ -13,16 +13,16 @@
 #'
 #' @return An \code{asca} object containing loadings, scores, explained variances, etc. The object has
 #' associated plotting (\code{\link{asca_plots}}) and result (\code{\link{asca_results}}) functions.
-#' 
+#'
 #' @description This is a quite general and flexible implementation of ASCA.
-#' 
+#'
 #' @details ASCA is a method which decomposes a multivariate response according to one or more design
 #' variables. ANOVA is used to split variation into contributions from factors, and PCA is performed
 #' on the corresponding least squares estimates, i.e., \code{Y = X1 B1 + X2 B2 + ... + E = T1 P1' + T2 P2' + ... + E}.
 #' This version of ASCA encompasses variants of LiMM-PCA, generalized ASCA and covariates ASCA. It includes
 #' confidence ellipsoids for the balanced fixed effect ASCA.
-#' 
-#' @references 
+#'
+#' @references
 #' * Smilde, A., Jansen, J., Hoefsloot, H., Lamers,R., Van Der Greef, J., and Timmerman, M.(2005). ANOVA-Simultaneous Component Analysis (ASCA): A new tool for analyzing designed metabolomics data. Bioinformatics, 21(13), 3043–3048.
 #' * Liland, K.H., Smilde, A., Marini, F., and Næs,T. (2018). Confidence ellipsoids for ASCA models based on multivariate regression theory. Journal of Chemometrics, 32(e2990), 1–13.
 #' * Martin, M. and Govaerts, B. (2020). LiMM-PCA: Combining ASCA+ and linear mixed models to analyse high-dimensional designed data. Journal of Chemometrics, 34(6), e3232.
@@ -34,32 +34,32 @@
 #' @examples
 #' # Load candies data
 #' data(candies)
-#' 
+#'
 #' # Basic ASCA model with two factors
 #' mod <- asca(assessment ~ candy + assessor, data=candies)
 #' print(mod)
-#' 
+#'
 #' # ASCA model with interaction
 #' mod <- asca(assessment ~ candy * assessor, data=candies)
 #' print(mod)
-#' 
+#'
 #' # Result plotting for first factor
 #' loadingplot(mod, scatter=TRUE, labels="names")
 #' scoreplot(mod)
-#' 
+#'
 #' # ASCA model with compressed response using 5 principal components
 #' mod.pca <- asca(assessment ~ candy + assessor, data=candies, pca.in=5)
-#' 
+#'
 #' # Mixed Model ASCA, random assessor
 #' mod.mix <- asca(assessment ~ candy + (1|assessor), data=candies)
 #' scoreplot(mod.mix)
-#' 
+#'
 #' @export
 asca <- function(formula, data, subset, weights, na.action, family, pca.in = FALSE){
   ## Force contrast to sum
   opt <- options(contrasts = c(unordered="contr.sum", ordered="contr.poly"))
   on.exit(options(opt))
-  
+
   ## Get the data matrices
   Y <- data[[formula[[2]]]]
   N <- nrow(Y)
@@ -73,7 +73,7 @@ asca <- function(formula, data, subset, weights, na.action, family, pca.in = FAL
     Y <- Yudv$u[,1:pca.in,drop=FALSE] * rep(Yudv$d[1:pca.in], each=N)
   }
   residuals <- Y
-  
+
   mf <- match.call(expand.dots = FALSE)
   fit.type <- "'lm' (Linear Model)"
   if(length(grep('|', formula, fixed=TRUE)) == 0){
@@ -142,7 +142,7 @@ asca <- function(formula, data, subset, weights, na.action, family, pca.in = FAL
   effs   <- attr(terms(ano), "term.labels")
   assign <- attr(M, "assign")
   modFra <- model.frame(ano)
-  
+
   # Exclude numeric effects and their interactions
   nums   <- names(unlist(lapply(modFra, class)))[which(unlist(lapply(modFra, class)) %in% c("numeric","integer"))]
   if(length(nums)>0){
@@ -197,8 +197,8 @@ asca <- function(formula, data, subset, weights, na.action, family, pca.in = FAL
       dimnames(loadings[[effs[i]]]) <- list(colnames(LS[[effs[i]]]), paste("Comp", 1:maxDir, sep=" "))
     }
   }
-  
-  obj <- list(scores=scores, loadings=loadings, projected=projected, singulars=singulars, 
+
+  obj <- list(scores=scores, loadings=loadings, projected=projected, singulars=singulars,
               LS=LS, effects=effects, coefficients=coefs, Y=Y, X=M, residuals=residuals,
               ssq=ssq, ssqY=ssqY, explvar=ssq/ssqY,
               call=match.call(), fit.type=fit.type)
@@ -210,7 +210,7 @@ asca <- function(formula, data, subset, weights, na.action, family, pca.in = FAL
   # # Experimental features
   # # Generalised ASCA, here with a mock Gaussian distribution
   # mod.glm <- asca(y~x+z, data=dataset, family="gaussian")
-  # 
+  #
   # # Generalised Mixed Model ASCA
   # mod <- asca(y~x+(1|z), data=dataset, family="gaussian")
 }

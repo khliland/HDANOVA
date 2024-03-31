@@ -1,13 +1,13 @@
-# highDimMANOVA
-High-dimensional Multivaritate Analysis of Variance
+# HDANOVA
+High-Dimensional Analysis of Variance
 
 ## Installation
 
 ``` r
 # Install release version from CRAN  
-install.packages("multiblock")  
+install.packages("HDANOVA")  
 # Install development version from GitHub  
-devtools::install_github("khliland/multiblock")
+devtools::install_github("khliland/HDANOVA")
 ```
 
 ## Contents

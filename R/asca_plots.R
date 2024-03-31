@@ -48,6 +48,10 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, pch.scores = 19, pch
   nobj  <- nrow(object$Y)
   # Remove redundant levels
   comps <- comps[comps <= nlev-1]
+  # Set gr.col if missing
+  if(missing(gr.col)){
+    gr.col <- adjustcolor(rep(palette(), max(1, nlev%/%8+1))[1:nlev], alpha.f = 0.7)
+  }
 
   scors <- scores(object=object, factor=factor)
   projs <- projections(object=object, factor=factor) + scors
@@ -83,7 +87,8 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, pch.scores = 19, pch
       if(missing(confidence))
         confidence <- c(0.4,0.68,0.95)
       if(ellipsoids == "data"){
-        dataEllipse(projs[,comps], groups = object$effects[[factor]], levels=confidence, add=TRUE, plot.points=FALSE, col=gr.col, lwd=1, group.labels="", center.pch=FALSE, lty=3)
+        dataEllipse(projs[,comps], groups = object$effects[[factor]], levels=confidence, add=TRUE, plot.points=FALSE, col=rep("black", length(gr.col)), lwd=1, group.labels="", center.pch=FALSE, lty=1)
+        dataEllipse(projs[,comps], groups = object$effects[[factor]], levels=confidence, add=TRUE, plot.points=FALSE, col=gr.col, lwd=1, group.labels="", center.pch=FALSE, lty=2)
       }
       if(ellipsoids == "confidence" || ellipsoids == "conf"){
         # Covariance matrix
@@ -101,8 +106,10 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, pch.scores = 19, pch
         #        c68 <- sqrt((nobj-nlev)*2 / (nobj-nlev-2+1) * qf(confidence[2], 2, nobj-nlev-2+1))
         for(i in 1:nlev){
           lev <- levels(object$effects[[factor]])[i]
-          for(c in 1:length(confidence))
-            ellipse(colMeans(scors[object$effects[[factor]]==lev,comps]), LSL, cx[[c]], lwd=1, col=gr.col[i])
+          for(c in 1:length(confidence)){
+            ellipse(colMeans(scors[object$effects[[factor]]==lev,comps]), LSL, cx[[c]], lwd=1, col="black", center.pch=FALSE)
+            ellipse(colMeans(scors[object$effects[[factor]]==lev,comps]), LSL, cx[[c]], lwd=1, col=gr.col[i], lty=2, center.pch=FALSE)
+          }
         }
       }
     }

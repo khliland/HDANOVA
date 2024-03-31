@@ -2,6 +2,7 @@
 % Please edit documentation in R/HDANOVA-package.R
 \docType{package}
 \name{HDANOVA}
+\alias{HDANOVA-package}
 \alias{HDANOVA}
 \title{HDANOVA}
 \description{
@@ -11,3 +12,16 @@ Included so far:
 \item PC-ANOVA
 }
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/khliland/HDANOVA/}
+  \item Report bugs at \url{https://github.com/khliland/HDANOVA/issues/}
+}
+
+}
+\author{
+\strong{Maintainer}: Kristian Hovde Liland \email{kristian.liland@nmbu.no} (\href{https://orcid.org/0000-0001-6468-9423}{ORCID})
+
+}
+\keyword{internal}

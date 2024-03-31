@@ -1,0 +1,79 @@
+\section{Candies}
+
+The candy dataset contains sensory assessments of 5 different candies by 11 trained assessors. Each assessor has judged 9 sensory attributes 3 times for each candy on a scale from 0 to 15. The dataset has 165 rows ($5 \times 11 \times 3$) and 2 factors: assessor and candy.
+
+When analysing the candy dataset using Linear Mixed Model ANOVA (LMM), we focus on one sensory attribute and consider the assessors as a random effect. 
+
+\begin{verbatim}
+Analysis of variance (restricted model)Response: assessment               Mean Sq  Sum Sq  Df F value Pr(>F)candy          1224.18 4896.72   4  153.53 0.0000assessor         15.48  154.84  10    2.67 0.0058candy:assessor    7.97  318.94  40    1.38 0.0992Residuals         5.80  637.59 110       -      -                 Err.term(s) Err.df VC(SS)1 candy                  (3)     40  fixed2 assessor               (4)    110  0.6463 candy:assessor         (4)    110  0.7264 Residuals                -      -  5.796(VC = variance component)               Expected mean squarescandy          (4) + 3 (3) + 33 Q[1]assessor       (4) + 15 (2)         candy:assessor (4) + 3 (3)          Residuals      (4)
+\end{verbatim}
+
+We observe significant effects of both candy and assessor with P-values < 0.01 and an interaction effect which would be significant at an \alpha level of 0.1. From this it is evident that there is great differences between the candies. In addition, the assessors have clear differences in their overall assessments, and to some degree also assess similar candies differently (the weak interaction).
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics*[width=10cm]{Figures/Candies_LMM.png}
+ \caption{\footnotesize LMM predictions of candy assessments}
+ \label{FigChx:Candies_LMM}
+\end{figure}
+
+In Figure \ref{FigChx:Candies_LMM}, the plot of the predicted candy assessments with one line per assessor confirms the LMM results visually. We observe a general trend in assessments, but also different usage of the assessment scale (some spanning the full scale, some compressing their assessments) and some individual differences for the candies.
+
+\begin{verbatim}
+       Mean G1 G22 13.540909  A   4 13.213636  A   3 11.727273  A   1  2.172727     B5  1.404545     B
+\end{verbatim}
+
+The compact letter display reveals two distinct groups of candies. The minimum significant difference of the candies is 1.9854 confirming the groupings found by Tukey's Honestly Significant Differences.
+
+
+\section{Caldana}
+
+This example is a subset (excluded conditions in parentheses) of a plant science study of Arabidopsis (Caldana et al. 2011). Changes in metabolism (and gene expression) related to growth under different light (and temperature) conditions are recorded at several time points.
+
+Light and the combined time and light:time interaction are included in ASCA, APCA and PRC analyses. In Figures \ref{FigChx:Caldana_ASCA} and \ref{FigChx:Caldana_APCA}, loadings and scores for the combined effect are shown for ASCA and APCA, respectively. Both methods employ sum coding for all effects. One can observe that the first component scores are quite similar, even though the loadings weigh the variables a bit differently. Both ASCA and APCA start at zero effect and show similar grouping as time progresses with Dark on top, Low light and Light in the middle and High light clearly separated below. The explained variance of the first component of ASCA (38.9\%) is more than 50\% higher than for APCA (23.5\%).
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics*[width=10cm]{Figures/Caldana_ASCA.png}
+ \caption{\footnotesize ASCA analysis of metabolomics data from Caldana et al. 2011.}
+ \label{FigChx:Caldana_ASCA}
+\end{figure}
+\begin{figure}[h!]
+ \centering
+ \includegraphics*[width=10cm]{Figures/Caldana_APCA.png}
+ \caption{\footnotesize APCA analysis of metabolomics data from Caldana et al. 2011.}
+ \label{FigChx:Caldana_APCA}
+\end{figure}
+
+The second components of each method clearly capture different phenomena as both scores and loadings are different. ASCA shows a clear contrast between Dark and the other levels of light, while APCA shows no logical pattern in the scores.
+
+Moving to Figure \ref{FigChx:Caldana_PRC}, one can see that PRC uses the first level of light as a baseline to contrast the other levels. Except for this (and a random sign flip in the first component), the results of PRC are very similar to the ASCA results, including the correlations.
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics*[width=10cm]{Figures/Caldana_PRC.png}
+ \caption{\footnotesize PRC analysis of metabolomics data from Caldana et al. 2011.}
+ \label{FigChx:Caldana_PRC}
+\end{figure}
+
+
+\section{Pasta}
+Egg-pasta samples (540) have been prepared with variations in temperature (3), time (3), and concentration of egg (6). Near-infrared (NIR) measurements with 3112 wavelengths were conducted for all samples (Bevilacqua et al. 2013). To simplify analyses, only the main effects are included in a variable selection ASCA with 1000 permutations.
+
+With high correlations between neighbors and regions of importance for prediction of the main effects spread over most of the spectral range (Figure \ref{FigChx:Pasta_loadings}), no single variable is left out of the selection. However, VASCA returns a ranked list of variables (Figure \ref{FigChx:Pasta_loadings}), which can be used to assess importance of the variables or perform selection. For instance, leveraging the inherent redundancy of information in NIR spectra, one could set an arbitrary cut-off to remove the 1000 least important variables including the double-dip region around 1500 nm.
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics*[width=10cm]{Figures/Pasta_loadings.pdf}
+ \caption{\footnotesize Variable ranks and loadings from VASCA analysis of pasta data from Bevilacqua et al. 2013.}
+ \label{FigChx:Pasta_loadings}
+\end{figure}
+
+The score plots in Figure \ref{FigChx:Pasta_scores} indicate good separation between temperature levels, a trend in the time levels and a large overlap between concentration levels. Combining this information with the plots of loadings, it is unlikely that separation between temperature levels and time levels will be much reduced by removing the 1000 variables of lowest rank.
+
+\begin{figure}[h!]
+ \centering
+ \includegraphics*[width=10cm]{Figures/Pasta_scores.pdf}
+ \caption{\footnotesize Scores from VASCA analysis of pasta data from Bevilacqua et al. 2013.}
+ \label{FigChx:Pasta_scores}
+\end{figure}

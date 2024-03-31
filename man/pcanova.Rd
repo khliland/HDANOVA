@@ -3,20 +3,14 @@
 \name{pcanova}
 \alias{pcanova}
 \alias{print.pcanova}
+\alias{summary.pcanova}
 \title{Principal Components Analysis of Variance Simultaneous Component Analysis - PC-ANOVA}
 \usage{
-pcanova(
-  formula,
-  data,
-  ncomp,
-  subset,
-  weights,
-  na.action,
-  family,
-  SStype = "III"
-)
+pcanova(formula, data, ncomp = 0.9, ...)
 
 \method{print}{pcanova}(x, ...)
+
+\method{summary}{pcanova}(object, ...)
 }
 \arguments{
 \item{formula}{Model formula accepting a single response (block) and predictor names separated by + signs.}
@@ -25,9 +19,9 @@ pcanova(
 
 \item{ncomp}{The number of components to retain, proportion of variation or default = minimum cross-validation error.}
 
-\item{subset}{Subset of objects}
-
 \item{weights}{Optional object weights.}
+
+\item{subset}{Subset of objects}
 
 \item{na.action}{How to handle NAs (no action implemented).}
 
@@ -69,11 +63,9 @@ if("mixlm" \%in\% rownames(installed.packages())){
                                        effect = "candy")))
 }
 
-# Result plotting for first factor
+# Result plotting
 loadingplot(mod, scatter=TRUE, labels="names")
 scoreplot(mod)
-# ... and second factor
-scoreplot(mod, factor = "assessor")
 
 # Mixed Model PC-ANOVA, random assessor
 mod.mix <- pcanova(assessment ~ candy + (1|assessor), data=candies, ncomp = 0.9)

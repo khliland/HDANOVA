@@ -7,7 +7,7 @@
 asca(formula, data, subset, weights, na.action, family, pca.in = FALSE)
 }
 \arguments{
-\item{formula}{Model formula accepting a single response (block) and predictor names separated by + signs.}
+\item{formula}{Model formula accepting a single response (block) and predictors.}
 
 \item{data}{The data set to analyse.}
 
