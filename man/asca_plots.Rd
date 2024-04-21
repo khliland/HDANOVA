@@ -4,7 +4,8 @@
 \alias{asca_plots}
 \alias{loadingplot.asca}
 \alias{scoreplot.asca}
-\title{ASCA Result Methods}
+\alias{permutationplot}
+\title{ASCA Plot Methods}
 \usage{
 \method{loadingplot}{asca}(object, factor = 1, comps = 1:2, ...)
 
@@ -24,11 +25,14 @@
   legendpos,
   ...
 )
+
+permutationplot(object, factor = 1, xlim, xlab = "SSQ", main, ...)
 }
 \arguments{
 \item{object}{\code{asca} object.}
 
-\item{factor}{\code{integer/character} for selecting a model factor.}
+\item{factor}{\code{integer/character} for selecting a model factor. If factor <= 0 or "global",
+the PCA of the input is used (negativ factor to include factor level colouring with global PCA).}
 
 \item{comps}{\code{integer} vector of selected components.}
 

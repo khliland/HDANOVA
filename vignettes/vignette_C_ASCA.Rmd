@@ -1,0 +1,204 @@
+---
+title: "C. ASCA"
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{C. ASCA}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width=6, 
+  fig.height=4
+)
+# Legge denne i YAML på toppen for å skrive ut til tex
+#output: 
+#  pdf_document: 
+#    keep_tex: true
+# Original:
+#  rmarkdown::html_vignette:
+#    toc: true
+```
+
+```{r setup}
+# Start the HDANOVA R package
+library(HDANOVA)
+```
+
+# Analysis of Variance Simultaneous Component Analysis (ASCA)
+
+## Basic ASCA
+The ANOVA part of ASCA includes all the possible variations of ANOVA demonstrated in the
+ANOVA vignette and more. Also generalized linear models (GLM) can be used. We start
+by demonstrating ASCA with a fixed effect model of two factors with interactions
+and ordinary PCA on the effect matrices.
+
+```{r}
+# Load Candy data
+data(candies)
+
+# Fit ASCA model
+mod <- asca(assessment ~ candy*assessor, data=candies)
+summary(mod)
+```
+
+The summary shows that the candy effect is the largest by far. 
+
+### Permutation testing
+To get more insight, we can perform permutation testing of the factors.
+
+```{r}
+# Permutation testing (default = 1000 permutations, if not specified)
+mod <- asca(assessment ~ candy*assessor, data=candies, permute=TRUE)
+summary(mod)
+```
+
+Here we see that the candy effect is significant, while the assessor effect and
+interaction are not. This can also be visualised by looking at the sums-of-squares
+values obtained under permutation compared to the original value.
+
+```{r}
+permutationplot(mod, factor = "assessor")
+```
+
+### Random effects
+One can argue that the assessors are random effects, thus should be handled
+as such in the model. We can do this by adding r() around the assessor term.
+
+```{r}
+# Fit ASCA model with random assessor
+mod.mixed <- asca(assessment ~ candy*r(assessor), data=candies, permute=TRUE)
+summary(mod.mixed)
+```
+
+### Scores and loadings
+The effects can be visualised through, e.g., loading and score plots to assess
+the relations between variables, objects and factors. If a factor is not
+specified, the first factor is plotted.
+
+```{r, fig.width=4.5, fig.height=7}
+par.old <- par(mfrow=c(2,1), mar=c(4,4,2,1))
+loadingplot(mod, scatter=TRUE, labels="names", main="Candy loadings")
+scoreplot(mod, main="Candy scores")
+par(par.old)
+```
+
+A specific factor can be plotted by specifying the factor name or number
+
+```{r, fig.width=4.5, fig.height=7}
+par.old <- par(mfrow=c(2,1), mar=c(4,4,2,1))
+loadingplot(mod, factor="assessor", scatter=TRUE, labels="names", main="Assessor loadings")
+scoreplot(mod, factor="assessor", main="Assessor scores")
+par(par.old)
+```
+
+And scores and loadings can be extracted for further analysis.
+
+```{r}
+L <- loadings(mod, factor="candy")
+head(L)
+S <- scores(mod, factor="candy")
+head(S)
+```
+
+### Data ellipsoids and confidence ellipsoids
+To emphasize factor levels or assess factor level differences, one can add
+data ellipsoids or confidence ellipsoids to the score plot. The confidence
+ellipsoids are built on the assumption of balanced data, and their theories are 
+built around crossed designs.
+
+```{r, fig.width=4.5, fig.height=7}
+par.old <- par(mfrow=c(2,1), mar=c(4,4,2,1))
+scoreplot(mod, ellipsoids="data", factor="candy", main="Data ellipsoids")
+scoreplot(mod, ellipsoids="confidence", factor="candy", main="Confidence ellipsoids")
+par(par.old)
+```
+
+If we repeat this for the mixed model, we see that the both types of ellipsoids
+change together with the change in denominator term in the underlying ANOVA model.
+
+```{r, fig.width=4.5, fig.height=7}
+par.old <- par(mfrow=c(2,1), mar=c(4,4,2,1))
+scoreplot(mod.mixed, ellipsoids="data", factor="candy", main="Data ellipsoids")
+scoreplot(mod.mixed, ellipsoids="confidence", factor="candy", main="Confidence ellipsoids")
+par(par.old)
+```
+
+### Combined effects
+In some cases, it can be of interest to combine effects in ASCA. Here, we use
+an example with the Caldana data where we combine the _light_ effect with the
+_time:light_ interaction using the _comb()_ function.
+
+```{r}
+# Load Caldana data
+data(caldana)
+
+# Combed effects
+mod.comb <- asca(compounds ~ time + comb(light + light:time), data=caldana)
+summary(mod.comb)
+```
+
+### Numeric effects
+Numeric effects, so-called covariates, can also be included in a model, though their
+in ASCA are limited to ANOVA estimation and explained variance, not being used in
+subsequent PCA or permutation testing. We demonstrate this using the Caldana data
+again, but now recode the time effect to a numeric effect, meaning it will be
+handled as a linear continuous effect.
+
+```{r}
+caldanaNum <- caldana
+caldanaNum$time <- as.numeric(as.character(caldanaNum$time))
+mod.num <- asca(compounds ~ time*light, data = caldanaNum)
+summary(mod.num)
+```
+
+
+## APCA
+
+ANOVA-PCA (APCA) differs from ASCA by adding the error term to the model before
+performing PCA instead of backprojecting errors afterwards.
+
+```{r}
+# Fit APCA model
+modp <- apca(assessment ~ candy*assessor, data=candies)
+summary(modp)
+```
+
+Plot scores and loadings.
+```{r, fig.width=4.5, fig.height=7}
+par.old <- par(mfrow=c(2,1), mar=c(4,4,2,1))
+loadingplot(modp, scatter=TRUE, labels="names", main="Candy loadings")
+scoreplot(modp, main="Candy scores")
+par(par.old)
+```
+
+## PC-ANOVA
+
+In PC-ANOVA, a PCA is first applied to the data before the scores are subjected
+to ANOVA, effectively reversing the roles in ASCA. This means there will
+be one or more ANOVA tables in the summary of the output. In this example,
+we have chosen to use the number of components that explain at least 90% of the
+variation of the data.
+```{r}
+mod <- pcanova(assessment ~ candy * assessor, data = candies, ncomp = 0.9)
+print(mod)
+summary(mod)
+```
+
+When creating score and loading plots for PC-ANOVA, the 'global' scores and loadings
+will be shown, but the factors can still be used for colouring the symbols.
+```{r, fig.width=4.5, fig.height=7}
+par.old <- par(mfrow=c(2,1), mar=c(4,4,2,1))
+loadingplot(mod, scatter=TRUE, labels="names", main="Global loadings")
+scoreplot(mod, main="Global scores")
+par(par.old)
+```
+
+## LiMM-PCA
+TBA ...
+

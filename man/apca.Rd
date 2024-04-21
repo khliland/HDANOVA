@@ -4,7 +4,7 @@
 \alias{apca}
 \title{ANOVA Principal Component Analysis - APCA}
 \usage{
-apca(formula, data, ...)
+apca(formula, data, add_error = TRUE, ...)
 }
 \arguments{
 \item{formula}{Model formula accepting a single response (block) and predictors.}

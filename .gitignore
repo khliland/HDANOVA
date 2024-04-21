@@ -50,3 +50,5 @@ rsconnect/
 
 # Mac crap
 .DS_Store
+/doc/
+/Meta/

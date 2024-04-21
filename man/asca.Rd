@@ -4,16 +4,16 @@
 \alias{asca}
 \title{Analysis of Variance Simultaneous Component Analysis - ASCA}
 \usage{
-asca(formula, data, subset, weights, na.action, family, pca.in = FALSE)
+asca(formula, data, ...)
 }
 \arguments{
-\item{formula}{Model formula accepting a single response (block) and predictors.}
+\item{formula}{Model formula accepting a single response (block) and predictors. See Details for more information.}
 
 \item{data}{The data set to analyse.}
 
-\item{subset}{Subset of objects}
-
 \item{weights}{Optional object weights.}
+
+\item{subset}{Subset of objects}
 
 \item{na.action}{How to handle NAs (no action implemented).}
 
@@ -33,7 +33,11 @@ ASCA is a method which decomposes a multivariate response according to one or mo
 variables. ANOVA is used to split variation into contributions from factors, and PCA is performed
 on the corresponding least squares estimates, i.e., \code{Y = X1 B1 + X2 B2 + ... + E = T1 P1' + T2 P2' + ... + E}.
 This version of ASCA encompasses variants of LiMM-PCA, generalized ASCA and covariates ASCA. It includes
-confidence ellipsoids for the balanced fixed effect ASCA.
+confidence ellipsoids for the balanced crossed-effect ASCA.
+
+The formula interface is extened with the function r() to indicate random
+effects and comb() to indicate effects that should be combined. See Examples
+for use cases.
 }
 \examples{
 # Load candies data
@@ -55,8 +59,19 @@ scoreplot(mod)
 mod.pca <- asca(assessment ~ candy + assessor, data=candies, pca.in=5)
 
 # Mixed Model ASCA, random assessor
-mod.mix <- asca(assessment ~ candy + (1|assessor), data=candies)
+mod.mix <- asca(assessment ~ candy + r(assessor), data=candies)
 scoreplot(mod.mix)
+
+# Load Caldana data
+data(caldana)
+
+# Combining effects in ASCA
+mod.comb <- asca(compounds ~ time + comb(light + time:light), data=caldana)
+summary(mod.comb)
+
+# Permutation testing
+mod.perm <- asca(assessment ~ candy * assessor, data=candies, permute=TRUE)
+summary(mod.perm)
 
 }
 \references{

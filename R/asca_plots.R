@@ -1,4 +1,4 @@
-#' @title ASCA Result Methods
+#' @title ASCA Plot Methods
 #' @name asca_plots
 #' @aliases asca_plots scoreplot.asca loadingplot.asca
 #'
@@ -9,7 +9,8 @@
 #' \code{scoreplot.asca} and \code{loadingplot.asca}.
 #'
 #' @param object \code{asca} object.
-#' @param factor \code{integer/character} for selecting a model factor.
+#' @param factor \code{integer/character} for selecting a model factor. If factor <= 0 or "global",
+#' the PCA of the input is used (negativ factor to include factor level colouring with global PCA).
 #' @param comps \code{integer} vector of selected components.
 #' @param pch.scores \code{integer} plotting symbol.
 #' @param pch.projections \code{integer} plotting symbol.
@@ -35,7 +36,31 @@
 #'
 #' @export
 loadingplot.asca <- function(object, factor = 1, comps = 1:2, ...){
-  plot(loadings(object=object, factor=factor), comps=comps, ...)
+  if(inherits(object,"pcanova")){
+    # Remove too high component numbers
+    comps <- comps[comps <= length(object$anovas)]
+    if(length(comps) == 0)
+      stop("No components to plot")
+    if(factor > 0)
+      factor <- -factor
+  }
+  # Check if input PCA should be used instead of PCAs of factor LS matrices.
+  global <- FALSE
+  if(factor < 1 || factor == "global"){
+    if(!is.null(object$Ypca)){
+      loads <- object$Ypca$pca$loadings
+      global <- TRUE
+      factor <- abs(factor)
+    } else {
+      warning("No global PCA available, using first factor")
+      factor <- 1
+      global <- FALSE
+    }
+  }
+  if(!global){
+    loads <- loadings(object=object, factor=factor)
+  }
+  plot(loads, comps=comps, ...)
 }
 
 #' @rdname asca_plots
@@ -43,18 +68,53 @@ loadingplot.asca <- function(object, factor = 1, comps = 1:2, ...){
 scoreplot.asca <- function(object, factor = 1, comps = 1:2, pch.scores = 19, pch.projections = 1,
                            gr.col = 1:nlevels(object$effects[[factor]]), ellipsoids, confidence,
                            xlim,ylim, xlab,ylab, legendpos, ...){
-  # Number of levels in current factor
-  nlev  <- nlevels(object$effects[[factor]])
-  nobj  <- nrow(object$Y)
-  # Remove redundant levels
-  comps <- comps[comps <= nlev-1]
-  # Set gr.col if missing
-  if(missing(gr.col)){
-    gr.col <- adjustcolor(rep(palette(), max(1, nlev%/%8+1))[1:nlev], alpha.f = 0.7)
+
+  if(inherits(object,"pcanova")){
+    # Remove too high component numbers
+    comps <- comps[comps <= length(object$anovas)]
+    if(length(comps) == 0)
+      stop("No components to plot")
+    if(factor > 0)
+      factor <- -factor
+    object$add_error <- TRUE
+    if(factor == 0)
+      object$add_error <- FALSE
+  }
+  # Check if input PCA should be used instead of PCAs of factor LS matrices.
+  global <- FALSE
+  if(factor < 1 || factor == "global"){
+    if(!is.null(object$Ypca)){
+      scors <- projs <- object$Ypca$pca$scores
+      global <- TRUE
+      factor <- abs(factor)
+    } else {
+      warning("No global PCA available, using first factor")
+      factor <- 1
+      global <- FALSE
+    }
   }
 
-  scors <- scores(object=object, factor=factor)
-  projs <- projections(object=object, factor=factor) + scors
+  nobj <- nrow(object$Y)
+  nlev <- 0
+  if(!(factor==0)){
+    # Number of levels in current factor
+    nlev  <- nlevels(object$effects[[factor]])
+    # Remove redundant levels
+    comps <- comps[comps <= nlev-1]
+    # Set gr.col if missing
+    if(missing(gr.col)){
+      gr.col <- adjustcolor(rep(palette(), max(1, nlev%/%8+1))[1:nlev], alpha.f = 0.7)
+    }
+  }
+  if(!global){
+    # Get scores and projections
+    scors <- scores(object=object, factor=factor)
+    if(!inherits(object,"pcanova"))
+      projs <- projections(object=object, factor=factor) #+ scors
+    if(object$add_error)
+      projs <- scors
+  }
+  # Find limits of plotting
   if(missing(xlim))
     xlim <- c(min(min(scors[,comps[1]]), min(projs[,comps[1]])),
               max(max(scors[,comps[1]]), max(projs[,comps[1]])))
@@ -64,6 +124,7 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, pch.scores = 19, pch
                 max(max(scors[,comps[2]]), max(projs[,comps[2]])))
   else
     ylim <- c(0.5, nlev+0.5)
+  # Generate labels
   evar <- attr(scors, 'explvar')
   if(missing(xlab))
     xlab <- paste0("Comp ", comps[1], " (",format(evar[comps[1]], digits = 2, trim = TRUE), " %)")
@@ -73,17 +134,27 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, pch.scores = 19, pch
   else
     ylab <- 'Level'
 
-  if(length(comps)>1){ # Scatter plot
-    scoreplot(scors, comps=comps, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, pch=pch.scores, ...)
-    for(i in 1:nlev){
-      lev <- levels(object$effects[[factor]])[i]
-      points(scors[object$effects[[factor]] == lev, comps], pch=pch.scores, col=gr.col[i])
-      points(projs[object$effects[[factor]] == lev, comps], pch=pch.projections, col=gr.col[i])
-    }
+  # Scatter plot
+  if(length(comps)>1){
+    if(object$add_error) # Skip plotting of scores if error is added (APCA/LiMM-PCA)
+      scoreplot(scors, comps=comps, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, pch=pch.projections, col="white", ...)
+    else
+      scoreplot(scors, comps=comps, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, pch=pch.scores, ...)
+    if(factor!=0)
+      for(i in 1:nlev){
+        lev <- levels(object$effects[[factor]])[i]
+        if(!object$add_error) # Skip plotting of scores if error is added (APCA/LiMM-PCA)
+          points(scors[object$effects[[factor]] == lev, comps], pch=pch.scores, col=gr.col[i])
+        if(!(factor==0)) # Skip projections if global PCA is used
+          points(projs[object$effects[[factor]] == lev, comps], pch=pch.projections, col=gr.col[i])
+      }
     if(!missing(legendpos))
-      legend(legendpos, legend = levels(object$effects[[factor]]), col=gr.col, pch=pch.scores)
+      if(factor!=0)
+        legend(legendpos, legend = levels(object$effects[[factor]]), col=gr.col, pch=pch.scores)
 
     if(!missing(ellipsoids)){
+      if(object$eff_combined[factor])
+        stop("Ellipsoids not defined for combined effects")
       if(missing(confidence))
         confidence <- c(0.4,0.68,0.95)
       if(ellipsoids == "data"){
@@ -91,8 +162,11 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, pch.scores = 19, pch
         dataEllipse(projs[,comps], groups = object$effects[[factor]], levels=confidence, add=TRUE, plot.points=FALSE, col=gr.col, lwd=1, group.labels="", center.pch=FALSE, lty=2)
       }
       if(ellipsoids == "confidence" || ellipsoids == "conf"){
+        if(inherits(object, "apca"))
+          stop("Confidence ellipsoids not implemented for APCA")
         # Covariance matrix
-        sigma <- crossprod(object$residuals)/nobj
+        sigma <- crossprod(object$error[[factor]]-object$LS[[factor]])/nobj
+#        sigma <- crossprod(object$residuals)/nobj
         L <- object$loadings[[factor]][,comps]
         # Transformed covariance matrix
         LSL <- crossprod(L,sigma) %*% L * nlev / (nobj-nlev)
@@ -102,8 +176,6 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, pch.scores = 19, pch
         cx <- list()
         for(c in 1:length(confidence))
           cx[[c]] <- sqrt((nobj-nlev)*2 / (nobj-nlev-2+1) * qf(confidence[c], 2, nobj-nlev-2+1))
-        #        c40 <- sqrt((nobj-nlev)*2 / (nobj-nlev-2+1) * qf(confidence[1], 2, nobj-nlev-2+1))
-        #        c68 <- sqrt((nobj-nlev)*2 / (nobj-nlev-2+1) * qf(confidence[2], 2, nobj-nlev-2+1))
         for(i in 1:nlev){
           lev <- levels(object$effects[[factor]])[i]
           for(c in 1:length(confidence)){
@@ -121,14 +193,17 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, pch.scores = 19, pch
     box()
     for(i in 1:nlev){
       lev <- levels(object$effects[[factor]])[i]
-      points(scors[object$effects[[factor]] == lev, comps], rep(i,sum(as.numeric(object$effects[[factor]]) == i)), pch=pch.scores, col=gr.col[i])
-      points(projs[object$effects[[factor]] == lev, comps], rep(i,sum(as.numeric(object$effects[[factor]]) == i)), pch=pch.projections, col=gr.col[i])
+      if(!object$add_error) # Skip plotting of scores if error is added (APCA/LiMM-PCA)
+        points(scors[object$effects[[factor]] == lev, comps], rep(i,sum(as.numeric(object$effects[[factor]]) == i)), pch=pch.scores, col=gr.col[i])
+      if(!(factor==0)) # Skip projections if global PCA is used
+        points(projs[object$effects[[factor]] == lev, comps], rep(i,sum(as.numeric(object$effects[[factor]]) == i)), pch=pch.projections, col=gr.col[i])
     }
     if(!missing(ellipsoids)){
       if(missing(confidence))
         confidence <- c(0.4,0.68,0.95)
       if(ellipsoids == "confidence" || ellipsoids == "conf"){
-        sigma <- crossprod(object$residuals)/nobj
+        sigma <- crossprod(object$error[[factor]]-object$LS[[factor]])/nobj
+        # sigma <- crossprod(object$residuals)/nobj
         L <- object$loadings[[factor]][,comps]
         # Transformed covariance matrix
         LSL <- sqrt(crossprod(L,sigma) %*% L * nlev / (nobj-nlev))
@@ -146,4 +221,21 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, pch.scores = 19, pch
       }
     }
   }
+}
+
+#' @rdname asca_plots
+#' @export
+permutationplot <- function(object, factor = 1, xlim, xlab = "SSQ", main, ...){
+  if(is.null(object$permute))
+    stop("Re-run model with permutation testing enabled")
+  if(missing(xlim))
+    xlim <- range(c(object$permute$ssqaperm[[factor]], object$ssq[factor]))
+  if(missing(main)){
+    if(is.numeric(factor))
+      main <- paste0("Permutation of ", names(object$ssq)[factor], " effect")
+    else
+      main <- paste0("Permutation of ", factor, " effect")
+  }
+  hist(object$permute$ssqaperm[[factor]], xlim=xlim, xlab=xlab, main=main, ...)
+  abline(v = object$ssq[factor], col=2, lwd=2, ...)
 }

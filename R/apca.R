@@ -14,8 +14,8 @@
 #' data(candies)
 #' ap <- apca(assessment ~ candy, data=candies)
 #' scoreplot(ap)
-apca <- function(formula, data, ...){
-  object <- asca_fit(formula, data, add_error = TRUE, ...)
+apca <- function(formula, data, add_error = TRUE, ...){
+  object <- asca_fit(formula, data, add_error = add_error, ...)
   object$call <- match.call()
   class(object) <- c("apca", class(object))
   object

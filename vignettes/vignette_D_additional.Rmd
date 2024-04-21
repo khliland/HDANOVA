@@ -1,0 +1,41 @@
+---
+title: "D. Additional methods"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{D. Additional methods}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width=6, 
+  fig.height=4
+)
+# Legge denne i YAML på toppen for å skrive ut til tex
+#output: 
+#  pdf_document: 
+#    keep_tex: true
+# Original:
+#  rmarkdown::html_vignette:
+#    toc: true
+```
+
+```{r setup}
+# Start the HDANOVA R package
+library(HDANOVA)
+```
+
+# Additional methods of HD-ANOVA
+
+## Principal Response Curves (PRC)
+
+## Principal Coordinate Analysis (PCoA) ??
+
+## Permutation Based MANOVA - PERMANOVA

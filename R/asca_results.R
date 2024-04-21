@@ -38,20 +38,38 @@ print.asca <- function(x, ...){
 
 #' @rdname asca_results
 #' @export
-summary.asca <- function(object, ...){
+summary.asca <- function(object, extended=TRUE, ...){
   dat <- data.frame(SSQ=object$ssq, "Expl.var."=object$explvar)
   dat <- dat[-nrow(dat),,drop=FALSE]
-  if(!is.null(object$permute))
-    dat <- cbind(dat, "P-value"=object$permute$pvalues)
-  x <- list(dat=dat, fit.type=object$fit.type)
+  if(!is.null(object$permute)){
+    pvals <- object$permute$pvalues
+    pvals[pvals==0] <- 1/object$permute$permutations
+    pv <- rep(NA,nrow(dat))
+    names(pv) <- rownames(dat)
+    pv[names(pvals)] <- pvals
+    dat <- cbind(dat, "P-value"=pv)
+  }
+  mod <- "Anova Simultaneous Component Analysis"
+  if(inherits(object, "apca"))
+    mod <- "Anova Principal Component Analysis"
+  x <- list(dat=dat, model=mod, fit.type=object$fit.type)
+  if(extended){
+    ss <- c("I","II","III")
+    x$info <- paste0("SS type ", ss[object$SStype], ", ", object$coding,
+                     " coding, ", ifelse(object$unrestricted, "unrestricted","restricted"), " model")
+    if(!is.null(object$permute))
+      x$info <- paste0(x$info, ", ", object$permute$permutations, " permutations")
+  }
   class(x) <- c('summary.asca')
   x
 }
 
 #' @rdname asca_results
 #' @export
-print.summary.asca <- function(x, digits=2, ...){
-  cat("Anova Simultaneous Component Analysis fitted using", x$fit.type, "\n")
+print.summary.asca <- function(x, digits=3, ...){
+  cat(x$mod, "fitted using", x$fit.type, "\n")
+  if(!is.null(x$info))
+    cat("-", x$info, "\n")
   print(round(x$dat, digits))
   invisible(x$dat)
 }

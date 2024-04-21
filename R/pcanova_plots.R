@@ -32,12 +32,13 @@
 #' Common functions for computation and extraction of results are found in \code{\link{pcanova_results}}.
 #'
 #' @export
-scoreplot.pcanova <- function(object, factor = 1, comps = 1:2, labels = "factor", ...){
+scoreplot.pcanovas <- function(object, factor = 1, comps = 1:2, labels = "factor", ...){
   # Remove too high component numbers
   comps <- comps[comps <= length(object$anovas)]
   if(labels == "factor"){
     levels <- model.frame(mod$models[[1]])[,-1,drop=FALSE]
     labels <- levels[[factor]]
   }
-  plot(scores(object=object), comps=comps, labels=labels, ...)
+  browser()
+  scoreplot(scores(object=object, factor=factor), comps=comps, labels=labels, ...)
 }

@@ -2,11 +2,12 @@
 % Please edit documentation in R/pcanova_plots.R
 \name{pcanova_plots}
 \alias{pcanova_plots}
+\alias{scoreplot.pcanovas}
 \alias{scoreplot.pcanova}
 \alias{loadingplot.pcanova}
 \title{PC-ANOVA Result Methods}
 \usage{
-\method{scoreplot}{pcanova}(object, factor = 1, comps = 1:2, labels = "factor", ...)
+\method{scoreplot}{pcanovas}(object, factor = 1, comps = 1:2, labels = "factor", ...)
 }
 \arguments{
 \item{object}{\code{pcanova} object.}

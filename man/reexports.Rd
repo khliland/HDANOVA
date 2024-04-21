@@ -18,6 +18,8 @@
 \alias{scoreplot}
 \alias{scores}
 \alias{validationplot}
+\alias{dummycode}
+\alias{block.data.frame}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -25,6 +27,8 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
+  \item{multiblock}{\code{\link[multiblock]{block.data.frame}}, \code{\link[multiblock]{dummycode}}}
+
   \item{pls}{\code{\link[pls:mvrVal]{MSEP}}, \code{\link[pls:mvrVal]{R2}}, \code{\link[pls:mvrVal]{RMSEP}}, \code{\link[pls]{coefplot}}, \code{\link[pls]{cvsegments}}, \code{\link[pls:scores]{loading.weights}}, \code{\link[pls:scoreplot]{loadingplot}}, \code{\link[pls:scores]{loadings}}, \code{\link[pls:mvrVal]{mvrValstats}}, \code{\link[pls:mvr]{pcr}}, \code{\link[pls:mvr]{plsr}}, \code{\link[pls]{predplot}}, \code{\link[pls]{scoreplot}}, \code{\link[pls]{scores}}, \code{\link[pls]{validationplot}}}
 }}
 

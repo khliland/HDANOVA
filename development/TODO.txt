@@ -1,3 +1,27 @@
+Konvertering til tex
+Lage figurer:
+devtools::build_vignettes(clean=FALSE)
+Lage .tex:
+rmarkdown::pandoc_convert("vignette_C_ASCA.Rmd", to = "latex", output = "vignette_C_ASCA.tex")
+
+ASCA:
+- lme4-støtte i effekt-augmentering
+- Tormod: Mixed model ASCA. Residual byttes ut med LS(effect) - LS(denominator). Kan vi putte dette rett inn i ellipseberegningene?
++ lagre metainformasjon om modell (SStype, kontraster, etc.)
++ kontinuerlige effekter
++ dimensjonsnavn på output (coefficients mm.)
++ gi navn til error for bokholderi/plotting
++ kombinerte effekter gjennom formel-interface:
+     + ANOVA-tabell
+     - lagre så plotting blir rett
++ plott permutasjonstesting
+
+# Framdrift
++ Nytt navn på .asca -> asca_fit
+- Lag xASCA, xAPCA+, xPC-ANOVA, -LiMM-PCA osv. som bruker asca_fit
+- Parallelliser permutasjoner
+- Parameter som skiller mellom "residual", "denominator" og "alpha" (LiMM-PCA)
++ Restricted = TRUE
 
 -----== Sources: ==-----
 ALASCA	"An R package for longitudinal and cross-sectional analysis of multivariate data by ASCA-based methods.
@@ -36,9 +60,3 @@ MANOVA	- Ordinary MANOVA
 REP-ASCA	- Repetition ASCA
 AComDim
 
-# Framdrift
-+ Nytt navn på .asca -> asca_fit
-- Lag ASCA, +APCA, PC-ANOVA, LiMM-PCA osv. som bruker asca_fit
-- Parallelliser permutasjoner
-- Parameter som skiller mellom "residual", "denominator" og "alpha" (LiMM-PCA)
-- Restricted = TRUE

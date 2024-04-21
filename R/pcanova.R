@@ -47,21 +47,22 @@
 #' summary(mod)
 #'
 #' # Tukey group letters for 'candy' per component
-#' if("mixlm" %in% rownames(installed.packages())){
-#'   lapply(mod$models, function(x)
-#'          mixlm::cld(mixlm::simple.glht(x,
-#'                                        effect = "candy")))
-#' }
+#' lapply(mod$models, function(x)
+#'        mixlm::cld(mixlm::simple.glht(x,
+#'                                      effect = "candy")))
 #'
 #' # Result plotting
 #' loadingplot(mod, scatter=TRUE, labels="names")
 #' scoreplot(mod)
 #'
 #' # Mixed Model PC-ANOVA, random assessor
-#' mod.mix <- pcanova(assessment ~ candy + (1|assessor), data=candies, ncomp = 0.9)
+#' mod.mix <- pcanova(assessment ~ candy + r(assessor), data=candies, ncomp = 0.9)
 #' scoreplot(mod.mix)
 #' # Fixed effects
 #' summary(mod.mix)
+#'
+#'
+#' # TODO, example with lme4?
 #' # Random effects
 #' lapply(mod.mix$models, lme4::ranef)
 #'
@@ -71,18 +72,18 @@ pcanova <- function(formula, data, ncomp = 0.9, ...){
   object <- asca_fit(formula, data, pca.in = ncomp, ...)
   # Extract relevant parts
   pc <- object$Ypca$pca
+  pc$Ypca <- object$Ypca
   pc$anovas <- object$anovas
   pc$fit.type <- object$fit.type
   pc$Y <- object$Y
   pc$X <- object$X
   pc$models <- object$models
-  # Remove redundant parts
-#  object[c("scores","loadings","projected","singulars","LS","effects","coefficients","residuals","ssq","ssqY","explvar")] <- NULL
+  pc$effects <- object$effects
   # Explained variance
 #  object$explvar <- object$Ypca$svd$d^2/sum(object$Ypca$svd$d^2)
   names(pc$anovas) <- paste0("Comp. ", 1:length(pc$anovas))
   pc$call <- match.call()
-  class(pc) <- c('pcanova', 'mvr')
+  class(pc) <- c('pcanova', 'asca', 'list')
   pc
 }
 
@@ -101,7 +102,6 @@ summary.pcanova <- function(object, ...){
   cat("\nCall:\n", deparse(object$call), "\n", sep = "")
   print(object$anovas)
 }
-
 
 # # Experimental features
 # # Generalised PC-ANOVA, here with a mock Gaussian distribution

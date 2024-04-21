@@ -1,0 +1,640 @@
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+# Start the mixlm R package
+library(mixlm, warn.conflicts = FALSE)
+\end{lstlisting}
+
+\subsection{Analysis of Variance
+(ANOVA)}\label{analysis-of-variance-anova}
+
+This example will focus on univariate ANOVA in various designs
+including fixed and mixed effects, and briefly introduce multivariate
+ANOVA. Models using random effects will be run through the mixlm
+package.
+
+\subsubsection{Simulated data}\label{simulated-data}
+
+We will start by simulating some data to use in the examples below. In
+this fictitious setup, milk yield is measured as a function of feed type
+(low/high protein content), cow breed, bull identity, daughter and age.
+The three first factors are crossed and balanced, while daughter is
+nested under bull.
+
+The yield is generated with a linear model with some noise.
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+set.seed(123)
+dat <- data.frame(
+  feed  = factor(rep(rep(c("low","high"), each=6), 4)),
+  breed = factor(rep(c("NRF","Hereford","Angus"), 16)),
+  bull  = factor(rep(LETTERS[1:4], each = 12)),
+  daughter = factor(rep(letters[1:4], 12)),
+  age   = round(rnorm(48, mean = 36, sd = 5))
+)
+dat$yield <- 150*with(dat, 10 + 3 * as.numeric(feed) + as.numeric(breed) +
+                        2 * as.numeric(bull) + 1 * as.numeric(sample(dat$daughter, 48)) +
+                        0.5 * age + rnorm(48, sd = 2))
+head(dat)
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+  feed    breed bull daughter age    yield
+1  low      NRF    A        a  33 5541.301
+2  low Hereford    A        b  35 5662.560
+3  low    Angus    A        c  44 6354.182
+4  low      NRF    A        d  36 6325.363
+5  low Hereford    A        a  37 6144.458
+6  low    Angus    A        b  45 6187.227
+\end{Verbatim}
+
+\subsubsection{Fixed effect models}\label{fixed-effect-models}
+
+The simplest form of ANOVA is the fixed effect model. This model assumes
+that the levels of the factor are fixed and that the only source of
+variation is the factor itself.
+
+\subsubsubsection{One-way ANOVA}\label{one-way-anova}
+
+Here we assess only the feed effect on yield, i.e., the following model:
+\[yield_{an} = \mu + feed_a + \epsilon_{an}\] where \(a\) is the feed
+level and \(n\) is the observation within the feed level.
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+mod <- lm(yield ~ feed, data = dat)
+print(anova(mod))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+Analysis of Variance Table
+
+Response: yield
+          Df   Sum Sq Mean Sq F value  Pr(>F)
+feed       1   957882  957882  3.1072 0.08459 .
+Residuals 46 14180730  308277
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Verbatim}
+
+In the ANOVA table one can look at Pr(\textgreater F) to see if the feed
+factor has a significant effect on yield. The summary function can be
+used to get more information about the underlying regression model.
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+summary(mod)
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+
+Call:
+lm(formula = yield ~ feed, data = dat)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-954.25 -480.25   75.11  470.14 1240.91
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)  6354.28      80.14  79.290   <2e-16 ***
+feed(low)    -141.27      80.14  -1.763   0.0846 .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+s: 555.2 on 46 degrees of freedom
+Multiple R-squared: 0.06327,
+Adjusted R-squared: 0.04291
+F-statistic: 3.107 on 1 and 46 DF,  p-value: 0.08459
+\end{Verbatim}
+
+Basic model assessment can be done using the plot function.
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+old.par <- par(mfrow=c(2,1), mar=c(4,4,2,0.5))
+plot(mod, which = 1:2, ask=FALSE)
+\end{lstlisting}
+
+\includegraphics{Figures/FigCh8_model_assessment}
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+par(old.par)
+\end{lstlisting}
+
+\subsubsubsection{Two-way crossed effects
+ANOVA}\label{two-way-crossed-effects-anova}
+
+Here we assess the feed and breed effects and their interaction effect
+on yield, i.e., the following model:
+\[yield_{abn} = \mu + feed_a + breed_b + (feed:breed)_{ab} + \epsilon_{abn}\]
+where \(a\) is the feed level and \(n\) is the observation within the
+feed level.
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+mod <- lm(yield ~ feed*breed, data = dat)
+print(anova(mod))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+Analysis of Variance Table
+
+Response: yield
+           Df   Sum Sq Mean Sq F value Pr(>F)
+feed        1   957882  957882  2.9904 0.0911 .
+breed       2   284231  142116  0.4437 0.6447
+feed:breed  2   443052  221526  0.6916 0.5064
+Residuals  42 13453447  320320
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Verbatim}
+
+If the interaction effect is not significant, we can simplify the model
+to: \[yield_{abn} = \mu + feed_a + breed_b + \epsilon_{abn}\]
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+mod <- lm(yield ~ feed+breed, data = dat)
+print(anova(mod))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+Analysis of Variance Table
+
+Response: yield
+          Df   Sum Sq Mean Sq F value  Pr(>F)
+feed       1   957882  957882  3.0329 0.08858 .
+breed      2   284231  142116  0.4500 0.64055
+Residuals 44 13896499  315830
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Verbatim}
+
+\subsubsubsection{Types of sums of
+squares}\label{types-of-sums-of-squares}
+
+The classical way of defining sums of squares are Type I, Type II, and
+Type III, as described in the documentation of the Anova() function in
+the car package.
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+# Type I - Sequential testing, including one and one effect
+print(anova(mod))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+Analysis of Variance Table
+
+Response: yield
+          Df   Sum Sq Mean Sq F value  Pr(>F)
+feed       1   957882  957882  3.0329 0.08858 .
+breed      2   284231  142116  0.4500 0.64055
+Residuals 44 13896499  315830
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Verbatim}
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+
+# Type II - Testing each term after all others,
+# except ignoring the term's higher-order relatives
+print(Anova(mod, type="II"))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+Anova Table (Type II tests)
+
+Response: yield
+            Sum Sq Df F value  Pr(>F)
+feed        957882  1  3.0329 0.08858 .
+breed       284231  2  0.4500 0.64055
+Residuals 13896499 44
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Verbatim}
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+
+# Type III - Testing each term after all others,
+# including the term's higher-order relatives
+print(Anova(mod, type="III"))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+Anova Table (Type III tests)
+
+Response: yield
+                Sum Sq Df   F value  Pr(>F)
+(Intercept) 1938092247  1 6136.5139 < 2e-16 ***
+feed            957882  1    3.0329 0.08858 .
+breed           284231  2    0.4500 0.64055
+Residuals     13896499 44
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Verbatim}
+
+For the two-way ANOVA model, the Type I and Type II sums of squares are
+the same, while Type III differs. With balanced data, this only happens
+when the contrast coding is of the treatment/reference type.
+
+\subsubsubsection{Contrast codings}\label{contrast-codings}
+
+The contrast coding can be specified for each factor in the model. The
+default is treatment coding, but other codings can be specified using
+the \texttt{contrasts} Since we are running lm() through the mixlm
+package, we can use the \texttt{contrasts} argument to specify the
+coding for all effects simultaneously.
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+# Sum coding, i.e., the sum of all levels is zero and all effects
+# are orthogonal in the balanced case.
+mod <- lm(yield ~ feed*breed, data = dat, contrasts="contr.sum")
+print(Anova(mod, type="III"))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+Anova Table (Type III tests)
+
+Response: yield
+                Sum Sq Df   F value Pr(>F)
+(Intercept) 1938092247  1 6050.4845 <2e-16 ***
+feed            957882  1    2.9904 0.0911 .
+breed           284231  2    0.4437 0.6447
+feed:breed      443052  2    0.6916 0.5064
+Residuals     13453447 42
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Verbatim}
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+
+# Weighted coding, i.e., the sum of all levels is zero and the effects
+# are weighted by the number of levels, effect-wise.
+mod <- lm(yield ~ feed*breed, data = dat, contrasts="contr.weighted")
+print(Anova(mod, type="III"))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+Anova Table (Type III tests)
+
+Response: yield
+                Sum Sq Df   F value Pr(>F)
+(Intercept) 1938092247  1 6050.4845 <2e-16 ***
+feed            957882  1    2.9904 0.0911 .
+breed           284231  2    0.4437 0.6447
+feed:breed      443052  2    0.6916 0.5064
+Residuals     13453447 42
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Verbatim}
+
+Instead of specifying the contrasts in a specific model, it is also
+possible to set the contrasts globally for the session. This means that
+all subsequent models, unless specified otherwise, will use the
+specified contrasts.
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+options(contrasts = c("contr.sum", "contr.poly"))
+\end{lstlisting}
+
+\subsubsubsection{Covariates in ANOVA}\label{covariates-in-anova}
+
+Adding covariates to an ANOVA model is straightforward. Here we add the
+age of the cow as a covariate to the two-way ANOVA model. The model
+becomes:
+\[yield_{abn} = \mu + feed_a + breed_b + (feed:breed)_{ab} + age\cdot x_{abn} + \epsilon_{abn},\]
+where \(x_{abn}\) is the age of the cow and \(age\) is its linear
+coefficient.
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+mod <- lm(yield ~ feed*breed + age, data = dat)
+print(Anova(mod, type="II"))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+Anova Table (Type II tests)
+
+Response: yield
+            Sum Sq Df F value    Pr(>F)
+feed        938176  1  4.3325   0.04368 *
+breed       368528  2  0.8509   0.43442
+age        4575110  1 21.1278 4.064e-05 ***
+feed:breed   73643  2  0.1700   0.84422
+Residuals  8878337 41
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Verbatim}
+
+\subsubsubsection{Fixed effect nested
+ANOVA}\label{fixed-effect-nested-anova}
+
+In the case of nested factors, we can specify this in the model. In the
+current model we assume that bulls are fixed effects that we are
+interested in and that daughters are nested under bulls. In this case
+the daughters do not have any special attributes that would interefere
+with the estimation of the bull effect, so we do not have to assume that
+they are random effects. The model becomes:
+\[yield_{abn} = \mu + bull_a + daugter_{b(a)} + \epsilon_{abn},\]
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+mod <- lm(yield ~ bull + daughter%in%bull, data = dat)
+print(Anova(mod, type="II"))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+Anova Table (Type II tests)
+
+Response: yield
+               Sum Sq Df F value    Pr(>F)
+bull          6293005  3  8.9924 0.0001822 ***
+bull:daughter 1380934 12  0.4933 0.9034247
+Residuals     7464672 32
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Verbatim}
+
+\subsubsection{Linear mixed models}\label{linear-mixed-models}
+
+Adding random effects to a model can be done either using least squares
+modelling through the mixlm package or using ML/REML estimation through
+the lme4 package (or similar).
+
+\subsubsubsection{Classical - mixlm}\label{classical---mixlm}
+
+Using the mixlm package, we specify the random effects using the
+\texttt{r()} function. If we assume that the bull is a random selection
+from the population of bulls, we can specify this as a random effect
+when focusing on feed. The model looks like a fixed effect model, but
+the error structure is different:
+\[yield_{abn} = \mu + feed_a + breed_b + (feed:breed)_{ab} + \epsilon_{abn}\]
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+mod <- lm(yield ~ feed*r(bull), data = dat)
+print(Anova(mod, type="II"))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+Analysis of variance (unrestricted model)
+Response: yield
+             Mean Sq     Sum Sq Df F value Pr(>F)
+feed       957881.78  957881.78  1    3.75 0.1481
+bull      2097668.39 6293005.18  3    8.22 0.0587
+feed:bull  255297.76  765893.29  3    1.43 0.2472
+Residuals  178045.79 7121831.56 40       -      -
+
+            Err.term(s) Err.df VC(SS)
+1 feed              (3)      3  fixed
+2 bull              (3)      3 153531
+3 feed:bull         (4)     40  12875
+4 Residuals           -      - 178046
+(VC = variance component)
+
+          Expected mean squares
+feed      (4) + 6 (3) + 24 Q[1]
+bull      (4) + 6 (3) + 12 (2)
+feed:bull (4) + 6 (3)
+Residuals (4)
+\end{Verbatim}
+
+In addition to the ordinary ANOVA table, an overview of variance
+components, and expected mean squares are printed.
+
+\subsubsubsection{Restrictions}\label{restrictions}
+
+The mixlm package has unrestricted models as default, but it is possible
+to turn on restriction.
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+mod <- lm(yield ~ feed*r(bull), data = dat, unrestricted = FALSE)
+print(Anova(mod, type="II"))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+Analysis of variance (restricted model)
+Response: yield
+             Mean Sq     Sum Sq Df F value Pr(>F)
+feed       957881.78  957881.78  1    3.75 0.1481
+bull      2097668.39 6293005.18  3   11.78 0.0000
+feed:bull  255297.76  765893.29  3    1.43 0.2472
+Residuals  178045.79 7121831.56 40       -      -
+
+            Err.term(s) Err.df VC(SS)
+1 feed              (3)      3  fixed
+2 bull              (4)     40 159969
+3 feed:bull         (4)     40  12875
+4 Residuals           -      - 178046
+(VC = variance component)
+
+          Expected mean squares
+feed      (4) + 6 (3) + 24 Q[1]
+bull      (4) + 12 (2)
+feed:bull (4) + 6 (3)
+Residuals (4)
+\end{Verbatim}
+
+This effects which tests are performed and how the variance components
+are estimated.
+
+\subsubsubsection{Repeated Measures}\label{repeated-measures}
+
+A repeated measures model can be a mixed model with a random effect for
+the repeated measures, where the repeated measures are nested under the
+subjects. Longitudinal data is a common example of repeated measures
+data, where the replicates are repetitions over time within subject. If
+we subset the simulated data, we can add a longitudinal effect to the
+model, in this case a random variation over three time-points.
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+long <- dat[c(1:4,9:12), c("feed", "daughter", "yield")]
+long <- rbind(long, long, long)
+long$time  <- factor(rep(1:3, each=8))
+long$yield <- long$yield + rnorm(24, sd = 100)
+plot(yield~daughter, data=long)
+\end{lstlisting}
+
+\includegraphics{Figures/FigCh8_repeated_measures}
+
+Now we have a feed effect, individuals (daughters), and a time effect
+repeated inside daughters, with the model:
+\[yield_{ait} = \mu + daughter_i + feed_a + time_t + (feed:time)_{at} + \epsilon_{ait}\]
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+mod <- lm(yield ~ r(daughter) + feed*r(time), data = long, unrestricted=FALSE)
+print(Anova(mod, type="II"))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+Analysis of variance (restricted model)
+Response: yield
+            Mean Sq     Sum Sq Df F value Pr(>F)
+daughter  860788.48 2582365.45  3   10.57 0.0005
+feed      294289.41  294289.41  1  102.53 0.0096
+time       26950.85   53901.69  2    0.33 0.7234
+feed:time   2870.28    5740.56  2    0.04 0.9655
+Residuals  81462.41 1221936.15 15       -      -
+
+            Err.term(s) Err.df VC(SS)
+1 daughter          (5)     15 129888
+2 feed              (4)      2  fixed
+3 time              (5)     15  -6814
+4 feed:time         (5)     15 -19648
+5 Residuals           -      -  81462
+(VC = variance component)
+
+          Expected mean squares
+daughter  (5) + 6 (1)
+feed      (5) + 4 (4) + 12 Q[2]
+time      (5) + 8 (3)
+feed:time (5) + 4 (4)
+Residuals (5)
+\end{Verbatim}
+
+\subsubsubsection{REML}\label{reml}
+
+REML estiamation can be done directly with the lme4 package, but we can
+also do this through the mixlm package, leveraging the r() function.
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+mod <- lm(yield ~ feed*r(bull), data = dat, REML = TRUE)
+print(Anova(mod, type="III"))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+Analysis of Deviance Table (Type III Wald chisquare tests)
+
+Response: yield
+              Chisq Df Pr(>Chisq)
+(Intercept) 923.918  1    < 2e-16 ***
+feed          3.752  1    0.05274 .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Verbatim}
+
+To see how mixlm transforms the model to lme4, we can print the model.
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+print(mod)
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+Linear mixed model fit by REML ['lmerMod']
+Formula: yield ~ feed + (1 | bull) + (1 | feed:bull)
+   Data: dat
+REML criterion at convergence: 702.8962
+Random effects:
+ Groups    Name        Std.Dev.
+ feed:bull (Intercept) 113.5
+ bull      (Intercept) 391.8
+ Residual              422.0
+Number of obs: 48, groups:  feed:bull, 8; bull, 4
+Fixed Effects:
+(Intercept)        feed1
+     6354.3       -141.3
+\end{Verbatim}
+
+We observe that (1 \textbar{} bull) and (1 \textbar{} \url{feed:bull})
+are added to the model, which means that random intercepts are added for
+both bull and the interaction.
+
+\subsubsection{Multivariate ANOVA
+(MANOVA)}\label{multivariate-anova-manova}
+
+Basic multivariate ANOVA can be done using the lm() function, if we
+create a matrix of responses. In this case we add a mastitis effect to
+the model.
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+dat$mastitis <- as.numeric(dat$breed) + as.numeric(dat$feed) + rnorm(48, sd = 1)
+\end{lstlisting}
+
+The model becomes:
+\[[yield_{abn} | mastitis_{abn}] = \mu + feed_a + breed_b + (feed:breed)_{ab} + \epsilon_{abn},\]
+where each of the model terms now are vectors matching the number of
+responses.
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+mod <- lm(cbind(yield,mastitis) ~ feed*breed, data = dat)
+print(Anova(mod, type="II"))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+
+Type II MANOVA Tests: Pillai test statistic
+           Df test stat approx F num Df den Df    Pr(>F)
+feed        1   0.35268  11.1691      2     41 0.0001343 ***
+breed       2   0.52220   7.4207      4     84 3.618e-05 ***
+feed:breed  2   0.04003   0.4289      4     84 0.7874006
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Verbatim}
+
+The test statistics are joint for all responses, here in the form of the
+defaul Pillai's test statistics. Other statistics can be produced as
+follows:
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+print(Anova(mod, type="II", test="Wilks"))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+
+Type II MANOVA Tests: Wilks test statistic
+           Df test stat approx F num Df den Df    Pr(>F)
+feed        1   0.64732  11.1691      2     41 0.0001343 ***
+breed       2   0.47861   9.1321      4     82 3.752e-06 ***
+feed:breed  2   0.96019   0.4206      4     82 0.7933107
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+print(Anova(mod, type="II", test="Hotelling-Lawley"))
+
+Type II MANOVA Tests: Hotelling-Lawley test statistic
+           Df test stat approx F num Df den Df    Pr(>F)
+feed        1   0.54483  11.1691      2     41 0.0001343 ***
+breed       2   1.08769  10.8769      4     80 4.311e-07 ***
+feed:breed  2   0.04123   0.4123      4     80 0.7992719
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Verbatim}
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+print(Anova(mod, type="II", test="Roy"))
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+
+Type II MANOVA Tests: Roy test statistic
+           Df test stat approx F num Df den Df    Pr(>F)
+feed        1   0.54483  11.1691      2     41 0.0001343 ***
+breed       2   1.08612  22.8086      2     42 1.967e-07 ***
+feed:breed  2   0.03470   0.7288      2     42 0.4885053
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{Verbatim}
+
+The summary function can be used to get more information about the
+underlying regression model, here revealing the regressions are
+performed separately for each response.
+
+\begin{lstlisting}[language=R, columns=fullflexible, basicstyle=\linespread{0.85}\small\ttfamily, stringstyle=\color{DarkGreen}, keywordstyle=\color{blue}, commentstyle=\color{DarkGreen},]
+summary(mod)
+\end{lstlisting}
+\begin{Verbatim}[fontsize=\small]
+Response yield :
+
+Call:
+lm(formula = yield ~ feed * breed, data = dat)
+
+Residuals:
+     Min       1Q   Median       3Q      Max
+-1148.50  -489.54   -25.54   349.48  1142.16
+
+Coefficients:
+                           Estimate Std. Error t value Pr(>|t|)
+(Intercept)                 6354.28      81.69  77.785   <2e-16 ***
+feed(high)                  -141.27      81.69  -1.729   0.0911 .
+breed(Angus)                 -71.72     115.53  -0.621   0.5381
+breed(Hereford)              -35.02     115.53  -0.303   0.7633
+feed(high):breed(Angus)      -46.25     115.53  -0.400   0.6909
+feed(high):breed(Hereford)   133.76     115.53   1.158   0.2535
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 566 on 42 degrees of freedom
+Multiple R-squared:  0.1113, Adjusted R-squared:  0.00552
+F-statistic: 1.052 on 5 and 42 DF,  p-value: 0.4003
+
+
+Response mastitis :
+
+Call:
+lm(formula = mastitis ~ feed * breed, data = dat)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-2.4490 -0.6960 -0.1311  0.6907  2.1462
+
+Coefficients:
+                             Estimate Std. Error t value Pr(>|t|)
+(Intercept)                 3.4811963  0.1603909  21.704  < 2e-16 ***
+feed(high)                 -0.7450433  0.1603909  -4.645 3.34e-05 ***
+breed(Angus)               -1.2830903  0.2268270  -5.657 1.24e-06 ***
+breed(Hereford)            -0.0833432  0.2268270  -0.367    0.715
+feed(high):breed(Angus)    -0.1066673  0.2268270  -0.470    0.641
+feed(high):breed(Hereford)  0.0008313  0.2268270   0.004    0.997
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.111 on 42 degrees of freedom
+Multiple R-squared:  0.6164, Adjusted R-squared:  0.5707
+F-statistic:  13.5 on 5 and 42 DF,  p-value: 7.279e-08
+\end{Verbatim}

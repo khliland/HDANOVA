@@ -3,12 +3,13 @@
 #' @importFrom lme4 lmer glmer
 #' @importFrom progress progress_bar
 #' @export
-asca_fit <- function(formula, data, subset, weights, na.action, family, permute,
+asca_fit <- function(formula, data, subset, weights, na.action, family, permute=FALSE,
+                     unrestricted = FALSE,
                      add_error = FALSE, # TRUE => APCA/LiMM-PCA
-                     aug_error = "residual", # "denominator" => Mixed, alpha-value => LiMM-PCA
+                     aug_error = "denominator", # "residual" => Mixed, alpha-value => LiMM-PCA
                      pca.in = FALSE, # n>1 => LiMM-PCA and PC-ANOVA
                      coding = c("sum","weighted","reference","treatment"),
-                     SStype = "III", REML = NULL){
+                     SStype = "II", REML = NULL){
 
   # Simplify SStype
   if(is.character(SStype))
@@ -18,7 +19,8 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute,
   Yorig <- Y <- data[[formula[[2]]]]
   N <- nrow(Y)
   p <- ncol(Y)
-  Y <- Y - rep(colMeans(Y), each=N) # Centre Y
+#  if(center && (!missing(family) && family!="binomial"))
+#    Y <- Y - rep(colMeans(Y), each=N) # Centre Y by default, but not if family is binomial
   ssqY <- sum(Y^2)
   if(pca.in != 0){ # Pre-decomposition, e.g., LiMM-PCA, PC-ANOVA
     if(is.numeric(pca.in) && pca.in == 1)
@@ -34,13 +36,11 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute,
     # PCA scores
     pca <- .pca(Y, ncomp = pca.in)
     Y <- pca$scores
-    #    Yudv <- svd(Y)
-    #    Y <- Yudv$u[,1:pca.in,drop=FALSE] * rep(Yudv$d[1:pca.in], each=N)
   }
   residuals <- Y
 
   mf <- match.call(expand.dots = FALSE)
-  m  <- match(c("formula", "data", "weights", "subset", "na.action", "family"), names(mf), 0)
+  m  <- match(c("formula", "data", "weights", "subset", "na.action", "family", "unrestricted"), names(mf), 0)
   mf <- mf[c(1, m)]                # Retain only the named arguments
   lme4 <- FALSE
 
@@ -88,19 +88,46 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute,
     }
   }
 
+  # Check for combined factors and remove symbols from formula.
+  combined <- FALSE
+  if(grepl("comb(", as.character(formula)[3], fixed=TRUE)){
+    combined <- list()
+    form_no_r <- mixlm::rparse(formula)
+    tl <- attr(terms(form_no_r),"term.labels")
+    j <- 1
+    for(i in 1:length(tl)){
+      if(grepl("comb(", tl[i], fixed=TRUE)){
+        combined[[j]] <- attr(terms(HDANOVA:::cparse(formula(paste0(".~", tl[i])))), "term.labels")
+        j <- j+1
+      }
+    }
+    formula <- HDANOVA:::cparse(formula)
+  }
+
   # Pre-run of model to extract useful information and names
   mfPre <- mf
   mfPre[[1]] <- as.name(fit.func)
   mfPre[[3]] <- as.name("dat")
   dat <- data
   dat[[formula[[2]]]] <- Y[,1,drop=FALSE]
-  #opt <- options(contrasts = c(unordered="contr.sum", ordered="contr.poly"))
   mod <- eval(mfPre, envir = environment())
   effs   <- attr(terms(mod), "term.labels")
   M      <- model.matrix(mod)
   assign <- attr(M, "assign")
-  #options(opt)
   modFra <- model.frame(mod)
+
+  # Maximum number of dimensions for each effect
+  maxDir <- numeric(max(assign))
+  for(i in 1:max(assign))
+    maxDir[i] <- min(sum(assign==i), p)
+
+  # Alphabetically sorted interactions
+  effsAB <- effs
+  for(i in 1:length(effs)){
+    if(grepl(":", effs[i], fixed=TRUE)){
+      effsAB[i] <- paste(sort(strsplit(effs[i],":")[[1]]), collapse=":")
+    }
+  }
 
   # Exclude numeric effects and their interactions
   nums <- names(unlist(lapply(modFra, class)))[which(unlist(lapply(modFra, class)) %in% c("numeric","integer"))]
@@ -114,6 +141,8 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute,
     stop('No factors in model')
   approvedMain <- which(colSums(attr(terms(mod), "factors"))[approved]==1)
   names(approved) <- effs[approved]
+  approvedAB <- approved
+  names(approvedAB) <- effsAB[approvedAB]
 
   # Apply coding to all included factors
   if(length(coding)>1)
@@ -121,7 +150,7 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute,
   if(!coding %in% c("sum","weighted","reference","treatment"))
     stop("Invalid coding")
   for(i in 1:length(approvedMain)){
-    a <- approvedMain[i]
+    a <- which(effs==names(approvedMain[i]))
     dat_a <- dat[[effs[a]]]
     if(!missing(subset))
       dat_a <- subset(dat_a, subset)
@@ -145,12 +174,11 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute,
   # Main ANOVA loop over all responses
   mf[[1]] <- as.name(fit.func)
   mfPre[[3]] <- as.name("dat")
-  sel <- c(names(approved), "Residuals")
+  sel <- c(effs, "Residuals")
+  #sel <- c(names(approved), "Residuals")
   ssq <- numeric(length(sel))
   names(ssq) <- sel
-  mod <- eval(mfPre, envir = environment())#, envir = parent.frame())
-
-  #mod <- eval(mf, envir = environment())#, envir = parent.frame())
+  mod <- eval(mfPre, envir = environment())
   anovas <- models <- list()
   if(mixed)
     formulaStr <- as.character(rw$rformula)
@@ -159,9 +187,7 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute,
   for(i in 1:ncol(Y)){
     if(mixed){
       dat[[formula[[2]]]] <- Y[,i,drop=FALSE]
-#      modi <- update(mod)
-      modi <- eval(mod, envir = environment())
-      #      modi <- update(mod, formula(paste0("`",formulaStr[2], "[,",i,"]`", formulaStr[1], formulaStr[3])))
+      modi <- eval(mfPre, envir = environment())
       if(lme4){
         if(i == 1)
           coefs <- matrix(0.0, length(lme4::fixef(modi)), ncol(Y))
@@ -170,25 +196,31 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute,
         if(i == 1)
           coefs <- matrix(0.0, length(coefficients(modi)), ncol(Y))
         coefs[,i] <- coefficients(modi)
-        #  coefs <- matrix(0.0, length(fixef(modi)), ncol(Y))
-        #coefs[,i] <- fixef(modi) # Gjelder kun ved lmer/glmer
       }
     } else {
       dat[[formula[[2]]]] <- Y[,i,drop=FALSE]
-#      modi <- update(mod)
-      modi <- eval(mod, envir = environment())
-      #      modi <- update(mod, formula(paste0(formulaStr[2], "[,",i,"]", formulaStr[1], formulaStr[3])))
-      if(i == 1)
+      modi <- eval(mfPre, envir = environment())
+      if(i == 1){
         coefs <- matrix(0.0, length(coefficients(modi)), ncol(Y))
+        rownames(coefs) <- names(coefficients(modi))
+      }
       coefs[,i] <- coefficients(modi)
     }
 
     if(SStype == 1)
       ano <- anova(modi)
-    if(SStype == 2)
-      ano <- Anova(modi, type="II")
-    if(SStype == 3)
-      ano <- Anova(modi, type="III")
+    if(SStype == 2){
+      if(missing(family))
+        ano <- Anova(modi, type="II")
+      else
+        ano <- Anova(modi, type="II", test.statistic = "F")
+    }
+    if(SStype == 3){
+      if(missing(family))
+        ano <- Anova(modi, type="III")
+      else
+        ano <- Anova(modi, type="III", test.statistic = "F")
+    }
     if(mixed)
       ssq <- ssq + ano$anova[sel,"Sum Sq"]
     else
@@ -196,6 +228,8 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute,
     models[[i]] <- modi
     anovas[[i]] <- ano
   }
+  ssq_residual <- ssq[length(ssq)]
+  names(models) <- names(anovas) <- colnames(coefs) <- colnames(Y)
 
   M      <- model.matrix(mod)
   effs   <- attr(terms(mod), "term.labels")
@@ -203,44 +237,61 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute,
   modFra <- HDANOVA::extended.model.frame(model.frame(mod), data)
 
   # Effect loop
-  LS <- effects <- list() #  <- ssq
+  LS <- effects <- list()
   for(i in 1:length(approved)){
     a <- approved[i]
     LS[[effs[a]]] <- M[, assign==a, drop=FALSE] %*% coefs[assign==a,]
+    colnames(LS[[effs[a]]]) <- colnames(Y)
     effects[[effs[a]]] <- modFra[[effs[a]]]
   }
   # Residuals
   residuals <- Y - M%*%coefs
 
   # Augment error term to LS for permutation testing, LiMMPCA and similar
-  LS_aug <- LS
+  error <- LS_aug <- LS
   if(aug_error == "residuals" || !mixed){ # Fixed effect models and forced "residuals"
+    # Input to asca_fit: aug_error = "residual", # "denominator" => Mixed, alpha-value => LiMM-PCA
     # Add residuals to all LSs (augmented for LiMM-PCA and similar)
     for(i in 1:length(approved)){
       a <- approved[i]
       LS_aug[[effs[a]]] <- LS[[effs[a]]] + residuals
+      error[[effs[a]]] <- LS[[effs[a]]] + residuals
     }
   } else {
-    # Augment errors according to Mixed Model ANOVA
+    # Augment errors according to Mixed Model ANOVA and/or LiMM-PCA
+    ets <- ano$err.terms              # <--------------------- Not ready for lme4 due to mixlm handling of lme4
+    names(ets) <- rownames(ano$anova)
+    dfDenom <- ano$denom.df
+    dfNum   <- ano$anova[["Df"]]
+    names(dfNum) <- rownames(ano$anova)
     for(i in 1:length(approved)){
       a <- approved[i]
       C <- 1
-      browser()
-      if(is.numeric(add_error) || add_error){
-        # LiMM-PCA -> sqrt(dfNum / dfDenom * F(dfNum, dfDenom, 1-alpha))
-        #             sqrt(dfNum / dfDenom * pf(1-alpha, dfNum, dfDenom))
-        ets <- ano$err.terms
-        names(ets) <- rownames(ano$anova)
-        dfDenom <- ano$denom.df
-        dfNum <- ano$anova[["Df"]]
-        names(dfNum) <- rownames(ano$anova)
+      # LiMM-PCA -> sqrt(dfNum / dfDenom * F(dfNum, dfDenom, 1-alpha))
+      #             sqrt(dfNum / dfDenom * pf(1-alpha, dfNum, dfDenom))
 
-        # Effective Dimensions som andel forklart varians forklart av
-        # korrekt del av LS-matriser
+      # Effective Dimensions som andel forklart varians forklart av
+      # korrekt del av LS-matriser
 
+      if(is.numeric(aug_error)){
         alpha <- ifelse(is.numeric(add_error), add_error, 0.05)
         browser()
         C <- sqrt()
+      } else {
+        if(as.numeric(names(ets[effs[[a]]][[1]])) == length(effs)+1){
+          # Error term is residual
+          LS_aug[[effs[a]]] <- LS[[effs[a]]] + residuals
+          error[[effs[a]]] <- LS[[effs[a]]] + residuals
+          attr(error[[effs[a]]], 'term') <- "residuals"
+        } else {
+          # Other error term
+          lsa <- LS[as.numeric(names(ets[effs[[a]]][[1]]))]     # TODO: Check what happens here when adding a numeric effect
+          # Loop over and sum up (in case of compound errors)
+          for(j in 1:length(lsa)){
+            error[[effs[a]]] <- error[[effs[a]]] + lsa[[j]]
+          }
+          LS_aug[[effs[a]]] <- error[[effs[a]]]
+        }
       }
     }
   }
@@ -253,65 +304,122 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute,
     }
   }
 
+  # Combine effects if the comb() function is used
+  eff_combined <- rep(FALSE, length(effs))
+  names(eff_combined) <- effs
+  remove <- numeric()
+  approvedComb <- as.list(approved)
+  if(is.list(combined)){
+    for(i in 1:length(combined)){
+      approved <- c(approved, length(effs)+1)
+      approvedAB <- c(approvedAB, length(effs)+1)
+      approvedComb[[length(approvedComb)+1]] <- numeric()
+      combName <- paste(combined[[i]], collapse="+")
+      names(approved)[length(approved)] <- names(approvedAB)[length(approvedAB)] <- combName
+      LS[[approved[length(approved)]]] <- 0*LS[[effs[[approved[1]]]]]
+      names(LS)[approved[length(approved)]] <- combName
+      effs[approved[length(approved)]] <- combName
+      eff_combined[approved[length(approved)]] <- TRUE
+      names(eff_combined)[approved[length(approved)]] <- combName
+      error[[approved[length(approved)]]] <- 0*residuals
+      names(error)[approved[length(approved)]] <- combName
+      ssq[approved[length(approved)]] <- 0
+      names(ssq)[approved[length(approved)]] <- combName
+      maxDir[approved[length(approved)]] <- 0
+      for(dis in combined[[i]]){
+        if(grepl(":", dis, fixed=TRUE)) # Reorder interactions to alphabetical order
+          dis <- paste(sort(strsplit(dis,":")[[1]]), collapse=":")
+        if(any(!(dis %in% names(approvedAB))))
+          stop("Cannot combine a continuous effect with a categorical factor.")
+        remove <- c(remove, which(effsAB==dis))
+        # Remove from approved the entry named dis
+        LS[[approved[length(approved)]]] <- LS[[approved[length(approved)]]] + LS[[effs[approvedAB[names(approvedAB)==dis]]]]
+        ssq[approved[length(approved)]] <- ssq[approved[length(approved)]] + ssq[effs[approvedAB[names(approvedAB)==dis]]]
+        maxDir[approved[length(approved)]] <- max(maxDir[approved[length(approved)]], maxDir[approvedAB[names(approvedAB)==dis]])
+        # Accumulate combined effect numbers
+        approvedComb[[length(approvedComb)]] <- c(approvedComb[[length(approvedComb)]], approvedAB[names(approvedAB)==dis])
+        approved <- approved[names(approvedAB)!=dis]
+        approvedAB <- approvedAB[names(approvedAB)!=dis]
+      }
+      # Assume residual error for combined effect?
+      error[[approved[length(approved)]]] <- LS[[approved[length(approved)]]] + residuals
+#      error[[approved[length(approved)]]] <- error[[approved[length(approved)]]] + error[[effs[approvedAB[names(approvedAB)==dis]]]]
+      LS_aug[[approved[length(approved)]]] <- error[[approved[length(approved)]]]
+      names(LS_aug)[approved[length(approved)]] <- combName
+    }
+  }
+  if(names(ssq)[length(ssq)] == "Residuals")
+    ssq <- c(ssq[setdiff(1:(length(ssq)-1), remove)],ssq_residual)
+  else
+    ssq <- c(ssq[setdiff(1:(length(ssq)), remove)],ssq_residual)
+  eff_combined <- eff_combined[approved]
+
   # Permutation testing
-  if(!missing(permute)){
+  if(!(is.logical(permute) && !permute)){
     # Default to 1000 permutations
     if(is.logical(permute)){
       permute <- 1000
       cat("Defaulting to 1000 permutations\n")
     }
-    ssqa <- pvals <- numeric(length(effs))
-    ssqaperm <- lapply(1:length(effs),function(i)"NA")
-    names(ssqa) <- names(ssqaperm) <- names(pvals) <- effs
+    ssqa <- pvals <- numeric(length(approved))
+    ssqaperm <- lapply(1:length(approved),function(i)"NA")
+    names(ssqa) <- names(ssqaperm) <- names(pvals) <- effs[approved]
     for(i in 1:length(approved)){
       a <- approved[i]
       perms <- numeric(permute)
       # Subset of design matrix for effect a
-      D <- M[, assign==a, drop=FALSE]
+      D <- M[, assign%in%approvedComb[[names(a)]], drop=FALSE]
       # Base ssq
       ssqa[effs[a]] <- norm(D %*% pracma::pinv(D) %*% LS_aug[[effs[a]]], "F")^2
       pb <- progress_bar$new(total = permute, format = paste0("  Permuting ", effs[a], " (", i,"/",length(approved),") [:bar] :percent (:eta)"))
+      # Permuted ssqs
       for(perm in 1:permute){
         perms[perm] <- norm(D %*% pracma::pinv(D) %*% LS_aug[[effs[a]]][sample(N),], "F")^2
         pb$tick()
       }
       ssqaperm[[effs[a]]] <- perms
-      pvals[effs[a]] <- sum(perms > ssqa[effs[a]])/permute
+      pvals[effs[a]] <- sum(perms > ssqa[effs[a]])/(permute)
     }
   }
 
   # SCAs
   scores <- loadings <- projected <- singulars <- list()
   for(i in approved){
-    maxDir <- min(sum(assign==i), p)
+    #maxDir <- min(sum(assign==i), p)
+    maxDiri <- maxDir[i]
     if(pca.in != 0)
-      maxDir <- min(maxDir, pca.in)
+      maxDiri <- min(maxDiri, pca.in)
     udv <- svd(LS[[effs[i]]])
-    expli <- (udv$d^2/sum(udv$d^2)*100)[1:maxDir]
-    scores[[effs[i]]]    <- (udv$u * rep(udv$d, each=N))[,1:maxDir, drop=FALSE]
-    dimnames(scores[[effs[i]]]) <- list(rownames(LS[[effs[i]]]), paste("Comp", 1:maxDir, sep=" "))
-    loadings[[effs[i]]]  <- udv$v[,1:maxDir, drop=FALSE]
-    dimnames(loadings[[effs[i]]]) <- list(colnames(LS[[effs[i]]]), paste("Comp", 1:maxDir, sep=" "))
-    projected[[effs[i]]] <- residuals %*% loadings[[effs[i]]]
-    dimnames(projected[[effs[i]]]) <- list(rownames(LS[[effs[i]]]), paste("Comp", 1:maxDir, sep=" "))
-    singulars[[effs[i]]] <- udv$d[1:maxDir]
-    names(singulars[[effs[i]]]) <- paste("Comp", 1:maxDir, sep=" ")
+    expli <- (udv$d^2/sum(udv$d^2)*100)[1:maxDiri]
+    scores[[effs[i]]]    <- (udv$u * rep(udv$d, each=N))[,1:maxDiri, drop=FALSE]
+    dimnames(scores[[effs[i]]]) <- list(rownames(LS[[effs[i]]]), paste("Comp", 1:maxDiri, sep=" "))
+    loadings[[effs[i]]]  <- udv$v[,1:maxDiri, drop=FALSE]
+    dimnames(loadings[[effs[i]]]) <- list(colnames(LS[[effs[i]]]), paste("Comp", 1:maxDiri, sep=" "))
+    # Projections of residuals or corresponding error term
+    projected[[effs[i]]] <- error[[effs[i]]] %*% loadings[[effs[i]]]
+    # projected[[effs[i]]] <- residuals %*% loadings[[effs[i]]]
+
+    dimnames(projected[[effs[i]]]) <- list(rownames(LS[[effs[i]]]), paste("Comp", 1:maxDiri, sep=" "))
+    singulars[[effs[i]]] <- udv$d[1:maxDiri]
+    names(singulars[[effs[i]]]) <- paste("Comp", 1:maxDiri, sep=" ")
     attr(scores[[effs[i]]], 'explvar') <- attr(loadings[[effs[i]]], 'explvar') <- attr(projected[[effs[i]]], 'explvar') <- expli
     if(pca.in!=0){ # Transform back if PCA on Y has been performed
       loadings[[effs[i]]] <- pca$loadings[,1:pca.in,drop=FALSE] %*% loadings[[effs[i]]]
       #loadings[[effs[i]]] <- Yudv$v[,1:pca.in,drop=FALSE] %*% loadings[[effs[i]]]
-      dimnames(loadings[[effs[i]]]) <- list(colnames(LS[[effs[i]]]), paste("Comp", 1:maxDir, sep=" "))
+      dimnames(loadings[[effs[i]]]) <- list(colnames(Yorig), paste("Comp", 1:maxDiri, sep=" "))
     }
   }
   obj <- list(scores=scores, loadings=loadings, projected=projected, singulars=singulars,
               LS=LS, effects=effects, coefficients=coefs, Y=Yorig, X=M, residuals=residuals,
+              error=error, eff_combined=eff_combined, SStype=SStype, coding=coding, unrestricted=unrestricted,
               ssq=ssq, ssqY=ssqY, explvar=ssq/ssqY, models=models, anovas=anovas,
               call=match.call(), fit.type=fit.type)
+  obj$add_error <- add_error
   if(pca.in!=0){
     obj$Ypca <- list(pca=pca, ncomp=pca.in)
   }
-  if(!missing(permute)){
-    obj$permute <- list(ssqa=ssqa, ssqaperm=ssqaperm, pvalues=pvals)
+  if(permute || is.numeric(permute)){
+    obj$permute <- list(ssqa=ssqa, ssqaperm=ssqaperm, pvalues=pvals, permutations=permute)
   }
   class(obj) <- c('asca', 'list')
   return(obj)
@@ -325,7 +433,7 @@ dummyvar <- function(x){
 
 SS <- function(x) sum(x^2)
 
-
+# Not used
 formula_comb <- function(formula, data, REML = NULL){
   formula <- formula(formula)
   terms <- terms(formula)

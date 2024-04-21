@@ -1,0 +1,283 @@
+---
+title: "B. Analysis of Variance"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{B. Analysis of Variance}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width=6, 
+  fig.height=4
+)
+# Legge denne i YAML på toppen for å skrive ut til tex
+#output: 
+#  pdf_document: 
+#    keep_tex: true
+# Original:
+#  rmarkdown::html_vignette:
+#    toc: true
+```
+
+```{r setup}
+# Start the mixlm R package
+library(mixlm, warn.conflicts = FALSE)
+```
+
+# Analysis of Variance (ANOVA)
+This vignette will focus on univariate ANOVA in various designs including
+fixed and mixed effects, and briefly introduce multivariate ANOVA. Models
+using random effects will be run through the mixlm package.
+
+## Simulated data
+We will start by simulating some data to use in the examples below. In this
+fictitious setup, milk yield is measured as a function of feed type (low/high protein content), cow breed, bull identity,
+daughter and age. The three first factors are crossed and balanced, 
+while daughter is nested under bull. 
+
+The yield is generated with a linear model with some noise.
+
+```{r}
+set.seed(123)
+dat <- data.frame(
+  feed  = factor(rep(rep(c("low","high"), each=6), 4)),
+  breed = factor(rep(c("NRF","Hereford","Angus"), 16)),
+  bull  = factor(rep(LETTERS[1:4], each = 12)),
+  daughter = factor(rep(letters[1:4], 12)),
+  age   = round(rnorm(48, mean = 36, sd = 5))
+)
+dat$yield <- 150*with(dat, 10 + 3 * as.numeric(feed) + as.numeric(breed) + 
+                        2 * as.numeric(bull) + 1 * as.numeric(sample(dat$daughter, 48)) + 
+                        0.5 * age + rnorm(48, sd = 2))
+head(dat)
+```
+
+## Fixed effect models
+The simplest form of ANOVA is the fixed effect model. This model assumes that
+the levels of the factor are fixed and that the only source of variation is
+the factor itself.
+
+### One-way ANOVA
+Here we assess only the feed effect on yield, i.e., the following model:
+$$yield_{an} = \mu + feed_a + \epsilon_{an}$$
+where $a$ is the feed level and $n$ is the observation within the feed level.
+
+```{r}
+mod <- lm(yield ~ feed, data = dat)
+print(anova(mod))
+```
+In the ANOVA table one can look at Pr(>F) to see if the feed factor has a
+significant effect on yield. The summary function can be used to get more
+information about the underlying regression model.
+
+```{r}
+summary(mod)
+```
+
+Basic model assessment can be done using the plot function.
+```{r, fig.width=6, fig.height=5}
+old.par <- par(mfrow=c(2,1), mar=c(4,4,2,0.5))
+plot(mod, which = 1:2, ask=FALSE)
+par(old.par)
+```
+
+### Two-way crossed effects ANOVA
+
+Here we assess the feed and breed effects and their interaction effect on yield, 
+i.e., the following model:
+$$yield_{abn} = \mu + feed_a + breed_b + (feed:breed)_{ab} + \epsilon_{abn}$$
+where $a$ is the feed level and $n$ is the observation within the feed level.
+
+```{r}
+mod <- lm(yield ~ feed*breed, data = dat)
+print(anova(mod))
+```
+
+If the interaction effect is not significant, we can simplify the model to:
+$$yield_{abn} = \mu + feed_a + breed_b + \epsilon_{abn}$$
+```{r}
+mod <- lm(yield ~ feed+breed, data = dat)
+print(anova(mod))
+```
+
+### Types of sums of squares
+The classical way of defining sums of squares are Type I, Type II, and Type III,
+as described in the documentation of the Anova() function in the car package.
+
+```{r}
+# Type I - Sequential testing, including one and one effect
+print(anova(mod))
+
+# Type II - Testing each term after all others, 
+# except ignoring the term's higher-order relatives
+print(Anova(mod, type="II"))
+
+# Type III - Testing each term after all others,
+# including the term's higher-order relatives
+print(Anova(mod, type="III"))
+```
+For the two-way ANOVA model, the Type I and Type II sums of squares are the same,
+while Type III differs. With balanced data, this only happens when the contrast
+coding is of the treatment/reference type.
+
+### Contrast codings
+The contrast coding can be specified for each factor in the model. The default
+is treatment coding, but other codings can be specified using the `contrasts`
+Since we are running lm() through the mixlm package, we can use the `contrasts`
+argument to specify the coding for all effects simultaneously.
+
+```{r}
+# Sum coding, i.e., the sum of all levels is zero and all effects
+# are orthogonal in the balanced case.
+mod <- lm(yield ~ feed*breed, data = dat, contrasts="contr.sum")
+print(Anova(mod, type="III"))
+
+# Weighted coding, i.e., the sum of all levels is zero and the effects
+# are weighted by the number of levels, effect-wise.
+mod <- lm(yield ~ feed*breed, data = dat, contrasts="contr.weighted")
+print(Anova(mod, type="III"))
+```
+
+Instead of specifying the contrasts in a specific model, it is also possible to
+set the contrasts globally for the session. This means that all subsequent models,
+unless specified otherwise, will use the specified contrasts.
+
+```{r}
+options(contrasts = c("contr.sum", "contr.poly"))
+```
+
+### Covariates in ANOVA
+Adding covariates to an ANOVA model is straightforward. Here we add the age
+of the cow as a covariate to the two-way ANOVA model. The model becomes:
+$$yield_{abn} = \mu + feed_a + breed_b + (feed:breed)_{ab} + age\cdot x_{abn} + \epsilon_{abn},$$
+where $x_{abn}$ is the age of the cow and $age$ is its linear coefficient.
+
+```{r}
+mod <- lm(yield ~ feed*breed + age, data = dat)
+print(Anova(mod, type="II"))
+```
+
+### Fixed effect nested ANOVA
+In the case of nested factors, we can specify this in the model. In the current
+model we assume that bulls are fixed effects that we are interested in and that
+daughters are nested under bulls. In this case the daughters do not have any
+special attributes that would interefere with the estimation of the bull effect,
+so we do not have to assume that they are random effects. The model becomes:
+$$yield_{abn} = \mu + bull_a + daugter_{b(a)} + \epsilon_{abn},$$
+
+```{r}
+mod <- lm(yield ~ bull + daughter%in%bull, data = dat)
+print(Anova(mod, type="II"))
+```
+
+## Linear mixed models
+Adding random effects to a model can be done either using least squares
+modelling through the mixlm package or using ML/REML estimation through the
+lme4 package (or similar).
+
+### Classical - mixlm
+Using the mixlm package, we specify the random effects using the `r()` function.
+If we assume that the bull is a random selection from the population of bulls,
+we can specify this as a random effect when focusing on feed. The model looks
+like a fixed effect model, but the error structure is different:
+$$yield_{abn} = \mu + feed_a + breed_b + (feed:breed)_{ab} + \epsilon_{abn}$$
+
+```{r}
+mod <- lm(yield ~ feed*r(bull), data = dat)
+print(Anova(mod, type="II"))
+```
+In addition to the ordinary ANOVA table, an overview of variance components,
+and expected mean squares are printed.
+
+### Restrictions
+The mixlm package has unrestricted models as default, but it is possible to
+turn on restriction.
+
+```{r}
+mod <- lm(yield ~ feed*r(bull), data = dat, unrestricted = FALSE)
+print(Anova(mod, type="II"))
+```
+This effects which tests are performed and how the variance components are
+estimated.
+
+### Repeated Measures
+A repeated measures model can be a mixed model with a random effect for the
+repeated measures, where the repeated measures are nested under the subjects.
+Longitudinal data is a common example of repeated measures data, where
+the replicates are repetitions over time within subject. If we subset
+the simulated data, we can add a longitudinal effect to the model, in this
+case a random variation over three time-points. 
+
+```{r}
+long <- dat[c(1:4,9:12), c("feed", "daughter", "yield")]
+long <- rbind(long, long, long)
+long$time  <- factor(rep(1:3, each=8))
+long$yield <- long$yield + rnorm(24, sd = 100)
+plot(yield~daughter, data=long)
+```
+
+Now we have a feed effect, individuals (daughters), and a time effect repeated inside daughters,
+with the model:
+$$yield_{ait} = \mu + daughter_i + feed_a + time_t + (feed:time)_{at} + \epsilon_{ait}$$
+```{r}
+mod <- lm(yield ~ r(daughter) + feed*r(time), data = long, unrestricted=FALSE)
+print(Anova(mod, type="II"))
+```
+
+### REML
+REML estiamation can be done directly with the lme4 package, but we can also
+do this through the mixlm package, leveraging the r() function.
+
+```{r}
+mod <- lm(yield ~ feed*r(bull), data = dat, REML = TRUE)
+print(Anova(mod, type="III"))
+```
+To see how mixlm transforms the model to lme4, we can print the model.
+
+```{r}
+print(mod)
+```
+We observe that (1 | bull) and (1 | feed:bull) are added to the model, which
+means that random intercepts are added for both bull and the interaction.
+
+## Multivariate ANOVA (MANOVA)
+Basic multivariate ANOVA can be done using the lm() function, if we create
+a matrix of responses. In this case we add a mastitis effect to the model.
+
+```{r}
+dat$mastitis <- as.numeric(dat$breed) + as.numeric(dat$feed) + rnorm(48, sd = 1)
+```
+
+The model becomes:
+$$[yield_{abn} | mastitis_{abn}] = \mu + feed_a + breed_b + (feed:breed)_{ab} + \epsilon_{abn},$$
+where each of the model terms now are vectors matching the number of responses.
+
+```{r}
+mod <- lm(cbind(yield,mastitis) ~ feed*breed, data = dat)
+print(Anova(mod, type="II"))
+```
+
+The test statistics are joint for all responses, here in the form of the defaul Pillai's
+test statistics. Other statistics can be produced as follows:
+
+```{r}
+print(Anova(mod, type="II", test="Wilks"))
+print(Anova(mod, type="II", test="Hotelling-Lawley"))
+print(Anova(mod, type="II", test="Roy"))
+```
+
+The summary function can be used to get more information
+about the underlying regression model, here revealing the regressions are
+performed separately for each response.
+
+```{r}
+summary(mod)
+```

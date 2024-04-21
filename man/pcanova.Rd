@@ -57,21 +57,22 @@ print(mod)
 summary(mod)
 
 # Tukey group letters for 'candy' per component
-if("mixlm" \%in\% rownames(installed.packages())){
-  lapply(mod$models, function(x)
-         mixlm::cld(mixlm::simple.glht(x,
-                                       effect = "candy")))
-}
+lapply(mod$models, function(x)
+       mixlm::cld(mixlm::simple.glht(x,
+                                     effect = "candy")))
 
 # Result plotting
 loadingplot(mod, scatter=TRUE, labels="names")
 scoreplot(mod)
 
 # Mixed Model PC-ANOVA, random assessor
-mod.mix <- pcanova(assessment ~ candy + (1|assessor), data=candies, ncomp = 0.9)
+mod.mix <- pcanova(assessment ~ candy + r(assessor), data=candies, ncomp = 0.9)
 scoreplot(mod.mix)
 # Fixed effects
 summary(mod.mix)
+
+
+# TODO, example with lme4?
 # Random effects
 lapply(mod.mix$models, lme4::ranef)
 

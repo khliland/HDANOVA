@@ -60,3 +60,11 @@ pls::scores
 #' @importFrom pls validationplot
 #' @export
 pls::validationplot
+
+#' @importFrom multiblock dummycode
+#' @export
+multiblock::dummycode
+
+#' @importFrom multiblock block.data.frame
+#' @export
+multiblock::block.data.frame
