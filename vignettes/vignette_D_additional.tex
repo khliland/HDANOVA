@@ -1,0 +1,278 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={D. Additional methods},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{D. Additional methods}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Start the HDANOVA R package}
+\FunctionTok{library}\NormalTok{(HDANOVA)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{additional-methods-of-hd-anova}{%
+\section{Additional methods of
+HD-ANOVA}\label{additional-methods-of-hd-anova}}
+
+\hypertarget{principal-response-curves-prc}{%
+\subsection{Principal Response Curves
+(PRC)}\label{principal-response-curves-prc}}
+
+The PRC implementation we have wrapped is from the vegan package. A
+single treatment factor and a time factor are accepted together with a
+response matrix. The first level of the treatment factor is used as
+reference level, effectively set to zero. As the vegan package is aimed
+at community ecology, the responses are called species. In our case, the
+responses are compounds from the Caldana data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Load Caldana data}
+\FunctionTok{data}\NormalTok{(caldana)}
+
+\NormalTok{prc.cal }\OtherTok{\textless{}{-}} \FunctionTok{prc}\NormalTok{(compounds }\SpecialCharTok{\textasciitilde{}}\NormalTok{ light }\SpecialCharTok{*}\NormalTok{ time, caldana)}
+\FunctionTok{summary}\NormalTok{(prc.cal)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Call:}
+\CommentTok{\#\textgreater{} vegan::prc(response = response, treatment = treatment, time = time) }
+\CommentTok{\#\textgreater{} Species scores:}
+\CommentTok{\#\textgreater{}                    Alanine                     Valine }
+\CommentTok{\#\textgreater{}                   0.486693                   0.094963 }
+\CommentTok{\#\textgreater{}                    Leucine                 Isoleucine }
+\CommentTok{\#\textgreater{}                  {-}0.355262                  {-}0.143003 }
+\CommentTok{\#\textgreater{}                    Proline                     Serine }
+\CommentTok{\#\textgreater{}                   0.616952                  {-}0.027900 }
+\CommentTok{\#\textgreater{}                  Threonine               beta{-}alanine }
+\CommentTok{\#\textgreater{}                   0.040614                  {-}0.392493 }
+\CommentTok{\#\textgreater{}             Hydroxyproline                       GABA }
+\CommentTok{\#\textgreater{}                  {-}0.003806                  {-}0.587758 }
+\CommentTok{\#\textgreater{}                  Aspartate                 Asparagine }
+\CommentTok{\#\textgreater{}                  {-}0.376071                  {-}0.182971 }
+\CommentTok{\#\textgreater{}                 Methionine            O{-}acetyl{-}serine }
+\CommentTok{\#\textgreater{}                   0.466437                   0.111155 }
+\CommentTok{\#\textgreater{}                  Glutamate              Phenylalanine }
+\CommentTok{\#\textgreater{}                  {-}0.182494                   0.672657 }
+\CommentTok{\#\textgreater{}                  Ornithine                  Glutamine }
+\CommentTok{\#\textgreater{}                   0.022227                   0.703807 }
+\CommentTok{\#\textgreater{}                     Lysine                   Tyrosine }
+\CommentTok{\#\textgreater{}                  {-}0.635031                  {-}0.327927 }
+\CommentTok{\#\textgreater{}              Threonic{-}acid        Citrulline{-}Arginine }
+\CommentTok{\#\textgreater{}                  {-}0.174558                   0.284600 }
+\CommentTok{\#\textgreater{}               Pyruvic{-}acid                Citric{-}acid }
+\CommentTok{\#\textgreater{}                   0.255813                  {-}0.223749 }
+\CommentTok{\#\textgreater{}              Succinic{-}acid               Fumaric{-}acid }
+\CommentTok{\#\textgreater{}                  {-}0.373253                   0.002734 }
+\CommentTok{\#\textgreater{}                 Malic{-}acid                Lactic{-}acid }
+\CommentTok{\#\textgreater{}                   0.003523                  {-}0.268739 }
+\CommentTok{\#\textgreater{}              Glycolic{-}acid               Benzoic{-}acid }
+\CommentTok{\#\textgreater{}                   0.877754                  {-}0.076579 }
+\CommentTok{\#\textgreater{}                Maleic{-}acid             Nicotinic{-}acid }
+\CommentTok{\#\textgreater{}                   0.414920                  {-}0.032950 }
+\CommentTok{\#\textgreater{}              Itaconic{-}acid                Citramalate }
+\CommentTok{\#\textgreater{}                  {-}0.091313                   0.027395 }
+\CommentTok{\#\textgreater{}     4{-}hydroxy{-}benzoic{-}acid Dehydroascorbic{-}acid{-}dimer }
+\CommentTok{\#\textgreater{}                  {-}0.103391                   0.033806 }
+\CommentTok{\#\textgreater{}              Gluconic{-}acid       Dehydroascorbic{-}acid }
+\CommentTok{\#\textgreater{}                  {-}0.086126                  {-}0.058636 }
+\CommentTok{\#\textgreater{}              Ascorbic{-}acid     4{-}Hydroxycinnamic{-}acid }
+\CommentTok{\#\textgreater{}                  {-}0.125669                  {-}0.072141 }
+\CommentTok{\#\textgreater{}         Similar{-}to{-}Adenine                  Shikimate }
+\CommentTok{\#\textgreater{}                   0.005596                   0.474595 }
+\CommentTok{\#\textgreater{}                 Erythritol                  Arabinose }
+\CommentTok{\#\textgreater{}                  {-}0.036799                  {-}0.059492 }
+\CommentTok{\#\textgreater{}                   Arabitol                     Fucose }
+\CommentTok{\#\textgreater{}                  {-}0.182318                  {-}0.028079 }
+\CommentTok{\#\textgreater{}                   Fructose                   Mannitol }
+\CommentTok{\#\textgreater{}                   1.948726                   0.116561 }
+\CommentTok{\#\textgreater{}                  Galactose                    Glucose }
+\CommentTok{\#\textgreater{}                   0.052585                   1.500686 }
+\CommentTok{\#\textgreater{}                    Sucrose                    Maltose }
+\CommentTok{\#\textgreater{}                   0.332384                  {-}0.142602 }
+\CommentTok{\#\textgreater{}                  Trehalose                 Galactinol }
+\CommentTok{\#\textgreater{}                  {-}0.105756                   0.114187 }
+\CommentTok{\#\textgreater{}               myo{-}inositol                     Uracil }
+\CommentTok{\#\textgreater{}                  {-}0.037906                  {-}0.576824 }
+\CommentTok{\#\textgreater{}                 Putrescine               Ethanolamine }
+\CommentTok{\#\textgreater{}                  {-}0.113630                  {-}0.295268 }
+\CommentTok{\#\textgreater{}                   Glycerol      Indole{-}3{-}acetonitrile }
+\CommentTok{\#\textgreater{}                  {-}0.079349                   0.100361 }
+\CommentTok{\#\textgreater{}               Sinapic{-}acid              Palmitic{-}acid }
+\CommentTok{\#\textgreater{}                   0.071144                  {-}0.144457 }
+\CommentTok{\#\textgreater{}          Octadecanoic{-}acid            Docosanoic{-}acid }
+\CommentTok{\#\textgreater{}                  {-}0.195115                  {-}0.161801 }
+\CommentTok{\#\textgreater{}         Tetracosanoic{-}acid          Hexacosanoic{-}acid }
+\CommentTok{\#\textgreater{}                   0.032725                   0.102110 }
+\CommentTok{\#\textgreater{}          Octacosanoic{-}acid }
+\CommentTok{\#\textgreater{}                   0.090308 }
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Coefficients for treatment + time:treatment interaction}
+\CommentTok{\#\textgreater{} which are contrasts to treatment Dark }
+\CommentTok{\#\textgreater{} rows are treatment, columns are time}
+\CommentTok{\#\textgreater{}                    0         5        10        20        40      80    160}
+\CommentTok{\#\textgreater{} Low Light  1.035e{-}15 {-}0.002369 {-}0.035096 {-}0.078319 {-}0.004197 0.07058 0.1179}
+\CommentTok{\#\textgreater{} Light      2.028e{-}15 {-}0.024598  0.066526 {-}0.054370  0.063304 0.15538 0.2166}
+\CommentTok{\#\textgreater{} High Light 1.041e{-}15 {-}0.007038 {-}0.006533  0.005982  0.200749 0.43379 0.4962}
+\end{Highlighting}
+\end{Shaded}
+
+The default plot for PRC is a plot of treatment + time:treatment. As we
+can see in the plot, the ``Dark'' level is the reference level from
+which the other levels are contrasted.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(prc.cal, }\AttributeTok{species =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{axis =} \DecValTok{2}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{4}\NormalTok{, }\AttributeTok{legpos =} \StringTok{"bottomright"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{/Users/kristian/Documents/GitHub/HDANOVA/vignettes/vignette_D_additional_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\hypertarget{principal-coordinate-analysis-pcoa}{%
+\subsection{Principal Coordinate Analysis
+(PCoA)}\label{principal-coordinate-analysis-pcoa}}
+
+Is this a method we want to include?
+
+\hypertarget{permutation-based-manova---permanova}{%
+\subsection{Permutation Based MANOVA -
+PERMANOVA}\label{permutation-based-manova---permanova}}
+
+The PERMANOVA implementation we have wrapped is from the vegan package.
+Our wrapper takes care of the specialised formatting needed for the
+inputs. By default, 999 permutations are performed for the factors, and
+a standard Multivariate ANOVA is returned with permutation-based
+p-values.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Load Caldana data}
+\NormalTok{permanova.cal }\OtherTok{\textless{}{-}} \FunctionTok{permanova}\NormalTok{(compounds }\SpecialCharTok{\textasciitilde{}}\NormalTok{ light }\SpecialCharTok{*}\NormalTok{ time, caldana)}
+\NormalTok{permanova.cal}
+\CommentTok{\#\textgreater{} Permutation test for adonis under reduced model}
+\CommentTok{\#\textgreater{} Terms added sequentially (first to last)}
+\CommentTok{\#\textgreater{} Permutation: free}
+\CommentTok{\#\textgreater{} Number of permutations: 999}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} vegan::adonis2(formula = formula, data = data)}
+\CommentTok{\#\textgreater{}             Df SumOfSqs      R2      F Pr(\textgreater{}F)    }
+\CommentTok{\#\textgreater{} light        3  0.16005 0.07145 4.1266  0.001 ***}
+\CommentTok{\#\textgreater{} time         6  0.27300 0.12188 3.5194  0.001 ***}
+\CommentTok{\#\textgreater{} light:time  18  0.35885 0.16021 1.5421  0.001 ***}
+\CommentTok{\#\textgreater{} Residual   112  1.44793 0.64645                  }
+\CommentTok{\#\textgreater{} Total      139  2.23982 1.00000                  }
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\end{Highlighting}
+\end{Shaded}
+
+
+\end{document}

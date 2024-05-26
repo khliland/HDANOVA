@@ -37,6 +37,16 @@ This vignette will focus on univariate ANOVA in various designs including
 fixed and mixed effects, and briefly introduce multivariate ANOVA. Models
 using random effects will be run through the mixlm package.
 
+The following models will be demonstrated:
+* Fixed effect models
+  * One-way ANOVA
+  * Two-way ANOVA
+  * Covariates in ANOVA
+  * Fixed effect nested ANOVA
+* Linear mixed models
+  * Classical LMM
+  * Repeated measures LMM
+
 ## Simulated data
 We will start by simulating some data to use in the examples below. In this
 fictitious setup, milk yield is measured as a function of feed type (low/high protein content), cow breed, bull identity,
@@ -130,7 +140,7 @@ coding is of the treatment/reference type.
 
 ### Contrast codings
 The contrast coding can be specified for each factor in the model. The default
-is treatment coding, but other codings can be specified using the `contrasts`
+is reference coding, but other codings can be specified using the `contrasts`
 Since we are running lm() through the mixlm package, we can use the `contrasts`
 argument to specify the coding for all effects simultaneously.
 
@@ -167,9 +177,9 @@ print(Anova(mod, type="II"))
 
 ### Fixed effect nested ANOVA
 In the case of nested factors, we can specify this in the model. In the current
-model we assume that bulls are fixed effects that we are interested in and that
-daughters are nested under bulls. In this case the daughters do not have any
-special attributes that would interefere with the estimation of the bull effect,
+model, we assume that bulls are fixed effects that we are interested in and that
+daughters are nested under bulls. In this case, the daughters do not have any
+special attributes that would interfere with the estimation of the bull effect,
 so we do not have to assume that they are random effects. The model becomes:
 $$yield_{abn} = \mu + bull_a + daugter_{b(a)} + \epsilon_{abn},$$
 
@@ -194,7 +204,7 @@ $$yield_{abn} = \mu + feed_a + breed_b + (feed:breed)_{ab} + \epsilon_{abn}$$
 mod <- lm(yield ~ feed*r(bull), data = dat)
 print(Anova(mod, type="II"))
 ```
-In addition to the ordinary ANOVA table, an overview of variance components,
+In addition to the ordinary ANOVA table, an overview of variance components
 and expected mean squares are printed.
 
 ### Restrictions
@@ -233,7 +243,7 @@ print(Anova(mod, type="II"))
 ```
 
 ### REML
-REML estiamation can be done directly with the lme4 package, but we can also
+REML estimation can be done directly with the lme4 package, but we can also
 do this through the mixlm package, leveraging the r() function.
 
 ```{r}
@@ -250,7 +260,7 @@ means that random intercepts are added for both bull and the interaction.
 
 ## Multivariate ANOVA (MANOVA)
 Basic multivariate ANOVA can be done using the lm() function, if we create
-a matrix of responses. In this case we add a mastitis effect to the model.
+a matrix of responses. In this case, we add a mastitis effect to the model.
 
 ```{r}
 dat$mastitis <- as.numeric(dat$breed) + as.numeric(dat$feed) + rnorm(48, sd = 1)
@@ -265,7 +275,7 @@ mod <- lm(cbind(yield,mastitis) ~ feed*breed, data = dat)
 print(Anova(mod, type="II"))
 ```
 
-The test statistics are joint for all responses, here in the form of the defaul Pillai's
+The test statistics are joint for all responses, here in the form of the default Pillai's
 test statistics. Other statistics can be produced as follows:
 
 ```{r}

@@ -32,6 +32,21 @@ library(HDANOVA)
 
 # Analysis of Variance Simultaneous Component Analysis (ASCA)
 
+The ANOVA part of ASCA includes all the possible variations of ANOVA
+demonstrated in the ANOVA section and more. Also, generalized linear
+models (GLM) can be used. The following theory will be exemplified:
+
+* Basic ASCA
+    * Permutation testing
+    * Random effects
+    * Scores and loadings
+    * Data and confidence ellipsoids
+    * Combined effects
+    * Numeric effects
+* ANOVA-PCA (APCA)
+* PC-ANOVA
+* LiMM-PCA
+
 ## Basic ASCA
 The ANOVA part of ASCA includes all the possible variations of ANOVA demonstrated in the
 ANOVA vignette and more. Also generalized linear models (GLM) can be used. We start
@@ -58,8 +73,7 @@ mod <- asca(assessment ~ candy*assessor, data=candies, permute=TRUE)
 summary(mod)
 ```
 
-Here we see that the candy effect is significant, while the assessor effect and
-interaction are not. This can also be visualised by looking at the sums-of-squares
+Here we see that all effects are significant, where the Candy effect is the dominating one. This can also be visualised by looking at the sums-of-squares
 values obtained under permutation compared to the original value.
 
 ```{r}
@@ -107,7 +121,7 @@ head(S)
 ```
 
 ### Data ellipsoids and confidence ellipsoids
-To emphasize factor levels or assess factor level differences, one can add
+To emphasize factor levels or assess factor level differences, we can add
 data ellipsoids or confidence ellipsoids to the score plot. The confidence
 ellipsoids are built on the assumption of balanced data, and their theories are 
 built around crossed designs.
@@ -119,8 +133,10 @@ scoreplot(mod, ellipsoids="confidence", factor="candy", main="Confidence ellipso
 par(par.old)
 ```
 
-If we repeat this for the mixed model, we see that the both types of ellipsoids
-change together with the change in denominator term in the underlying ANOVA model.
+If we repeat this for the mixed model, we see that both types of ellipsoids
+change together with the change in denominator term in the underlying ANOVA model. 
+It should be noted that the theory for confidence ellipsoids in mixed models
+is not fully developed, so interpretation should be done with caution.
 
 ```{r, fig.width=4.5, fig.height=7}
 par.old <- par(mfrow=c(2,1), mar=c(4,4,2,1))
@@ -138,16 +154,16 @@ _time:light_ interaction using the _comb()_ function.
 # Load Caldana data
 data(caldana)
 
-# Combed effects
+# Combined effects
 mod.comb <- asca(compounds ~ time + comb(light + light:time), data=caldana)
 summary(mod.comb)
 ```
 
-### Numeric effects
-Numeric effects, so-called covariates, can also be included in a model, though their
+### Quantitative effects
+Quantitative effects, so-called covariates, can also be included in a model, though their use
 in ASCA are limited to ANOVA estimation and explained variance, not being used in
 subsequent PCA or permutation testing. We demonstrate this using the Caldana data
-again, but now recode the time effect to a numeric effect, meaning it will be
+again, but now recode the time effect to a quantitative effect, meaning it will be
 handled as a linear continuous effect.
 
 ```{r}
@@ -158,9 +174,9 @@ summary(mod.num)
 ```
 
 
-## APCA
+## ANOVA-PCA (APCA)
 
-ANOVA-PCA (APCA) differs from ASCA by adding the error term to the model before
+APCA differs from ASCA by adding the error term to the model before
 performing PCA instead of backprojecting errors afterwards.
 
 ```{r}

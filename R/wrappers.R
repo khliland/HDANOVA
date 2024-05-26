@@ -26,7 +26,9 @@ prc <- function(formula, data, ...) {
     time      <- mf[[3]]
   }
   requireNamespace("vegan", quietly = TRUE)
-  vegan::prc(response, treatment, time, ...)
+  object <- vegan::prc(response, treatment, time, ...)
+  object$call <- match.call()
+  object
 }
 
 

@@ -1,8 +1,11 @@
 ---
 title: "D. Additional methods"
 output: 
-  rmarkdown::html_vignette:
-    toc: true
+  pdf_document: 
+    keep_tex: true
+# output: 
+#   rmarkdown::html_vignette:
+#     toc: true
 vignette: >
   %\VignetteIndexEntry{D. Additional methods}
   %\VignetteEncoding{UTF-8}
@@ -33,9 +36,42 @@ library(HDANOVA)
 ```
 
 # Additional methods of HD-ANOVA
+The examples shown here are HD-ANOVA methods that share aspects with ASCA.
+
+* Principal Response Curves (PRC)
+* Principal Coordinate Analysis (PCoA)
+* Permutation Based MANOVA (PERMANOVA)
 
 ## Principal Response Curves (PRC)
+The PRC implementation we have wrapped is from the vegan package. A single treatment
+factor and a time factor are accepted together with a response matrix. The first
+level of the treatment factor is used as a reference level, effectively set to
+zero. As the vegan package is aimed at community ecology, the responses are called
+species. In our case, the responses are compounds from the Caldana data.
 
-## Principal Coordinate Analysis (PCoA) ??
+```{r}
+# Load Caldana data
+data(caldana)
 
-## Permutation Based MANOVA - PERMANOVA
+prc.cal <- prc(compounds ~ light * time, caldana)
+summary(prc.cal)
+```
+
+The default plot for PRC is a plot of treatment + time:treatment. As we can
+see in the plot, the "Dark" level is the reference level from which the other
+levels are contrasted.
+```{r}
+plot(prc.cal, species = FALSE, axis = 2, lwd = 4, legpos = "bottomright")
+```
+
+
+## Permutation Based MANOVA (PERMANOVA)
+The PERMANOVA implementation we have wrapped is from the vegan package. Our
+wrapper takes care of the specialised formatting needed for the inputs. By 
+default, 999 permutations are performed for the factors, and a standard
+Multivariate ANOVA is returned with permutation-based p-values.
+
+```{r}
+permanova.cal <- permanova(compounds ~ light * time, caldana)
+permanova.cal
+```
