@@ -104,3 +104,31 @@ extended.model.frame <- function(formula, data, ..., sep = "."){
     mf[[i]] <- modFra[[i]]
   mf
 }
+
+#' Update a Model without Factor
+update.without.factor <- function(model, fac, hierarchical = TRUE){
+  # Extract formula from model
+  form <- formula(model)
+  if(hierarchical){
+    # Remove factor and all interactions containing factor from formula
+    facs <- attr(terms(form),"term.labels")
+    for(i in grep(fac, facs))
+      form <- update(form, paste0(". ~ . - (", facs[i],")"))
+  } else {
+    # Remove factor from formula
+    form <- update(form, paste0(". ~ . - ", fac, " - (1|", fac, ")"))
+  }
+
+  if(inherits(model,"lmerMod") && is.null(findbars(form))){
+    # If model is of lme4 type and no random effects are left, remodel as lm() instead
+    ca <- getCall(model)
+    ca[[1]] <- as.name("lm")
+    env <- environment(ca[[2]])
+    ca[[2]] <- form
+    environment(ca[[2]]) <- env
+    eval(ca)
+  } else {
+    # Update model with new formula
+    update(model, form)
+  }
+}

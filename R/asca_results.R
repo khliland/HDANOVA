@@ -54,9 +54,13 @@ summary.asca <- function(object, extended=TRUE, ...){
     mod <- "Anova Principal Component Analysis"
   x <- list(dat=dat, model=mod, fit.type=object$fit.type)
   if(extended){
+    LS_REML <- "least squares"
+    if(!inherits(object$models[[1]],"lm"))
+      LS_REML <- ifelse(getME(object$models[[1]],"is_REML"), "REML", "ML")
     ss <- c("I","II","III")
-    x$info <- paste0("SS type ", ss[object$SStype], ", ", object$coding,
-                     " coding, ", ifelse(object$unrestricted, "unrestricted","restricted"), " model")
+    x$info <- paste0("SS type ", ss[object$SStype], ", ", object$coding, " coding, ",
+                     ifelse(object$unrestricted, "unrestricted","restricted"), " model",
+                     ", ", LS_REML, " estimation")
     if(!is.null(object$permute))
       x$info <- paste0(x$info, ", ", object$permute$permutations, " permutations")
   }

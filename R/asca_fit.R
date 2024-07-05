@@ -9,7 +9,8 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute=
                      aug_error = "denominator", # "residual" => Mixed, alpha-value => LiMM-PCA
                      pca.in = FALSE, # n>1 => LiMM-PCA and PC-ANOVA
                      coding = c("sum","weighted","reference","treatment"),
-                     SStype = "II", REML = NULL){
+                     SStype = "II",
+                     REML = NULL){
 
   # Simplify SStype
   if(is.character(SStype))
@@ -21,7 +22,6 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute=
   p <- ncol(Y)
 #  if(center && (!missing(family) && family!="binomial"))
 #    Y <- Y - rep(colMeans(Y), each=N) # Centre Y by default, but not if family is binomial
-  ssqY <- sum(Y^2)
   if(pca.in != 0){ # Pre-decomposition, e.g., LiMM-PCA, PC-ANOVA
     if(is.numeric(pca.in) && pca.in == 1)
       stop('pca.in = 1 is not supported (single response)')
@@ -37,15 +37,16 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute=
     pca <- .pca(Y, ncomp = pca.in)
     Y <- pca$scores
   }
+  ssqY <- sum((Y-rep(colMeans(Y),each=N))^2)
   residuals <- Y
 
   mf <- match.call(expand.dots = FALSE)
-  m  <- match(c("formula", "data", "weights", "subset", "na.action", "family", "unrestricted"), names(mf), 0)
+  m  <- match(c("formula", "data", "weights", "subset", "na.action", "family", "unrestricted", "REML"), names(mf), 0)
   mf <- mf[c(1, m)]                # Retain only the named arguments
   lme4 <- FALSE
 
   # Check for random effects using lmer notation (lme4) |
-  if( any(grepl("|",formula,fixed=TRUE)) ){
+  if( any(grepl("|",formula,fixed=TRUE))){
     mixed <- TRUE
     rw <- list(rformula = formula)
     lme4 <- TRUE
@@ -116,6 +117,18 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute=
   assign <- attr(M, "assign")
   modFra <- model.frame(mod)
 
+  # Extend effs, assign and M with random effects
+  if(lme4 || is.logical(REML)){
+    M <- cbind(M, as.matrix(getME(mod, "Z")))
+    u <- lme4::ranef(mod)
+    effs <- c(effs, names(u))
+    max_assign <- max(assign)
+    for(i in 1:length(u)){
+      max_assign <- max_assign+1
+      assign <- c(assign, rep(max_assign, length(u[[i]][[1]])))
+    }
+  }
+
   # Maximum number of dimensions for each effect
   maxDir <- numeric(max(assign))
   for(i in 1:max(assign))
@@ -162,7 +175,7 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute=
     if(coding == "reference" || coding == "treatment")
       contrasts(dat[[effs[a]]]) <- contr.treatment(levels(dat_a))
   }
-  if(fit.func == "lm"){
+  if(fit.func == "lm" && !is.logical(REML)){
     if(coding == "sum")
       mf$contrasts <- mfPre$contrasts <- "contr.sum"
     if(coding == "treatment" || coding == "reference")
@@ -188,10 +201,11 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute=
     if(mixed){
       dat[[formula[[2]]]] <- Y[,i,drop=FALSE]
       modi <- eval(mfPre, envir = environment())
-      if(lme4){
+      if(lme4 || is.logical(REML)){
+        u <- unlist(lme4::ranef(modi))
         if(i == 1)
-          coefs <- matrix(0.0, length(lme4::fixef(modi)), ncol(Y))
-        coefs[,i] <- lme4::fixef(modi)
+          coefs <- matrix(0.0, length(lme4::fixef(modi))+length(u), ncol(Y))
+        coefs[,i] <- c(lme4::fixef(modi),u)
       } else {
         if(i == 1)
           coefs <- matrix(0.0, length(coefficients(modi)), ncol(Y))
@@ -236,6 +250,25 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute=
   assign <- attr(M, "assign")
   modFra <- HDANOVA::extended.model.frame(model.frame(mod), data)
 
+  # Extend effs, assign and M with random effects
+  if(lme4 || is.logical(REML)){
+    M <- cbind(M, as.matrix(getME(mod, "Z")))
+    u <- lme4::ranef(mod)
+    effs <- c(effs, names(u))
+    max_assign <- max(assign)
+    for(i in 1:length(u)){
+      max_assign <- max_assign+1
+      assign <- c(assign, rep(max_assign, length(u[[i]][[1]])))
+    }
+  }
+
+  # Sort interaction names alphabetically
+  for(i in 1:length(colnames(modFra))){
+    if(grepl(":", colnames(modFra)[i], fixed=TRUE)){
+      colnames(modFra)[i] <- paste(sort(strsplit(colnames(modFra)[i],":")[[1]]), collapse=":")
+    }
+  }
+
   # Effect loop
   LS <- effects <- list()
   for(i in 1:length(approved)){
@@ -247,7 +280,19 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute=
   # Residuals
   residuals <- Y - M%*%coefs
 
-  # Augment error term to LS for permutation testing, LiMMPCA and similar
+  # If model is of lme4 type, the sums-of-squares are not directly available
+  if(length(ssq) == 0){
+    for(i in 1:length(approved)){
+      a <- approved[i]
+      ssq[effs[a]] <- sum(LS[[effs[a]]]^2)
+    }
+    names(ssq) <- names(effects)
+    ssq_residual <- sum(residuals^2)
+    ssq[length(ssq)+1] <- ssq_residual
+    names(ssq)[length(ssq)] <- "Residuals"
+  }
+
+  # Augment error term to LS for permutation testing, LiMM-PCA and similar
   error <- LS_aug <- LS
   if(aug_error == "residuals" || !mixed){ # Fixed effect models and forced "residuals"
     # Input to asca_fit: aug_error = "residual", # "denominator" => Mixed, alpha-value => LiMM-PCA
@@ -259,11 +304,17 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute=
     }
   } else {
     # Augment errors according to Mixed Model ANOVA and/or LiMM-PCA
-    ets <- ano$err.terms              # <--------------------- Not ready for lme4 due to mixlm handling of lme4
-    names(ets) <- rownames(ano$anova)
-    dfDenom <- ano$denom.df
-    dfNum   <- ano$anova[["Df"]]
-    names(dfNum) <- rownames(ano$anova)
+    if(!lme4 && is.logical(REML)){
+      ets <- ano$err.terms              # <--------------------- Not ready for lme4 due to mixlm handling of lme4
+      names(ets) <- rownames(ano$anova)
+      dfDenom <- ano$denom.df
+      dfNum   <- ano$anova[["Df"]]
+      names(dfNum) <- rownames(ano$anova)
+    } else {
+      ets <- list()
+      dfDenom <- numeric()
+      dfNum <- numeric()
+    }
     for(i in 1:length(approved)){
       a <- approved[i]
       C <- 1
@@ -498,7 +549,7 @@ formula_comb <- function(formula, data, REML = NULL){
 }
 
 # Remove comb() from formula (possibly convert to lmer formula)
-cparse <- function (f, REML = FALSE) {
+cparse <- function (f, REML = NULL) {
   if(!inherits(f,'formula'))
     # if (class(f) != "formula")
     stop("'f' must be a formula")
@@ -530,7 +581,7 @@ cparse <- function (f, REML = FALSE) {
   f[3] <- formula(paste("~", paste(result, sep="", collapse="+")))[2]
 
   # Recursive loop adding (1 | x) notation for REML estimation
-  if(REML){
+  if(is.logical(REML)){
     for(i in 1:n){
       parsecall <- function(x) {
         if(!inherits(x,'call'))

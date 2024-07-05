@@ -7,6 +7,10 @@ rmarkdown::pandoc_convert("vignette_C_ASCA.Rmd", to = "latex", output = "vignett
 pkgdown
 
 ASCA:
+- Ellipser i 1D (ikke bare 3D)
+- scale-parameter
+- loadingplot for 2 grupper, kopier fiks fra metabolomics-pakken.
+- Fjern metabolomics-referanser i dokumentasjonen
 - "Stjerne-plott" fra individer til sentra.
 - LiMM-PCA: Det er ikke augmented matriser som er utgangspunkt for PCA, men augmented brukes til backprojection.
 - lme4-støtte i effekt-augmentering
