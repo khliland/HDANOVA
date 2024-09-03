@@ -14,7 +14,7 @@
 #' @param family Error distributions and link function for Generalized Linear Models.
 #' @param SStype Sums-of-squares type for Analysis of Variance (I/II/III), defaults to "III".
 #'
-#' @return TODO: Update. A \code{pcanova} object containing loadings, scores, explained variances, etc. The object has
+#' @return A \code{pcanova} object containing loadings, scores, explained variances, etc. The object has
 #' associated plotting (\code{\link{pcanova_plots}}) and result (\code{\link{pcanova_results}}) functions.
 #'
 #' @description This is a quite general and flexible implementation of PC-ANOVA.
@@ -79,8 +79,6 @@ pcanova <- function(formula, data, ncomp = 0.9, ...){
   pc$X <- object$X
   pc$models <- object$models
   pc$effects <- object$effects
-  # Explained variance
-#  object$explvar <- object$Ypca$svd$d^2/sum(object$Ypca$svd$d^2)
   names(pc$anovas) <- paste0("Comp. ", 1:length(pc$anovas))
   pc$call <- match.call()
   class(pc) <- c('pcanova', 'asca', 'list')

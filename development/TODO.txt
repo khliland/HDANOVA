@@ -2,19 +2,30 @@ Konvertering til tex
 Lage figurer:
 devtools::build_vignettes(clean=FALSE)
 Lage .tex:
-rmarkdown::pandoc_convert("vignette_C_ASCA.Rmd", to = "latex", output = "vignette_C_ASCA.tex")
+rmarkdown::pandoc_convert("vignette_C_ASCA.Rmd", to = "latex", from = "markdown", output = "vignette_C_ASCA.tex")
 
 pkgdown
 
 ASCA:
-- Ellipser i 1D (ikke bare 3D)
+- Noe er galt med coding!="sum". Scores endrer seg, mens projections er like muligens fordi error ikke lenger er sentrert.
 - scale-parameter
+- Skille ut Mean Effect som eget element?
+- Ellipser i 1D (ikke bare 3D)
 - loadingplot for 2 grupper, kopier fiks fra metabolomics-pakken.
-- Fjern metabolomics-referanser i dokumentasjonen
-- "Stjerne-plott" fra individer til sentra.
-- LiMM-PCA: Det er ikke augmented matriser som er utgangspunkt for PCA, men augmented brukes til backprojection.
-- lme4-støtte i effekt-augmentering
+- Om LiMM-PCA, sjekk Manon Martin om han bruker en spesiell koding eller restriction.
 - Tormod: Mixed model ASCA. Residual byttes ut med LS(effect) - LS(denominator). Kan vi putte dette rett inn i ellipseberegningene? Behov for titt i teori
++ Bruk timeplot, spiderplot, limmpca, msca i +vignetten + -boka
++ Kan vi kjøre limmpca direkte med Repeated Measures?:
+  mod <- lm(yield ~ r(daughter) + feed*r(time), data = long, unrestricted=FALSE)
+  print(Anova(mod, type="II"))
++ MSCA: Lagre per-between scores (beregn forklart varians ihht. MATLAB), tilpass scoreplot() slik at within-plot får rett forklart varians
++ scoreplot option (ikke plot individene)
++ Plotte langs tidsakse for kombinerte effekter (se eksempel)
++ "Stjerne-plott" fra individer til sentra.
++ LiMM-PCA: Det er ikke augmented matriser som er utgangspunkt for PCA, men augmented brukes til backprojection.
++ lme4-støtte i effekt-augmentering
++ Fjern metabolomics-referanser i dokumentasjonen
++ PCA av "residuals"
 + lagre metainformasjon om modell (SStype, kontraster, etc.)
 + kontinuerlige effekter
 + dimensjonsnavn på output (coefficients mm.)

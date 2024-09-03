@@ -30,7 +30,7 @@ pcanova(formula, data, ncomp = 0.9, ...)
 \item{SStype}{Sums-of-squares type for Analysis of Variance (I/II/III), defaults to "III".}
 }
 \value{
-TODO: Update. A \code{pcanova} object containing loadings, scores, explained variances, etc. The object has
+A \code{pcanova} object containing loadings, scores, explained variances, etc. The object has
 associated plotting (\code{\link{pcanova_plots}}) and result (\code{\link{pcanova_results}}) functions.
 }
 \description{

@@ -15,7 +15,7 @@ apca(formula, data, add_error = TRUE, ...)
 }
 \value{
 An object of class \code{apca}, inheriting from the general \code{asca} class.
-TODO: Link to ASCA documentation, add reference
+Further arguments and plots can be found in the \code{\link{asca}} documentation.
 }
 \description{
 APCA function for fitting ANOVA Principal Component Analysis models.
@@ -24,4 +24,9 @@ APCA function for fitting ANOVA Principal Component Analysis models.
 data(candies)
 ap <- apca(assessment ~ candy, data=candies)
 scoreplot(ap)
+}
+\references{
+Harrington, P.d.B., Vieira, N.E., Espinoza, J., Nien, J.K., Romero, R., and Yergey, A.L. (2005)
+Analysis of variance–principal component analysis: A soft tool for proteomic discovery.
+Analytica chimica acta, 544 (1-2), 118–127.
 }

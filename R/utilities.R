@@ -1,5 +1,5 @@
 # PCA for internal use
-.pca <- function(X, ncomp, scale=FALSE, ...){
+.pca <- function(X, ncomp, scale=FALSE, proj=NULL, ...){
   X <- as.matrix(unclass(X))
   if(!inherits(X,'matrix'))
     stop("'X' must be a matrix")
@@ -7,9 +7,15 @@
     ncomp <- min(c(nrow(X)-1, ncol(X)))
   y   <- structure(matrix(rnorm(nrow(X)), ncol=1), rownames = rownames(X))
   dat <- data.frame(y=y, X = I(X))
-  PCR <- pls::pcr(y ~ X, ncomp = ncomp, data = dat, scale = scale, ...)
-  mod <- list(loadings=PCR$loadings, scores=PCR$scores, Xmeans=PCR$Xmeans, explvar=PCR$Xvar/PCR$Xtotvar*100, PCA = PCR)
+  mod <- pls::pcr(y ~ X, ncomp = ncomp, data = dat, scale = scale, ...)
+  mod$explvar <- mod$Xvar/mod$Xtotvar*100
+#  PCR <- pls::pcr(y ~ X, ncomp = ncomp, data = dat, scale = scale, ...)
+#  mod <- list(loadings=PCR$loadings, scores=PCR$scores, Xmeans=PCR$Xmeans, explvar=PCR$Xvar/PCR$Xtotvar*100, PCA = PCR)
   attr(mod$loadings, 'explvar') <- attr(mod$scores, 'explvar') <- mod$explvar
+  if(!is.null(proj)){
+    mod$projected <- (proj-rep(mod$Xmeans, each=nrow(proj))) %*% mod$loadings
+  }
+  mod$singulars <- sqrt(mod$Xvar)
   mod$call <- match.call()
   class(mod) <- c('pca')
   return(mod)
@@ -131,4 +137,76 @@ update.without.factor <- function(model, fac, hierarchical = TRUE){
     # Update model with new formula
     update(model, form)
   }
+}
+
+#' @title Block-wise indexable data.frame
+#'
+#' @description This is a convenience function for making \code{data.frame}s that are easily
+#' indexed on a block-wise basis.
+#'
+#' @param X Either a single \code{data.frame} to index or a \code{list} of matrices/data.frames
+#' @param block_inds Named \code{list} of indexes if \code{X} is a single \code{data.frame}, otherwise \code{NULL}.
+#' @param to.matrix \code{logical} indicating if input list elements should be converted to matrices.
+#'
+#' @return A \code{data.frame} which can be indexed block-wise.
+#' @examples
+#' # Random data
+#' M <- matrix(rnorm(200), nrow = 10)
+#' # .. with dimnames
+#' dimnames(M) <- list(LETTERS[1:10], as.character(1:20))
+#'
+#' # A named list for indexing
+#' inds <- list(B1 = 1:10, B2 = 11:20)
+#'
+#' X <- block.data.frame(M, inds)
+#' str(X)
+#'
+#' @export
+block.data.frame <- function(X, block_inds = NULL, to.matrix = TRUE){
+  if(!is.null(block_inds)){
+    # Use indices to convert matrix/data.frame into list of matrices/data.frames
+    if(is.null(names(block_inds)))
+      warning("When 'block_inds' is supplied, it should be a named list with indices/names of variables associated with blocks.")
+    Z <- lapply(block_inds, function(i)X[,i,drop=FALSE])
+    X <- lapply(Z, function(z){rownames(z) <- rownames(X);z})
+  }
+  # Enclose blocks in "as.is"
+  if(to.matrix)
+    X <- lapply(X, function(x)I(as.matrix(x)))
+  else
+    X <- lapply(X, function(x)I(x))
+  # Return as data.frame
+  X <- do.call(data.frame, X)
+  X <- lapply(X, function(x){rownames(x) <- rownames(X);x})
+  X <- data.frame(X)
+  return(X)
+}
+
+
+#' Dummy-coding of a single vector
+#'
+#' @description Flexible dummy-coding allowing for all R's built-in types of contrasts
+#' and optional dropping of a factor level to reduce rank defficiency probability.
+#'
+#' @param Y \code{vector} to dummy code.
+#' @param contrast Contrast type, default = "contr.sum".
+#' @param drop \code{logical} indicating if one level should be dropped (default = TRUE).
+#'
+#' @return \code{matrix} made by dummy-coding the input vector.
+#'
+#' @examples
+#' vec <- c("a","a","b","b","c","c")
+#' dummycode(vec)
+#' @export
+dummycode <- function(Y, contrast = "contr.sum", drop = TRUE){
+  nlev <- nlevels(Y)
+  lev  <- levels(Y)
+  if(drop){
+    X    <- model.matrix(~x,data.frame(x=factor(Y)), contrasts.arg = list(x=contrast))
+    X    <- X[, -1, drop=FALSE]
+  } else {
+    X    <- model.matrix(~x-1,data.frame(x=factor(Y)), contrasts.arg = list(x=contrast))
+  }
+  attributes(X) <- list(dim = attributes(X)$dim, dimnames = attributes(X)$dimnames)
+  X
 }

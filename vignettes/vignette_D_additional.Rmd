@@ -39,7 +39,6 @@ library(HDANOVA)
 The examples shown here are HD-ANOVA methods that share aspects with ASCA.
 
 * Principal Response Curves (PRC)
-* Principal Coordinate Analysis (PCoA)
 * Permutation Based MANOVA (PERMANOVA)
 
 ## Principal Response Curves (PRC)

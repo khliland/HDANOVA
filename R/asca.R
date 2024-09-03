@@ -9,7 +9,9 @@
 #' @param subset Subset of objects
 #' @param na.action How to handle NAs (no action implemented).
 #' @param family Error distributions and link function for Generalized Linear Models.
+#' @param permute Perform approximate permutation testing, default = FALSE (numeric or TRUE = 1000).
 #' @param pca.in Compress response before ASCA (number of components).
+#' @param ... Additional arguments to \code{\link{asca_fit}}.
 #'
 #' @return An \code{asca} object containing loadings, scores, explained variances, etc. The object has
 #' associated plotting (\code{\link{asca_plots}}) and result (\code{\link{asca_results}}) functions.
@@ -22,7 +24,7 @@
 #' This version of ASCA encompasses variants of LiMM-PCA, generalized ASCA and covariates ASCA. It includes
 #' confidence ellipsoids for the balanced crossed-effect ASCA.
 #'
-#' The formula interface is extened with the function r() to indicate random
+#' The formula interface is extended with the function r() to indicate random
 #' effects and comb() to indicate effects that should be combined. See Examples
 #' for use cases.
 #'
@@ -50,6 +52,10 @@
 #' # Result plotting for first factor
 #' loadingplot(mod, scatter=TRUE, labels="names")
 #' scoreplot(mod)
+#' # No backprojection
+#' scoreplot(mod, projections=FALSE)
+#' # Spider plot
+#' scoreplot(mod, spider=TRUE, projections=FALSE)
 #'
 #' # ASCA model with compressed response using 5 principal components
 #' mod.pca <- asca(assessment ~ candy + assessor, data=candies, pca.in=5)
@@ -64,6 +70,7 @@
 #' # Combining effects in ASCA
 #' mod.comb <- asca(compounds ~ time + comb(light + time:light), data=caldana)
 #' summary(mod.comb)
+#' timeplot(mod.comb, factor="light", time="time", comb=2)
 #'
 #' # Permutation testing
 #' mod.perm <- asca(assessment ~ candy * assessor, data=candies, permute=TRUE)
@@ -71,12 +78,14 @@
 #'
 #' @export
 asca <- function(formula, data, ...){
-#  formula, data, subset, weights, na.action, family, permute,
-#  add_error = FALSE, # TRUE => APCA/LiMM-PCA
-#  aug_error = "residual", # "denominator" => Mixed, alpha-value => LiMM-PCA
-#  pca.in = FALSE, # n>1 => LiMM-PCA and PC-ANOVA
-#  coding = c("sum","weighted","reference","treatment"),
-#  SStype = "III", REML = NULL)
+  # formula, data, subset, weights, na.action, family, permute=FALSE,
+  # unrestricted = FALSE,
+  # add_error = FALSE, # TRUE => APCA/LiMM-PCA
+  # aug_error = "denominator", # "residual" => Mixed, alpha-value => LiMM-PCA
+  # pca.in = FALSE, # n>1 => LiMM-PCA and PC-ANOVA
+  # coding = c("sum","weighted","reference","treatment"),
+  # SStype = "II",
+  # REML = NULL
   object <- asca_fit(formula=formula, data=data, ...)
   object$call <- match.call()
   object

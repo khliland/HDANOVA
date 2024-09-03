@@ -16,7 +16,7 @@ library(HDANOVA)
 ## Caldana data from R app
 
 ```{r cars}
-load("caldana_from_app.RData")
+load("development/examples/Caldana/caldana_from_app.RData")
 nam <- c('Alanine', 'Valine', 'Leucine', 'Isoleucine', 'Proline', 'Serine', 'Threonine', 'beta-alanine', 'Hydroxyproline', 'GABA', 'Aspartate', 'Asparagine', 'Methionine', 'O-acetyl-serine', 'Glutamate', 'Phenylalanine', 'Ornithine', 'Glutamine', 'Lysine', 'Tyrosine', 'Threonic-acid', 'Citrulline-Arginine', 'Pyruvic-acid', 'Citric-acid', 'Succinic-acid', 'Fumaric-acid', 'Malic-acid', 'Lactic-acid', 'Glycolic-acid', 'Benzoic-acid', 'Maleic-acid', 'Nicotinic-acid', 'Itaconic-acid', 'Citramalate', '4-hydroxy-benzoic-acid', 'Dehydroascorbic-acid-dimer', 'Gluconic-acid', 'Dehydroascorbic-acid', 'Ascorbic-acid', '4-Hydroxycinnamic-acid', 'Similar-to-Adenine', 'Shikimate', 'Erythritol', 'Arabinose', 'Arabitol', 'Fucose', 'Fructose', 'Mannitol', 'Galactose', 'Glucose', 'Sucrose', 'Maltose', 'Trehalose', 'Galactinol', 'myo-inositol', 'Uracil', 'Putrescine', 'Ethanolamine', 'Glycerol', 'Indole-3-acetonitrile', 'Sinapic-acid', 'Palmitic-acid', 'Octadecanoic-acid', 'Docosanoic-acid', 'Tetracosanoic-acid', 'Hexacosanoic-acid', 'Octacosanoic-acid')
 ```
 
@@ -175,7 +175,7 @@ graphics::box()
 
 par(mar=c(4,4,0,1))
 x <- summary(prc.cal, axis = 1, scaling = "symmetric", correlation = FALSE)
-matplot(1:7, t(coef(x)), lty=2:4, col= 2:4, type="l", lwd=4, xlab="time", ylab=paste0("Effect 1 (",round(cca_expl[1],1),"%)"), axes=FALSE)
+matplot(1:7, t(coef(x)), lty=2:4, col= 2:4, type="l", lwd=4, xlab="time", ylab=paste0("Score 1 (",round(cca_expl[1],1),"%)"), axes=FALSE)
 lines(c(0,160), c(0,0), lwd=4)
 matplot(1:7, t(coef(x)), lty=2:4, col= 2:4, type="l", lwd=4, add=TRUE, axes=FALSE)
 legend("topleft", legend=c("Dark","Low light","Light", "High light"),
@@ -185,7 +185,7 @@ axis(2)
 graphics::box()
 
 x <- summary(prc.cal, axis = 2, scaling = "symmetric", correlation = FALSE)
-matplot(1:7, t(coef(x)), lty=2:4, col= 2:4, type="l", lwd=4, xlab="time", ylab=paste0("Effect 2 (",round(cca_expl[2],1),"%)"), axes=FALSE)
+matplot(1:7, t(coef(x)), lty=2:4, col= 2:4, type="l", lwd=4, xlab="time", ylab=paste0("Score 2 (",round(cca_expl[2],1),"%)"), axes=FALSE)
 lines(c(0,160), c(0,0), lwd=4)
 matplot(1:7, t(coef(x)), lty=2:4, col= 2:4, type="l", lwd=4, add=TRUE, axes=FALSE)
 axis(1, 1:7, colnames(coef(x)))

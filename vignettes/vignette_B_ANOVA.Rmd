@@ -224,13 +224,15 @@ repeated measures, where the repeated measures are nested under the subjects.
 Longitudinal data is a common example of repeated measures data, where
 the replicates are repetitions over time within subject. If we subset
 the simulated data, we can add a longitudinal effect to the model, in this
-case a random variation over three time-points. 
+case a random variation over three time-points. The time effect does not
+necessarily need to be random.
 
 ```{r}
+set.seed(123)
 long <- dat[c(1:4,9:12), c("feed", "daughter", "yield")]
 long <- rbind(long, long, long)
 long$time  <- factor(rep(1:3, each=8))
-long$yield <- long$yield + rnorm(24, sd = 100)
+long$yield <- long$yield + rnorm(24, sd = 100) + rep(c(-200,0,200), each=8)
 plot(yield~daughter, data=long)
 ```
 

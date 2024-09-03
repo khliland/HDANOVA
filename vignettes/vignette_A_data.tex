@@ -97,7 +97,7 @@
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
@@ -116,22 +116,6 @@
 \begin{Highlighting}[]
 \CommentTok{\# Start the HDANOVA R package}
 \FunctionTok{library}\NormalTok{(HDANOVA)}
-\CommentTok{\#\textgreater{} Registered S3 method overwritten by \textquotesingle{}plsVarSel\textquotesingle{}:}
-\CommentTok{\#\textgreater{}   method       from}
-\CommentTok{\#\textgreater{}   print.mvrVal pls}
-\CommentTok{\#\textgreater{} Registered S3 methods overwritten by \textquotesingle{}multiblock\textquotesingle{}:}
-\CommentTok{\#\textgreater{}   method             from}
-\CommentTok{\#\textgreater{}   print.multiblock   ade4}
-\CommentTok{\#\textgreater{}   summary.multiblock ade4}
-\CommentTok{\#\textgreater{} Registered S3 methods overwritten by \textquotesingle{}HDANOVA\textquotesingle{}:}
-\CommentTok{\#\textgreater{}   method             from      }
-\CommentTok{\#\textgreater{}   loadingplot.asca   multiblock}
-\CommentTok{\#\textgreater{}   loadings.asca      multiblock}
-\CommentTok{\#\textgreater{}   print.asca         multiblock}
-\CommentTok{\#\textgreater{}   print.summary.asca multiblock}
-\CommentTok{\#\textgreater{}   scoreplot.asca     multiblock}
-\CommentTok{\#\textgreater{}   scores.asca        multiblock}
-\CommentTok{\#\textgreater{}   summary.asca       multiblock}
 \CommentTok{\#\textgreater{} }
 \CommentTok{\#\textgreater{} Attaching package: \textquotesingle{}HDANOVA\textquotesingle{}}
 \CommentTok{\#\textgreater{} The following object is masked from \textquotesingle{}package:stats\textquotesingle{}:}
@@ -140,8 +124,7 @@
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{read-from-file}{%
-\section{Read from file}\label{read-from-file}}
+\section{Read from file}\label{read-from-file}
 
 Data are stored in many different file formats. The following three
 examples cover two types of CSV-files and generic flat files.
@@ -189,8 +172,7 @@ examples cover two types of CSV-files and generic flat files.
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{data-pre-processing}{%
-\section{Data pre-processing}\label{data-pre-processing}}
+\section{Data pre-processing}\label{data-pre-processing}
 
 Before analysis, various types of pre-processing may be needed. Centring
 and standardising/scaling may be considered the most basic. In R, these
@@ -219,9 +201,8 @@ normal variate (SNV) instead.
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{re-coding-categorical-data}{%
 \subsection{Re-coding categorical
-data}\label{re-coding-categorical-data}}
+data}\label{re-coding-categorical-data}
 
 Most analysis methods require continuous input data. The
 \textbf{meta\_data} \textbf{data.frame} contains a character vector (a
@@ -283,12 +264,10 @@ formats.
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{data-structures-for-analysis-including-blocks}{%
 \section{Data structures for analysis including
-blocks}\label{data-structures-for-analysis-including-blocks}}
+blocks}\label{data-structures-for-analysis-including-blocks}
 
-\hypertarget{create-list-of-blocks}{%
-\subsection{Create list of blocks}\label{create-list-of-blocks}}
+\subsection{Create list of blocks}\label{create-list-of-blocks}
 
 A simple list of blocks can be created using the \textbf{list()}
 function. Naming of the blocks can be done directly or after creation.
@@ -326,9 +305,8 @@ function. Naming of the blocks can be done directly or after creation.
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{create-data.frame-of-blocks}{%
 \subsection{Create data.frame of
-blocks}\label{create-data.frame-of-blocks}}
+blocks}\label{create-data.frame-of-blocks}
 
 A \textbf{data.frame} is a convenient storage format for data in R and
 can handle many types of variables, e.g.~numeric, logical, character,
@@ -370,59 +348,50 @@ shared sample mode.
 \CommentTok{\#\textgreater{} Jane    {-}0.62445278 {-}0.07975479 {-}1.1126332}
 \CommentTok{\#\textgreater{} Johanna {-}0.07493721  1.09576027  1.2656596}
 \NormalTok{df1[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{)]}
-\CommentTok{\#\textgreater{} $meta}
-\CommentTok{\#\textgreater{}         temperature colour.xblue colour.xgreen colour.xred}
-\CommentTok{\#\textgreater{} John           38.0            1             0           0}
-\CommentTok{\#\textgreater{} Julia          37.0            0             1           0}
-\CommentTok{\#\textgreater{} James          37.5            1             0           0}
-\CommentTok{\#\textgreater{} Jacob          37.6            0             0           1}
-\CommentTok{\#\textgreater{} Jane           37.2            0             0           1}
-\CommentTok{\#\textgreater{} Johanna        37.9            0             1           0}
-\CommentTok{\#\textgreater{} }
-\CommentTok{\#\textgreater{} $genes}
-\CommentTok{\#\textgreater{}                  V1         V2         V3}
-\CommentTok{\#\textgreater{} John     0.39033106 {-}0.5720390  1.9147573}
-\CommentTok{\#\textgreater{} Julia    0.55352785  0.0948703 {-}0.2239755}
-\CommentTok{\#\textgreater{} James    0.09872346 {-}0.1029385  0.9047138}
-\CommentTok{\#\textgreater{} Jacob   {-}0.59213740 {-}0.6027739  0.6177083}
-\CommentTok{\#\textgreater{} Jane    {-}0.02350148  0.3572809 {-}0.5168416}
-\CommentTok{\#\textgreater{} Johanna  0.76644845  1.2863428  1.8239298}
+\CommentTok{\#\textgreater{}         meta.temperature meta.colour.xblue meta.colour.xgreen meta.colour.xred}
+\CommentTok{\#\textgreater{} John                38.0               1.0                0.0              0.0}
+\CommentTok{\#\textgreater{} Julia               37.0               0.0                1.0              0.0}
+\CommentTok{\#\textgreater{} James               37.5               1.0                0.0              0.0}
+\CommentTok{\#\textgreater{} Jacob               37.6               0.0                0.0              1.0}
+\CommentTok{\#\textgreater{} Jane                37.2               0.0                0.0              1.0}
+\CommentTok{\#\textgreater{} Johanna             37.9               0.0                1.0              0.0}
+\CommentTok{\#\textgreater{}            genes.V1    genes.V2    genes.V3}
+\CommentTok{\#\textgreater{} John     0.39033106 {-}0.57203901  1.91475732}
+\CommentTok{\#\textgreater{} Julia    0.55352785  0.09487030 {-}0.22397553}
+\CommentTok{\#\textgreater{} James    0.09872346 {-}0.10293847  0.90471382}
+\CommentTok{\#\textgreater{} Jacob   {-}0.59213740 {-}0.60277392  0.61770832}
+\CommentTok{\#\textgreater{} Jane    {-}0.02350148  0.35728086 {-}0.51684156}
+\CommentTok{\#\textgreater{} Johanna  0.76644845  1.28634283  1.82392983}
 \NormalTok{df1[}\SpecialCharTok{{-}}\DecValTok{2}\NormalTok{]}
-\CommentTok{\#\textgreater{} $meta}
-\CommentTok{\#\textgreater{}         temperature colour.xblue colour.xgreen colour.xred}
-\CommentTok{\#\textgreater{} John           38.0            1             0           0}
-\CommentTok{\#\textgreater{} Julia          37.0            0             1           0}
-\CommentTok{\#\textgreater{} James          37.5            1             0           0}
-\CommentTok{\#\textgreater{} Jacob          37.6            0             0           1}
-\CommentTok{\#\textgreater{} Jane           37.2            0             0           1}
-\CommentTok{\#\textgreater{} Johanna        37.9            0             1           0}
-\CommentTok{\#\textgreater{} }
-\CommentTok{\#\textgreater{} $genes}
-\CommentTok{\#\textgreater{}                  V1         V2         V3}
-\CommentTok{\#\textgreater{} John     0.39033106 {-}0.5720390  1.9147573}
-\CommentTok{\#\textgreater{} Julia    0.55352785  0.0948703 {-}0.2239755}
-\CommentTok{\#\textgreater{} James    0.09872346 {-}0.1029385  0.9047138}
-\CommentTok{\#\textgreater{} Jacob   {-}0.59213740 {-}0.6027739  0.6177083}
-\CommentTok{\#\textgreater{} Jane    {-}0.02350148  0.3572809 {-}0.5168416}
-\CommentTok{\#\textgreater{} Johanna  0.76644845  1.2863428  1.8239298}
+\CommentTok{\#\textgreater{}         meta.temperature meta.colour.xblue meta.colour.xgreen meta.colour.xred}
+\CommentTok{\#\textgreater{} John                38.0               1.0                0.0              0.0}
+\CommentTok{\#\textgreater{} Julia               37.0               0.0                1.0              0.0}
+\CommentTok{\#\textgreater{} James               37.5               1.0                0.0              0.0}
+\CommentTok{\#\textgreater{} Jacob               37.6               0.0                0.0              1.0}
+\CommentTok{\#\textgreater{} Jane                37.2               0.0                0.0              1.0}
+\CommentTok{\#\textgreater{} Johanna             37.9               0.0                1.0              0.0}
+\CommentTok{\#\textgreater{}            genes.V1    genes.V2    genes.V3}
+\CommentTok{\#\textgreater{} John     0.39033106 {-}0.57203901  1.91475732}
+\CommentTok{\#\textgreater{} Julia    0.55352785  0.09487030 {-}0.22397553}
+\CommentTok{\#\textgreater{} James    0.09872346 {-}0.10293847  0.90471382}
+\CommentTok{\#\textgreater{} Jacob   {-}0.59213740 {-}0.60277392  0.61770832}
+\CommentTok{\#\textgreater{} Jane    {-}0.02350148  0.35728086 {-}0.51684156}
+\CommentTok{\#\textgreater{} Johanna  0.76644845  1.28634283  1.82392983}
 \NormalTok{df2[}\FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}proteins\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}genes\textquotesingle{}}\NormalTok{)]}
-\CommentTok{\#\textgreater{} $proteins}
-\CommentTok{\#\textgreater{}               prot1       prot2      prot3}
-\CommentTok{\#\textgreater{} John     0.46532048  0.30183300 {-}1.4654414}
-\CommentTok{\#\textgreater{} Julia   {-}1.79802081 {-}0.22812232 {-}0.4639203}
-\CommentTok{\#\textgreater{} James   {-}1.92962434 {-}0.40513080  0.1767796}
-\CommentTok{\#\textgreater{} Jacob    0.87437138  0.79843798  0.1234731}
-\CommentTok{\#\textgreater{} Jane    {-}0.62445278 {-}0.07975479 {-}1.1126332}
-\CommentTok{\#\textgreater{} Johanna {-}0.07493721  1.09576027  1.2656596}
-\CommentTok{\#\textgreater{} }
-\CommentTok{\#\textgreater{} $genes}
-\CommentTok{\#\textgreater{}                  V1         V2         V3}
-\CommentTok{\#\textgreater{} John     0.39033106 {-}0.5720390  1.9147573}
-\CommentTok{\#\textgreater{} Julia    0.55352785  0.0948703 {-}0.2239755}
-\CommentTok{\#\textgreater{} James    0.09872346 {-}0.1029385  0.9047138}
-\CommentTok{\#\textgreater{} Jacob   {-}0.59213740 {-}0.6027739  0.6177083}
-\CommentTok{\#\textgreater{} Jane    {-}0.02350148  0.3572809 {-}0.5168416}
-\CommentTok{\#\textgreater{} Johanna  0.76644845  1.2863428  1.8239298}
+\CommentTok{\#\textgreater{}         proteins.prot1 proteins.prot2 proteins.prot3    genes.V1    genes.V2}
+\CommentTok{\#\textgreater{} John        0.46532048     0.30183300    {-}1.46544136  0.39033106 {-}0.57203901}
+\CommentTok{\#\textgreater{} Julia      {-}1.79802081    {-}0.22812232    {-}0.46392027  0.55352785  0.09487030}
+\CommentTok{\#\textgreater{} James      {-}1.92962434    {-}0.40513080     0.17677963  0.09872346 {-}0.10293847}
+\CommentTok{\#\textgreater{} Jacob       0.87437138     0.79843798     0.12347308 {-}0.59213740 {-}0.60277392}
+\CommentTok{\#\textgreater{} Jane       {-}0.62445278    {-}0.07975479    {-}1.11263323 {-}0.02350148  0.35728086}
+\CommentTok{\#\textgreater{} Johanna    {-}0.07493721     1.09576027     1.26565956  0.76644845  1.28634283}
+\CommentTok{\#\textgreater{}            genes.V3}
+\CommentTok{\#\textgreater{} John     1.91475732}
+\CommentTok{\#\textgreater{} Julia   {-}0.22397553}
+\CommentTok{\#\textgreater{} James    0.90471382}
+\CommentTok{\#\textgreater{} Jacob    0.61770832}
+\CommentTok{\#\textgreater{} Jane    {-}0.51684156}
+\CommentTok{\#\textgreater{} Johanna  1.82392983}
 
 \CommentTok{\# Use with formula interface (see other vignettes)}
 \CommentTok{\# sopls(meta \textasciitilde{} proteins + genes, data = df1)}

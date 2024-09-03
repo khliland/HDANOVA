@@ -31,16 +31,24 @@
 #'
 #' @export
 print.asca <- function(x, ...){
-  cat("Anova Simultaneous Component Analysis fitted using", x$fit.type)
+  mod <- "Anova Simultaneous Component Analysis"
+  if(inherits(x, "apca"))
+    mod <- "Anova Principal Component Analysis"
+  if(inherits(x, "limmpca"))
+    mod <- "LiMM-PCA"
+  if(inherits(x, "msca"))
+    mod <- "Multilevel Simultaneous Component Analysis"
+  cat(paste0(mod, " fitted using"), x$fit.type)
   cat("\nCall:\n", deparse(x$call), "\n", sep = "")
   invisible(x)
 }
 
 #' @rdname asca_results
 #' @export
-summary.asca <- function(object, extended=TRUE, ...){
-  dat <- data.frame(SSQ=object$ssq, "Expl.var."=object$explvar)
-  dat <- dat[-nrow(dat),,drop=FALSE]
+summary.asca <- function(object, extended=TRUE, df=FALSE, ...){
+  dat <- data.frame(SSQ=object$ssq, "Expl.var"=object$explvar*100)
+  colnames(dat) <- c("Sum.Sq.", "Expl.var.(%)")
+#  dat <- dat[-nrow(dat),,drop=FALSE]
   if(!is.null(object$permute)){
     pvals <- object$permute$pvalues
     pvals[pvals==0] <- 1/object$permute$permutations
@@ -52,6 +60,12 @@ summary.asca <- function(object, extended=TRUE, ...){
   mod <- "Anova Simultaneous Component Analysis"
   if(inherits(object, "apca"))
     mod <- "Anova Principal Component Analysis"
+  if(inherits(object, "limmpca"))
+    mod <- "LiMM-PCA"
+  if(inherits(object, "msca")){
+    mod <- "Multilevel Simultaneous Component Analysis"
+    rownames(dat) <- c("Between", "Within")
+  }
   x <- list(dat=dat, model=mod, fit.type=object$fit.type)
   if(extended){
     LS_REML <- "least squares"
@@ -64,13 +78,16 @@ summary.asca <- function(object, extended=TRUE, ...){
     if(!is.null(object$permute))
       x$info <- paste0(x$info, ", ", object$permute$permutations, " permutations")
   }
+  if(df){
+    x$dat <- cbind(x$dat, "df"=object$dfNum, "df.denom"=object$dfDenom, "err.term"=object$denom)
+  }
   class(x) <- c('summary.asca')
   x
 }
 
 #' @rdname asca_results
 #' @export
-print.summary.asca <- function(x, digits=3, ...){
+print.summary.asca <- function(x, digits=2, ...){
   cat(x$mod, "fitted using", x$fit.type, "\n")
   if(!is.null(x$info))
     cat("-", x$info, "\n")

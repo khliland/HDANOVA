@@ -45,6 +45,7 @@ models (GLM) can be used. The following theory will be exemplified:
     * Numeric effects
 * ANOVA-PCA (APCA)
 * PC-ANOVA
+* MSCA
 * LiMM-PCA
 
 ## Basic ASCA
@@ -65,7 +66,7 @@ summary(mod)
 The summary shows that the candy effect is the largest by far. 
 
 ### Permutation testing
-To get more insight, we can perform permutation testing of the factors.
+To get more insight, we can perform permutation testing of the factors. Here we use approximate permutation.
 
 ```{r}
 # Permutation testing (default = 1000 permutations, if not specified)
@@ -73,8 +74,7 @@ mod <- asca(assessment ~ candy*assessor, data=candies, permute=TRUE)
 summary(mod)
 ```
 
-Here we see that all effects are significant, where the Candy effect is the dominating one. This can also be visualised by looking at the sums-of-squares
-values obtained under permutation compared to the original value.
+Here we see that all effects are significant, where the Candy effect is the dominating one. (The P-values are rounded from 0.001 to 0 in the print). This can also be visualised by looking at the sums-of-squares values obtained under permutation compared to the original value.
 
 ```{r}
 permutationplot(mod, factor = "assessor")
@@ -83,6 +83,7 @@ permutationplot(mod, factor = "assessor")
 ### Random effects
 One can argue that the assessors are random effects, thus should be handled
 as such in the model. We can do this by adding r() around the assessor term.
+See also LiMM-PCA below for the REML estimation version.
 
 ```{r}
 # Fit ASCA model with random assessor
@@ -102,12 +103,21 @@ scoreplot(mod, main="Candy scores")
 par(par.old)
 ```
 
-A specific factor can be plotted by specifying the factor name or number
+A specific factor can be plotted by specifying the factor name or number.
 
 ```{r, fig.width=4.5, fig.height=7}
 par.old <- par(mfrow=c(2,1), mar=c(4,4,2,1))
 loadingplot(mod, factor="assessor", scatter=TRUE, labels="names", main="Assessor loadings")
 scoreplot(mod, factor="assessor", main="Assessor scores")
+par(par.old)
+```
+
+Score plots can be modified, e.g., omitting backprojections or adding spider plots.
+
+```{r, fig.width=4.5, fig.height=7}
+par.old <- par(mfrow=c(2,1), mar=c(4,4,2,1))
+scoreplot(mod, factor="assessor", main="Assessor scores", projections=FALSE)
+scoreplot(mod, factor="assessor", main="Assessor scores", spider=TRUE)
 par(par.old)
 ```
 
@@ -159,6 +169,17 @@ mod.comb <- asca(compounds ~ time + comb(light + light:time), data=caldana)
 summary(mod.comb)
 ```
 
+\noindent When combined effects have a time factor, the scores can be plotted against time.
+
+```{r}
+# Scores plotted as a function of time
+par.old <- par(mfrow=c(2,1), mar = c(4,4,1,1))
+timeplot(mod.comb, factor="light", time="time", comb=2, comp=1, x_time=TRUE)
+timeplot(mod.comb, factor="light", time="time", comb=2, comp=2, x_time=TRUE)
+par(par.old)
+```
+
+
 ### Quantitative effects
 Quantitative effects, so-called covariates, can also be included in a model, though their use
 in ASCA are limited to ANOVA estimation and explained variance, not being used in
@@ -201,20 +222,118 @@ be one or more ANOVA tables in the summary of the output. In this example,
 we have chosen to use the number of components that explain at least 90% of the
 variation of the data.
 ```{r}
-mod <- pcanova(assessment ~ candy * assessor, data = candies, ncomp = 0.9)
-print(mod)
-summary(mod)
+mod.pc <- pcanova(assessment ~ candy * assessor, data = candies, ncomp = 0.9)
+print(mod.pc)
+summary(mod.pc)
 ```
 
 When creating score and loading plots for PC-ANOVA, the 'global' scores and loadings
-will be shown, but the factors can still be used for colouring the symbols.
+will be shown, but the factors can still be used for manipulating the symbols.
 ```{r, fig.width=4.5, fig.height=7}
 par.old <- par(mfrow=c(2,1), mar=c(4,4,2,1))
-loadingplot(mod, scatter=TRUE, labels="names", main="Global loadings")
-scoreplot(mod, main="Global scores")
+loadingplot(mod.pc, scatter=TRUE, labels="names", main="Global loadings")
+scoreplot(mod.pc, main="Global scores")
 par(par.old)
 ```
 
+## MSCA
+
+Multilevel Simultaneous Component Analysis (MSCA) is a version of ASCA that
+assumes a single factor to be used as a between-individuals factor, while the
+the within-individuals is assumed implicitly.
+
+```{r}
+# Default MSCA model with a single factor
+mod.msca <- msca(assessment ~ candy, data=candies)
+summary(mod.msca)
+```
+
+Scoreplots can be created for the between-individuals factor and the within-individuals factor,
+and for each level of the within-individuals factor.
+
+```{r}
+# Scoreplot for between-individuals factor
+scoreplot(mod.msca)
+
+# Scoreplot of within-individuals factor
+scoreplot(mod.msca, factor="within")
+
+# .. per factor level
+par.old <- par(mfrow=c(3,2), mar=c(4,4,2,1), mgp=c(2,0.7,0))
+for(i in 1:length(mod.msca$scores.within))
+ scoreplot(mod.msca, factor="within", within_level=i, 
+           main=paste0("Level: ", names(mod.msca$scores.within)[i]),
+           panel.first=abline(v=0,h=0,col="gray",lty=2))
+par(par.old)
+```
+
+
+
 ## LiMM-PCA
-TBA ...
+
+A version of LiMM-PCA is also implemented in HDANOVA. It combines REML-estimated
+mixed models with PCA and scales the back-projected errors according to degrees of freedom
+or effective dimensions (user choice).
+
+```{r}
+# Default LiMM-PCA model with two factors and interaction, 8 PCA components
+mod.reml <- limmpca(assessment ~ candy*r(assessor), data=candies, pca.in=8)
+summary(mod.reml)
+scoreplot(mod.reml, factor="candy")
+```
+
+One can also use least squares estimation without REML. This affects the random
+effects and scaling of backprojections.
+
+```{r}
+# LiMM-PCA with least squares estimation and 8 PCA components
+mod.ls <- limmpca(assessment ~ candy*r(assessor), data=candies, REML=NULL, pca.in=8)
+summary(mod.ls)
+scoreplot(mod.ls)
+```
+
+## Repeated measures
+
+We revisit the simulated data from the ANOVA vignette to demonstrate ASCA with
+repeated measures. The data are subset, a time effect is added, and the response
+is extended to the multivariate case.
+
+```{r}
+set.seed(123)
+# Original simulation
+dat <- data.frame(
+  feed  = factor(rep(rep(c("low","high"), each=6), 4)),
+  breed = factor(rep(c("NRF","Hereford","Angus"), 16)),
+  bull  = factor(rep(LETTERS[1:4], each = 12)),
+  daughter = factor(rep(letters[1:4], 12)),
+  age   = round(rnorm(48, mean = 36, sd = 5))
+)
+dat$yield <- 150*with(dat, 10 + 3 * as.numeric(feed) + as.numeric(breed) + 
+                        2 * as.numeric(bull) + 1 * as.numeric(sample(dat$daughter, 48)) + 
+                        0.5 * age + rnorm(48, sd = 2))
+# Extended to repeated measures
+long <- dat[c(1:4,9:12), c("feed", "daughter", "yield")]
+long <- rbind(long, long, long)
+long$time  <- factor(rep(1:3, each=8))
+long$yield <- long$yield + rnorm(24, sd = 100) + rep(c(-200,0,200), each=8)
+# Made multiresponse (no added structure, only noise)
+long$yield <- I(matrix(rep(long$yield,10),nrow=length(long$yield),ncol=10)) + rnorm(length(long$yield)*10)
+```
+
+Analysing the data with ASCA using the least squares approach.
+
+```{r}
+# Least squares mixed model ASCA
+mod.rm.asca <- asca(yield ~ r(daughter) + feed*r(time), data = long)
+summary(mod.rm.asca)
+```
+
+Corresponding analysis using the LiMM-PCA approach with REML estimation.
+
+```{r}
+# REML mixed model LiMM-PCA
+mod.rm.limmpca <- limmpca(yield ~ r(daughter) + feed*r(time), data = long, pca.in=2)
+summary(mod.rm.limmpca)
+```
+
 

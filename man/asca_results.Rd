@@ -13,9 +13,9 @@
 \usage{
 \method{print}{asca}(x, ...)
 
-\method{summary}{asca}(object, extended = TRUE, ...)
+\method{summary}{asca}(object, extended = TRUE, df = FALSE, ...)
 
-\method{print}{summary.asca}(x, digits = 3, ...)
+\method{print}{summary.asca}(x, digits = 2, ...)
 
 \method{loadings}{asca}(object, factor = 1, ...)
 

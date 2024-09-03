@@ -97,7 +97,7 @@
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
@@ -119,17 +119,26 @@
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{additional-methods-of-hd-anova}{%
 \section{Additional methods of
-HD-ANOVA}\label{additional-methods-of-hd-anova}}
+HD-ANOVA}\label{additional-methods-of-hd-anova}
 
-\hypertarget{principal-response-curves-prc}{%
+The examples shown here are HD-ANOVA methods that share aspects with
+ASCA.
+
+\begin{itemize}
+\tightlist
+\item
+  Principal Response Curves (PRC)
+\item
+  Permutation Based MANOVA (PERMANOVA)
+\end{itemize}
+
 \subsection{Principal Response Curves
-(PRC)}\label{principal-response-curves-prc}}
+(PRC)}\label{principal-response-curves-prc}
 
 The PRC implementation we have wrapped is from the vegan package. A
 single treatment factor and a time factor are accepted together with a
-response matrix. The first level of the treatment factor is used as
+response matrix. The first level of the treatment factor is used as a
 reference level, effectively set to zero. As the vegan package is aimed
 at community ecology, the responses are called species. In our case, the
 responses are compounds from the Caldana data.
@@ -143,84 +152,84 @@ responses are compounds from the Caldana data.
 \FunctionTok{summary}\NormalTok{(prc.cal)}
 \CommentTok{\#\textgreater{} }
 \CommentTok{\#\textgreater{} Call:}
-\CommentTok{\#\textgreater{} vegan::prc(response = response, treatment = treatment, time = time) }
+\CommentTok{\#\textgreater{} prc(formula = compounds \textasciitilde{} light * time, data = caldana) }
 \CommentTok{\#\textgreater{} Species scores:}
 \CommentTok{\#\textgreater{}                    Alanine                     Valine }
-\CommentTok{\#\textgreater{}                   0.486693                   0.094963 }
+\CommentTok{\#\textgreater{}                   0.900828                   0.175768 }
 \CommentTok{\#\textgreater{}                    Leucine                 Isoleucine }
-\CommentTok{\#\textgreater{}                  {-}0.355262                  {-}0.143003 }
+\CommentTok{\#\textgreater{}                  {-}0.657559                  {-}0.264687 }
 \CommentTok{\#\textgreater{}                    Proline                     Serine }
-\CommentTok{\#\textgreater{}                   0.616952                  {-}0.027900 }
+\CommentTok{\#\textgreater{}                   1.141926                  {-}0.051640 }
 \CommentTok{\#\textgreater{}                  Threonine               beta{-}alanine }
-\CommentTok{\#\textgreater{}                   0.040614                  {-}0.392493 }
+\CommentTok{\#\textgreater{}                   0.075174                  {-}0.726471 }
 \CommentTok{\#\textgreater{}             Hydroxyproline                       GABA }
-\CommentTok{\#\textgreater{}                  {-}0.003806                  {-}0.587758 }
+\CommentTok{\#\textgreater{}                  {-}0.007045                  {-}1.087892 }
 \CommentTok{\#\textgreater{}                  Aspartate                 Asparagine }
-\CommentTok{\#\textgreater{}                  {-}0.376071                  {-}0.182971 }
+\CommentTok{\#\textgreater{}                  {-}0.696076                  {-}0.338664 }
 \CommentTok{\#\textgreater{}                 Methionine            O{-}acetyl{-}serine }
-\CommentTok{\#\textgreater{}                   0.466437                   0.111155 }
+\CommentTok{\#\textgreater{}                   0.863337                   0.205739 }
 \CommentTok{\#\textgreater{}                  Glutamate              Phenylalanine }
-\CommentTok{\#\textgreater{}                  {-}0.182494                   0.672657 }
+\CommentTok{\#\textgreater{}                  {-}0.337782                   1.245032 }
 \CommentTok{\#\textgreater{}                  Ornithine                  Glutamine }
-\CommentTok{\#\textgreater{}                   0.022227                   0.703807 }
+\CommentTok{\#\textgreater{}                   0.041141                   1.302687 }
 \CommentTok{\#\textgreater{}                     Lysine                   Tyrosine }
-\CommentTok{\#\textgreater{}                  {-}0.635031                  {-}0.327927 }
+\CommentTok{\#\textgreater{}                  {-}1.175389                  {-}0.606966 }
 \CommentTok{\#\textgreater{}              Threonic{-}acid        Citrulline{-}Arginine }
-\CommentTok{\#\textgreater{}                  {-}0.174558                   0.284600 }
+\CommentTok{\#\textgreater{}                  {-}0.323093                   0.526770 }
 \CommentTok{\#\textgreater{}               Pyruvic{-}acid                Citric{-}acid }
-\CommentTok{\#\textgreater{}                   0.255813                  {-}0.223749 }
+\CommentTok{\#\textgreater{}                   0.473488                  {-}0.414141 }
 \CommentTok{\#\textgreater{}              Succinic{-}acid               Fumaric{-}acid }
-\CommentTok{\#\textgreater{}                  {-}0.373253                   0.002734 }
+\CommentTok{\#\textgreater{}                  {-}0.690860                   0.005060 }
 \CommentTok{\#\textgreater{}                 Malic{-}acid                Lactic{-}acid }
-\CommentTok{\#\textgreater{}                   0.003523                  {-}0.268739 }
+\CommentTok{\#\textgreater{}                   0.006521                  {-}0.497413 }
 \CommentTok{\#\textgreater{}              Glycolic{-}acid               Benzoic{-}acid }
-\CommentTok{\#\textgreater{}                   0.877754                  {-}0.076579 }
+\CommentTok{\#\textgreater{}                   1.624649                  {-}0.141741 }
 \CommentTok{\#\textgreater{}                Maleic{-}acid             Nicotinic{-}acid }
-\CommentTok{\#\textgreater{}                   0.414920                  {-}0.032950 }
+\CommentTok{\#\textgreater{}                   0.767982                  {-}0.060987 }
 \CommentTok{\#\textgreater{}              Itaconic{-}acid                Citramalate }
-\CommentTok{\#\textgreater{}                  {-}0.091313                   0.027395 }
+\CommentTok{\#\textgreater{}                  {-}0.169012                   0.050705 }
 \CommentTok{\#\textgreater{}     4{-}hydroxy{-}benzoic{-}acid Dehydroascorbic{-}acid{-}dimer }
-\CommentTok{\#\textgreater{}                  {-}0.103391                   0.033806 }
+\CommentTok{\#\textgreater{}                  {-}0.191369                   0.062572 }
 \CommentTok{\#\textgreater{}              Gluconic{-}acid       Dehydroascorbic{-}acid }
-\CommentTok{\#\textgreater{}                  {-}0.086126                  {-}0.058636 }
+\CommentTok{\#\textgreater{}                  {-}0.159411                  {-}0.108530 }
 \CommentTok{\#\textgreater{}              Ascorbic{-}acid     4{-}Hydroxycinnamic{-}acid }
-\CommentTok{\#\textgreater{}                  {-}0.125669                  {-}0.072141 }
+\CommentTok{\#\textgreater{}                  {-}0.232603                  {-}0.133527 }
 \CommentTok{\#\textgreater{}         Similar{-}to{-}Adenine                  Shikimate }
-\CommentTok{\#\textgreater{}                   0.005596                   0.474595 }
+\CommentTok{\#\textgreater{}                   0.010357                   0.878436 }
 \CommentTok{\#\textgreater{}                 Erythritol                  Arabinose }
-\CommentTok{\#\textgreater{}                  {-}0.036799                  {-}0.059492 }
+\CommentTok{\#\textgreater{}                  {-}0.068112                  {-}0.110114 }
 \CommentTok{\#\textgreater{}                   Arabitol                     Fucose }
-\CommentTok{\#\textgreater{}                  {-}0.182318                  {-}0.028079 }
+\CommentTok{\#\textgreater{}                  {-}0.337455                  {-}0.051972 }
 \CommentTok{\#\textgreater{}                   Fructose                   Mannitol }
-\CommentTok{\#\textgreater{}                   1.948726                   0.116561 }
+\CommentTok{\#\textgreater{}                   3.606930                   0.215745 }
 \CommentTok{\#\textgreater{}                  Galactose                    Glucose }
-\CommentTok{\#\textgreater{}                   0.052585                   1.500686 }
+\CommentTok{\#\textgreater{}                   0.097331                   2.777645 }
 \CommentTok{\#\textgreater{}                    Sucrose                    Maltose }
-\CommentTok{\#\textgreater{}                   0.332384                  {-}0.142602 }
+\CommentTok{\#\textgreater{}                   0.615215                  {-}0.263945 }
 \CommentTok{\#\textgreater{}                  Trehalose                 Galactinol }
-\CommentTok{\#\textgreater{}                  {-}0.105756                   0.114187 }
+\CommentTok{\#\textgreater{}                  {-}0.195746                   0.211351 }
 \CommentTok{\#\textgreater{}               myo{-}inositol                     Uracil }
-\CommentTok{\#\textgreater{}                  {-}0.037906                  {-}0.576824 }
+\CommentTok{\#\textgreater{}                  {-}0.070161                  {-}1.067653 }
 \CommentTok{\#\textgreater{}                 Putrescine               Ethanolamine }
-\CommentTok{\#\textgreater{}                  {-}0.113630                  {-}0.295268 }
+\CommentTok{\#\textgreater{}                  {-}0.210320                  {-}0.546516 }
 \CommentTok{\#\textgreater{}                   Glycerol      Indole{-}3{-}acetonitrile }
-\CommentTok{\#\textgreater{}                  {-}0.079349                   0.100361 }
+\CommentTok{\#\textgreater{}                  {-}0.146868                   0.185760 }
 \CommentTok{\#\textgreater{}               Sinapic{-}acid              Palmitic{-}acid }
-\CommentTok{\#\textgreater{}                   0.071144                  {-}0.144457 }
+\CommentTok{\#\textgreater{}                   0.131682                  {-}0.267378 }
 \CommentTok{\#\textgreater{}          Octadecanoic{-}acid            Docosanoic{-}acid }
-\CommentTok{\#\textgreater{}                  {-}0.195115                  {-}0.161801 }
+\CommentTok{\#\textgreater{}                  {-}0.361142                  {-}0.299480 }
 \CommentTok{\#\textgreater{}         Tetracosanoic{-}acid          Hexacosanoic{-}acid }
-\CommentTok{\#\textgreater{}                   0.032725                   0.102110 }
+\CommentTok{\#\textgreater{}                   0.060571                   0.188997 }
 \CommentTok{\#\textgreater{}          Octacosanoic{-}acid }
-\CommentTok{\#\textgreater{}                   0.090308 }
+\CommentTok{\#\textgreater{}                   0.167153 }
 \CommentTok{\#\textgreater{} }
 \CommentTok{\#\textgreater{} Coefficients for treatment + time:treatment interaction}
 \CommentTok{\#\textgreater{} which are contrasts to treatment Dark }
 \CommentTok{\#\textgreater{} rows are treatment, columns are time}
-\CommentTok{\#\textgreater{}                    0         5        10        20        40      80    160}
-\CommentTok{\#\textgreater{} Low Light  1.035e{-}15 {-}0.002369 {-}0.035096 {-}0.078319 {-}0.004197 0.07058 0.1179}
-\CommentTok{\#\textgreater{} Light      2.028e{-}15 {-}0.024598  0.066526 {-}0.054370  0.063304 0.15538 0.2166}
-\CommentTok{\#\textgreater{} High Light 1.041e{-}15 {-}0.007038 {-}0.006533  0.005982  0.200749 0.43379 0.4962}
+\CommentTok{\#\textgreater{}                    0         5       10        20        40     80    160}
+\CommentTok{\#\textgreater{} Low Light  1.601e{-}15 {-}0.003685 {-}0.05458 {-}0.121789 {-}0.006526 0.1098 0.1833}
+\CommentTok{\#\textgreater{} Light      3.011e{-}15 {-}0.038250  0.10345 {-}0.084547  0.098440 0.2416 0.3368}
+\CommentTok{\#\textgreater{} High Light 1.620e{-}15 {-}0.010944 {-}0.01016  0.009301  0.312173 0.6746 0.7716}
 \end{Highlighting}
 \end{Shaded}
 
@@ -236,15 +245,8 @@ which the other levels are contrasted.
 
 \includegraphics{/Users/kristian/Documents/GitHub/HDANOVA/vignettes/vignette_D_additional_files/figure-latex/unnamed-chunk-3-1.pdf}
 
-\hypertarget{principal-coordinate-analysis-pcoa}{%
-\subsection{Principal Coordinate Analysis
-(PCoA)}\label{principal-coordinate-analysis-pcoa}}
-
-Is this a method we want to include?
-
-\hypertarget{permutation-based-manova---permanova}{%
-\subsection{Permutation Based MANOVA -
-PERMANOVA}\label{permutation-based-manova---permanova}}
+\subsection{Permutation Based MANOVA
+(PERMANOVA)}\label{permutation-based-manova-permanova}
 
 The PERMANOVA implementation we have wrapped is from the vegan package.
 Our wrapper takes care of the specialised formatting needed for the
@@ -254,7 +256,6 @@ p-values.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Load Caldana data}
 \NormalTok{permanova.cal }\OtherTok{\textless{}{-}} \FunctionTok{permanova}\NormalTok{(compounds }\SpecialCharTok{\textasciitilde{}}\NormalTok{ light }\SpecialCharTok{*}\NormalTok{ time, caldana)}
 \NormalTok{permanova.cal}
 \CommentTok{\#\textgreater{} Permutation test for adonis under reduced model}

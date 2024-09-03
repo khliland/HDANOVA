@@ -2,12 +2,11 @@
 % Please edit documentation in R/pcanova_plots.R
 \name{pcanova_plots}
 \alias{pcanova_plots}
-\alias{scoreplot.pcanovas}
 \alias{scoreplot.pcanova}
 \alias{loadingplot.pcanova}
 \title{PC-ANOVA Result Methods}
 \usage{
-\method{scoreplot}{pcanovas}(object, factor = 1, comps = 1:2, labels = "factor", ...)
+\method{scoreplot}{pcanova}(object, factor = 1, comps = 1:2, col = "factor", ...)
 }
 \arguments{
 \item{object}{\code{pcanova} object.}
@@ -17,26 +16,6 @@
 \item{comps}{\code{integer} vector of selected components.}
 
 \item{...}{additional arguments to underlying methods.}
-
-\item{pch.scores}{\code{integer} plotting symbol.}
-
-\item{pch.projections}{\code{integer} plotting symbol.}
-
-\item{gr.col}{\code{integer} vector of colours for groups.}
-
-\item{ellipsoids}{\code{character} "confidence" or "data" ellipsoids for balanced fixed effect models.}
-
-\item{confidence}{\code{numeric} vector of ellipsoid confidences, default = c(0.4, 0.68, 0.95).}
-
-\item{xlim}{\code{numeric} x limits.}
-
-\item{ylim}{\code{numeric} y limits.}
-
-\item{xlab}{\code{character} x label.}
-
-\item{ylab}{\code{character} y label.}
-
-\item{legendpos}{\code{character} position of legend.}
 }
 \value{
 The plotting routines have no return.
