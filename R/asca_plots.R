@@ -44,6 +44,11 @@ loadingplot.asca <- function(object, factor = 1, comps = 1:2, ...){
     if(factor > 0)
       factor <- -factor
   }
+  if((inherits(object, "scores") && ncol(object) == 1 ) ||
+     (inherits(object, "multiblock") && length(object$Xvar) == 1)){ # Check for single component in model
+    comps <- comps[1]
+    nComps <- length(comps)
+  }
   # Check if input PCA should be used instead of PCAs of factor LS matrices.
   global <- FALSE
   if(factor < 1 || factor == "global"){
