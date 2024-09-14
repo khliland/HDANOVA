@@ -2,7 +2,9 @@
 #' @importFrom lme4 lmer glmer getME ranef VarCorr fixef
 #' @importFrom progress progress_bar
 #' @export
-asca_fit <- function(formula, data, subset, weights, na.action, family, permute=FALSE,
+asca_fit <- function(formula, data, subset, weights, na.action, family,
+                     permute=FALSE,
+                     perm.type=c("exact","approximate"),
                      unrestricted = FALSE,
                      add_error = FALSE, # TRUE => APCA/LiMM-PCA
                      aug_error = "denominator", # "residual" => Mixed, alpha-value => LiMM-PCA
@@ -285,7 +287,7 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute=
   LS <- effects <- list()
   for(i in 1:length(approved)){
     a <- approved[i]
-    LS[[effs[a]]] <- M[, assign==a, drop=FALSE] %*% coefs[assign==a,]
+    LS[[effs[a]]] <- M[, assign==a, drop=FALSE] %*% coefs[assign==a,, drop=FALSE]
     colnames(LS[[effs[a]]]) <- colnames(Y)
     effects[[effs[a]]] <- modFra[[effs[a]]]
   }
@@ -339,7 +341,7 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute=
       names(ets) <- anonam
       dfDenom <- ano$denom.df
       dfNum   <- ano$anova[["Df"]]
-      names(dfNum) <- anonam
+      names(dfNum) <- names(dfDenom) <- anonam # May need to limit to approved?
     } else {
       formulaOld <- formula
       formula <- formula(paste0(gsub("(1 | ", "r(", as.character(formula(mod)), fixed = TRUE)[c(2,1,3)], collapse=" "))
@@ -528,6 +530,8 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute=
       LS_aug[[approved[length(approved)]]] <- error[[approved[length(approved)]]]
       names(LS_aug)[approved[length(approved)]] <- combName
     }
+  } else {
+    names(approvedComb) <- names(approvedAB)
   }
   if(names(ssq)[length(ssq)] == "Residuals")
     ssq <- c(ssq[setdiff(1:(length(ssq)-1), remove)],ssq_residual)
@@ -544,31 +548,51 @@ asca_fit <- function(formula, data, subset, weights, na.action, family, permute=
       permute <- 1000
       cat("Defaulting to 1000 permutations\n")
     }
-    ssqa <- pvals <- numeric(length(approved))
-    ssqaperm <- lapply(1:length(approved),function(i)"NA")
-    names(ssqa) <- names(ssqaperm) <- names(pvals) <- effs[approved]
-    for(i in 1:length(approved)){
-      a <- approved[i]
-      perms <- numeric(permute)
-      # Subset of design matrix for effect a
-      D <- M[, assign%in%approvedComb[[names(a)]], drop=FALSE]
-      # Base ssq
-      ssqa[effs[a]] <- norm(D %*% pracma::pinv(D) %*% LS_aug[[effs[a]]], "F")^2
-      pb <- progress_bar$new(total = permute, format = paste0("  Permuting ", effs[a], " (", i,"/",length(approved),") [:bar] :percent (:eta)"))
-      # Permuted ssqs
-      for(perm in 1:permute){
-        perms[perm] <- norm(D %*% pracma::pinv(D) %*% LS_aug[[effs[a]]][sample(N),], "F")^2
-        pb$tick()
+    if(perm.type[1] == "approximate"){
+      ssqa <- pvals <- numeric(length(approved))
+      ssqaperm <- lapply(1:length(approved),function(i)"NA")
+      names(ssqa) <- names(ssqaperm) <- names(pvals) <- effs[approved]
+      for(i in 1:length(approved)){
+        a <- approvedAB[i]
+        perms <- numeric(permute)
+        # Subset of design matrix for effect a
+        D <- M[, assign%in%approvedComb[[names(a)]], drop=FALSE]
+        DD <- D %*% pracma::pinv(D)
+        # Base ssq
+        ssqa[effs[a]] <- norm(DD %*% LS_aug[[effs[a]]], "F")^2
+        pb <- progress_bar$new(total = permute, format = paste0("  Permuting ", effs[a], " (", i,"/",length(approved),") [:bar] :percent (:eta)"))
+        # Permuted ssqs
+        for(perm in 1:permute){
+          perms[perm] <- norm(DD %*% LS_aug[[effs[a]]][sample(N),], "F")^2
+          pb$tick()
+        }
+        ssqaperm[[effs[a]]] <- perms
+        pvals[effs[a]] <- sum(perms > ssqa[effs[a]])/(permute)
       }
-      ssqaperm[[effs[a]]] <- perms
-      pvals[effs[a]] <- sum(perms > ssqa[effs[a]])/(permute)
+    }
+    if(perm.type[1] == "exact"){
+      # lme4 vs LS
+      if(!lme4 && !is.logical(REML)){
+        stop("Exact permutations in lme4 models not implemented yet!")
+      }
+      # Loop over effects
+      for(i in 1:length(approved)){
+        stop("Exact permutations not implemented yet!")
+        a <- approvedAB[i]
+        perms <- numeric(permute)
+        # Subset of design matrix for effect a
+        #D <- M[, assign%in%approvedComb[[names(a)]], drop=FALSE]
+        #DD <- D %*% pracma::pinv(D)
+      # Find permissible units
+        # Check balance, warning
+      # Permute
+      }
     }
   }
 
   # SCAs
   scores <- loadings <- projected <- singulars <- list()
   for(i in approved){
-    #maxDir <- min(sum(assign==i), p)
     maxDiri <- maxDir[i]
     if(pca.in != 0)
       maxDiri <- min(maxDiri, pca.in)
