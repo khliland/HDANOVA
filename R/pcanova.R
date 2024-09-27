@@ -1,5 +1,3 @@
-# TODO:
-# - Add scoreplot and loadingplot functions
 #' @name pcanova
 #' @aliases pcanova
 #' @title Principal Components Analysis of Variance Simultaneous Component Analysis - PC-ANOVA
@@ -19,11 +17,10 @@
 #'
 #' @description This is a quite general and flexible implementation of PC-ANOVA.
 #'
-#' @details TODO: Update details. PC-ANOVA is a method which decomposes a multivariate response according to one or more design
-#' variables. ANOVA is used to split variation into contributions from factors, and PCA is performed
-#' on the corresponding least squares estimates, i.e., \code{Y = X1 B1 + X2 B2 + ... + E = T1 P1' + T2 P2' + ... + E}.
-#' This version of PC-ANOVA encompasses variants of LiMM-PCA, generalized PC-ANOVA and covariates PC-ANOVA. It includes
-#' confidence ellipsoids for the balanced fixed effect PC-ANOVA.
+#' @details PC-ANOVA works in the opposite order of ASCA. First the response matrix
+#' is decomposed using ANOVA. Then the components are analysed using ANOVA
+#' with respect to a design or grouping in the data. The latter can be ordinary
+#' fixed effects modelling or mixed models.
 #'
 #' @references Luciano G, Næs T. Interpreting sensory data by combining principal
 #' component analysis and analysis of variance. Food Qual Prefer. 2009;20(3):167-175.
@@ -32,7 +29,9 @@
 #' @importFrom car ellipse dataEllipse Anova
 #' @importFrom progress progress_bar
 #' @importFrom RSpectra svds
-#' @seealso TODO
+#' @seealso Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
+#' Workhorse function underpinning most methods: \code{\link{asca_fit}}.
+#' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 #' @examples
 #' # Load candies data
 #' data(candies)
@@ -60,11 +59,6 @@
 #' scoreplot(mod.mix)
 #' # Fixed effects
 #' summary(mod.mix)
-#'
-#'
-#' # TODO, example with lme4?
-#' # Random effects
-#' lapply(mod.mix$models, lme4::ranef)
 #'
 #' @export
 pcanova <- function(formula, data, ncomp = 0.9, ...){

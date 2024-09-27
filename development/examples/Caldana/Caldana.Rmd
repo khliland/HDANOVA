@@ -23,7 +23,7 @@ nam <- c('Alanine', 'Valine', 'Leucine', 'Isoleucine', 'Proline', 'Serine', 'Thr
 ## Estimate all
 
 ```{r}
-mod <- HDANOVA:::.asca(Y~light*time, caldana, add_error = FALSE, coding = "sum")
+mod <- asca(Y~light*time, caldana, add_error = FALSE, coding = "sum")
 #modM <- multiblock::asca(Y~light*time, caldana)
 expl <- attr(mod$scores$light, "explvar")
 expl
@@ -44,11 +44,18 @@ mod2$effects[[1]] <- mod2$effects$`light:time`
 par(mfrow=c(1,1), mar=c(4,4,1,1))
 scoreplot(mod2)
 
-png("Caldana_ASCA.png", 1000,1200, pointsize = 36)
+#png("Caldana_ASCA.png", 1000,1200, pointsize = 36)
+pdf("Caldana_ASCA.pdf", 15,18, pointsize = 36)
 par(mfrow=c(3,1), mar=c(2,4,2,1), mgp = c(2.5, 1, 0))
 barplot(t(pc$loadings[,1:2]), beside=TRUE, ylab="loading value", main=paste0("light + time:light (",round(sum(mod$explvar[2:3])*100,2),"%)"),
         legend.text = c(paste0("Component 1 (",round(pc$explvar[1],1),"%)"), paste0("Component 2 (",round(pc$explvar[2],1),"%)")), names.arg = rep("",67), args.legend = c("x"="topright"), lwd=2)
 graphics::box()
+text(82,0.65, "O-acetyl-serine", cex=0.9, pos=2)
+lines(c(43,50),c(0.45,0.58), lwd=3)
+text(141,-0.5, "Fructose", cex=0.9, pos=2)
+lines(c(131,138),c(-0.44,-0.31), lwd=3)
+text(171,-0.4, "Glucose", cex=0.9, pos=2)
+lines(c(155,150),c(-0.32,-0.22), lwd=3)
 
 par(mar=c(4,4,0,1))
 means <- tapply(mod2$scores[[1]][,1], mod2$effects$`light:time`, mean)
@@ -80,7 +87,7 @@ dev.off()
 # APCA
 
 ```{r}
-mod <- HDANOVA:::.asca(Y~light*time, caldana, add_error = TRUE)
+mod <- apca(Y~light*time, caldana)
 #modM <- multiblock::asca(Y~light*time, caldana)
 expl <- attr(mod$scores$light, "explvar")
 expl
@@ -101,11 +108,22 @@ mod2$effects[[1]] <- mod2$effects$`light:time`
 par(mfrow=c(1,1), mar=c(4,4,1,1))
 scoreplot(mod2)
 
-png("Caldana_APCA.png", 1000,1200, pointsize = 36)
+#png("Caldana_APCA.png", 1000,1200, pointsize = 36)
+pdf("Caldana_APCA.pdf", 15,18, pointsize = 36)
 par(mfrow=c(3,1), mar=c(2,4,2,1), mgp = c(2.5, 1, 0))
 barplot(t(pc$loadings[,1:2]), beside=TRUE, ylab="loading value", main=paste0("light + time:light (",round(sum(mod$explvar[2:3])*100,2),"%)"),
         legend.text = c(paste0("Component 1 (",round(pc$explvar[1],1),"%)"), paste0("Component 2 (",round(pc$explvar[2],1),"%)")), names.arg = rep("",67), args.legend = c("x"="bottomleft"), lwd=2)
 graphics::box()
+text(140,-0.55, "Fructose", cex=0.9, pos=2)
+lines(c(137,130),c(-0.42,-0.52), lwd=3)
+text(110,-0.48, "Maleic acid", cex=0.9, pos=2)
+lines(c(94,101),c(-0.34,-0.44), lwd=3)
+text(190,-0.38, "Docosanoic", cex=0.9, pos=2)
+text(185,-0.425, "acid", cex=0.9, pos=2)
+lines(c(189,182),c(-0.24,-0.34), lwd=3)
+text(210,-0.505, "Tetracosanoic", cex=0.9, pos=2)
+text(205,-0.55, "acid", cex=0.9, pos=2)
+lines(c(195,200),c(-0.37,-0.47), lwd=3)
 
 par(mar=c(4,4,0,1))
 means <- tapply(mod2$scores[[1]][,1], mod2$effects$`light:time`, mean)
@@ -165,13 +183,20 @@ matplot(colnames(coef(x)), t(coef(x)), lty=2:4, col= 2:4, type="l", lwd=4, add=T
 
 ```{r}
 cca_expl <- prc.cal$CCA$eig/prc.cal$CCA$tot.chi*100
-png("Caldana_PRC.png", 1000,1200, pointsize = 36)
+#png("Caldana_PRC.png", 1000,1200, pointsize = 36)
+pdf("Caldana_PRC.pdf", 15,18, pointsize = 36)
 par(mfrow=c(3,1), mar=c(2,4,2,1), mgp = c(2.5, 1, 0))
 scores(prc.cal)$species
 #barplot(t(prc.cal$CCA$v[,1:2]), beside=TRUE, ylab="Correlation", main=paste0("light +
 barplot(t(scores(prc.cal)$species[,1:2]), beside=TRUE, ylab="loading value", main=paste0("light + time:light (",round(prc.cal$CCA$tot.chi/prc.cal$tot.chi*100,2),"%)"),
         legend.text = c(paste0("Component 1 (",round(cca_expl[1],1),"%)"), paste0("Component 2 (",round(cca_expl[2],1),"%)")), names.arg = rep("",67), args.legend = c("x"="top"), lwd=2)
 graphics::box()
+text(40,0.9, "O-acetyl-serine", cex=0.9, pos=2)
+lines(c(32,39),c(0.82,0.72), lwd=3)
+text(140,0.58, "Fructose", cex=0.9, pos=2)
+lines(c(133,138),c(0.52,0.42), lwd=3)
+text(175,0.75, "Glucose", cex=0.9, pos=2)
+lines(c(150,155),c(0.57,0.69), lwd=3)
 
 par(mar=c(4,4,0,1))
 x <- summary(prc.cal, axis = 1, scaling = "symmetric", correlation = FALSE)

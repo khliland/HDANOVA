@@ -92,6 +92,9 @@
 #' does plus interaction terms.
 #' @export
 #'
+#' @seealso Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
+#' Workhorse function underpinning most methods: \code{\link{asca_fit}}.
+#' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 #' @examples
 #' dat <- data.frame(Y = c(1,2,3,4,5,6),
 #'                   X = factor(LETTERS[c(1,1,2,2,3,3)]),
@@ -149,6 +152,9 @@ update.without.factor <- function(model, fac, hierarchical = TRUE){
 #' @param to.matrix \code{logical} indicating if input list elements should be converted to matrices.
 #'
 #' @return A \code{data.frame} which can be indexed block-wise.
+#' @seealso Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
+#' Workhorse function underpinning most methods: \code{\link{asca_fit}}.
+#' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 #' @examples
 #' # Random data
 #' M <- matrix(rnorm(200), nrow = 10)

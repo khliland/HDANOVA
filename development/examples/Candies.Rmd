@@ -112,10 +112,12 @@ scoreplot(mod, factor = "candy", ellipsoids = "data", main = "Data: A + C + A:C,
           panel.first = abline(v=0,h=0,lty=2, col="gray"), lwd=4,
           xlim = c(-26, 22), ylim = c(-15, 15))
 
+candies2 <- candies[rep(1:3,55) < 3,]
 mod2 <- asca(assessment ~ assessor+candy, data = candies2)
 scoreplot(mod2, factor = "candy", ellipsoids = "confidence", main = "Model: A + C, N = 2",
           panel.first = abline(v=0,h=0,lty=2, col="gray"), lwd=4,
           xlim = c(-26, 22), ylim = c(-15, 15))
+candies3 <- candies[rep(1:3,55) == 1,]
 mod3 <- asca(assessment ~ assessor+candy, data = candies3)
 scoreplot(mod3, factor = "candy", ellipsoids = "confidence", main = "Model: A + C, N = 1",
           panel.first = abline(v=0,h=0,lty=2, col="gray"), lwd=4,
@@ -146,5 +148,15 @@ scoreplot(mod3, factor = "candy", ellipsoids = "confidence", main = "Model: A + 
 library(R.matlab)
 dat <- readMat("./development/examples/Pasta_NIR.mat")
 pasta <- data.frame(NIR = I(dat$xa), f1=factor(dat$desmat[,1]), f2=factor(dat$desmat[,2]), f3=factor(dat$desmat[,3]))
+```
+
+```{r}
+mod <- asca(assessment~candy*assessor, data=candies)
+pdf("FigCh1_Candies_ASCA.pdf", 10,5)
+par(mfrow=c(1,2), mar=c(5,4,4,2), mgp=c(2,0.7,0))
+scoreplot(mod, factor="assessor", projections = FALSE, legendpos = "topright", 
+          gr.col="black", pch.scores = 1:11, xlim = c(-3.5, 6.5))
+loadingplot(mod, factor="assessor", scatter=TRUE, labels="names", xlim = c(-0.4,0.75))
+dev.off()
 ```
 

@@ -47,6 +47,7 @@ Luciano G, Næs T. Interpreting sensory data by combining principal
 component analysis and analysis of variance. Food Qual Prefer. 2009;20(3):167-175.
 }
 \seealso{
-TODO Overviews of available methods, \code{\link{multiblock}}, and methods organised by main structure: \code{\link{basic}}, \code{\link{unsupervised}}, \code{\link{pcanova}}, \code{\link{supervised}} and \code{\link{complex}}.
-Common functions for plotting are found in \code{\link{pcanova_plots}}.
+Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
+Workhorse function underpinning most methods: \code{\link{asca_fit}}.
+Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 }

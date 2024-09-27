@@ -6,19 +6,21 @@
 \alias{HDANOVA}
 \title{HDANOVA}
 \description{
-Included so far:
+Included methods:
 \itemize{
-\item Basic ASCA+ with some extras and plotting
-\item PC-ANOVA
+\item ASCA+ - Analysis of Variance Simultaneous Component Analysis
+\item APCA+ - ANOVA Principal Component Analysis
+\item LiMM-PCA - Linear Mixed Model PCA
+\item MSCA - Multilevel Simultaneous Component Analysis
+\item PC-ANOVA - Principal Component Analysis of Variance
+\item PRC - Principal Response Curves
+\item PERMANOVA - Permutation Based MANOVA
 }
 }
 \seealso{
-Useful links:
-\itemize{
-  \item \url{https://github.com/khliland/HDANOVA/}
-  \item Report bugs at \url{https://github.com/khliland/HDANOVA/issues/}
-}
-
+Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
+Workhorse function underpinning most methods: \code{\link{asca_fit}}.
+Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 }
 \author{
 \strong{Maintainer}: Kristian Hovde Liland \email{kristian.liland@nmbu.no} (\href{https://orcid.org/0000-0001-6468-9423}{ORCID})

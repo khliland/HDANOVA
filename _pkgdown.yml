@@ -1,0 +1,30 @@
+url: https://khliland.github.io/HDANOVA/
+template:
+  bootstrap: 5
+reference:
+- title: "ASCA methods"
+- contents:
+  - asca
+  - asca_results
+  - asca_plots
+  - apca
+  - msca
+  - limmpca
+- title: "Additional methods"
+- contents:
+  - pcanova
+  - pcanova_results
+  - pcanova_plots
+  - prc
+  - permanova
+- title: "Utility functions"
+- contents:
+  - block.data.frame
+  - dummycode
+  - extended.model.frame
+  - timeplot
+  - update.without.factor
+- title: "Datasets"
+- contents:
+  - candies
+  - caldana

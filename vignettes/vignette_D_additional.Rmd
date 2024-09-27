@@ -1,11 +1,8 @@
 ---
 title: "D. Additional methods"
 output: 
-  pdf_document: 
-    keep_tex: true
-# output: 
-#   rmarkdown::html_vignette:
-#     toc: true
+  rmarkdown::html_vignette:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{D. Additional methods}
   %\VignetteEncoding{UTF-8}

@@ -4,7 +4,7 @@
 #' @export
 asca_fit <- function(formula, data, subset, weights, na.action, family,
                      permute=FALSE,
-                     perm.type=c("exact","approximate"),
+                     perm.type=c("approximate","exact"),
                      unrestricted = FALSE,
                      add_error = FALSE, # TRUE => APCA/LiMM-PCA
                      aug_error = "denominator", # "residual" => Mixed, alpha-value => LiMM-PCA

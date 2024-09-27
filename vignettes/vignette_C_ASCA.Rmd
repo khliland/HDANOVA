@@ -1,6 +1,8 @@
 ---
 title: "C. ASCA"
-output: html_document
+output: 
+  rmarkdown::html_vignette:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{C. ASCA}
   %\VignetteEncoding{UTF-8}

@@ -31,8 +31,9 @@
 #' * Liland, K.H., Smilde, A., Marini, F., and Næs,T. (2018). Confidence ellipsoids for ASCA models based on multivariate regression theory. Journal of Chemometrics, 32(e2990), 1–13.
 #' * Martin, M. and Govaerts, B. (2020). LiMM-PCA: Combining ASCA+ and linear mixed models to analyse high-dimensional designed data. Journal of Chemometrics, 34(6), e3232.
 #'
-#' @seealso Overviews of available methods, \code{\link{multiblock}}, and methods organised by main structure: \code{\link{basic}}, \code{\link{unsupervised}}, \code{\link{asca}}, \code{\link{supervised}} and \code{\link{complex}}.
-#' Common functions for computation and extraction of results are found in \code{\link{asca_results}}.
+#' @seealso Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
+#' Workhorse function underpinning most methods: \code{\link{asca_fit}}.
+#' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 #'
 #' @export
 loadingplot.asca <- function(object, factor = 1, comps = 1:2, ...){
@@ -45,7 +46,7 @@ loadingplot.asca <- function(object, factor = 1, comps = 1:2, ...){
       factor <- -factor
   }
   if((inherits(object, "scores") && ncol(object) == 1 ) ||
-     (inherits(object, "multiblock") && length(object$Xvar) == 1)){ # Check for single component in model
+     (inherits(object, "mvr") && length(object$Xvar) == 1)){ # Check for single component in model
     comps <- comps[1]
     nComps <- length(comps)
   }
@@ -124,7 +125,7 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, within_level = "all"
   if(!global){
     # Get scores and projections
     projs <- scors <- scores(object=object, factor=factor)
-    if(!inherits(object,"pcanova")){
+    if(!inherits(object,"pcanova") && projections){
       if(factor != "Residuals" && factor != length(object$scores))
         projs <- projections(object=object, factor=factor) #+ scors
     }
@@ -157,19 +158,24 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, within_level = "all"
   else
     ylab <- 'Level'
 
+  # Extended symbol vector
+  pch.scores.vec <- rep(pch.scores, length.out = nobj)
+  for(lev in 1:nlev){
+    pch.scores.vec[object$effects[[factor]] == lev] <- pch.scores[(lev-1)%%length(pch.scores)+1]
+  }
 
   # Scatter plot
   if(length(comps)>1){
     if(object$add_error || inherits(object, "msca")) # Skip plotting of scores if error is added (APCA)
-      scoreplot(scors, comps=comps, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, pch=pch.projections, col="white", ...)
+      pls::scoreplot(scors, comps=comps, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, pch=pch.projections, col="white", ...)
     else
-      scoreplot(scors, comps=comps, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, pch=pch.scores, ...)
+      pls::scoreplot(scors, comps=comps, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, pch=pch.scores.vec, ...)
     # Add projections
     if(factor!=0 && !global && !factor == "Residuals" && !factor == length(object$scores))
       for(i in 1:nlev){
         lev <- levels(object$effects[[factor]])[i]
         if(!object$add_error) # Skip plotting of scores if error is added (APCA)
-          points(scors[object$effects[[factor]] == lev, comps], pch=pch.scores, col=gr.col[i])
+          points(scors[object$effects[[factor]] == lev, comps], pch=pch.scores[(i-1)%%length(pch.scores)+1], col=gr.col[i])
         # Backprojections
         if(projections && !(factor==0)) # Skip projections if global PCA is used
           points(projs[object$effects[[factor]] == lev, comps], pch=pch.projections, col=gr.col[i])
