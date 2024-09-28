@@ -1,5 +1,4 @@
 # HDANOVA
-High-Dimensional Analysis of Variance
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
@@ -19,10 +18,10 @@ devtools::install_github("khliland/HDANOVA")
 ```
 ## HD-ANOVA book <img src="man/figures/Wiley.png" align="right" alt="" width="232" />
 
-This package contains a large variety of the methods described in Age K. Smilde, Tormod Næs and Kristian Hovde Liland's book:  
+This package contains the main methods described in Age K. Smilde, Federico Marini, Johan A. Westerhuis and Kristian Hovde Liland's book:  
 
-_Multiblock Data Fusion in Statistics and Machine Learning_  
- _- Applications in the Natural and Life Sciences_
+_Analysis of Variance for High-Dimensional Data_  
+ _- Applications in Life, Food and Chemical Sciences_  
 
 To be published by Wiley in 2025.
 
