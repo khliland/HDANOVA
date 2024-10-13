@@ -3,17 +3,18 @@
 \name{pcanova_results}
 \alias{pcanova_results}
 \alias{summary.pcanova}
-\alias{print.pcanova}
-\alias{projections}
 \alias{projections.pcanova}
 \alias{print.summary.pcanova}
-\alias{loadings.pcanova}
-\alias{scores.pcanova}
+\alias{print.pcanova}
 \title{PC-ANOVA Result Methods}
 \usage{
 \method{summary}{pcanova}(object, ...)
 
 \method{print}{summary.pcanova}(x, digits = 2, ...)
+
+\method{print}{pcanova}(x, ...)
+
+\method{summary}{pcanova}(object, ...)
 }
 \arguments{
 \item{object}{\code{pcanova} object.}
@@ -23,8 +24,6 @@
 \item{x}{\code{pcanova} object.}
 
 \item{digits}{\code{integer} number of digits for printing.}
-
-\item{factor}{\code{integer/character} for selecting a model factor.}
 }
 \value{
 Returns depend on method used, e.g. \code{projections.pcanova} returns projected samples,

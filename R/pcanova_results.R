@@ -1,6 +1,6 @@
 #' @title PC-ANOVA Result Methods
 #' @name pcanova_results
-#' @aliases pcanova_results print.pcanova summary.pcanova projections projections.pcanova print.summary.pcanova loadings.pcanova scores.pcanova
+#' @aliases pcanova_results summary.pcanova projections.pcanova print.summary.pcanova
 #'
 #' @description Standard result computation and extraction functions for ASCA (\code{\link{pcanova}}).
 #'
@@ -14,7 +14,6 @@
 #'
 #' @param object \code{pcanova} object.
 #' @param x \code{pcanova} object.
-#' @param factor \code{integer/character} for selecting a model factor.
 #' @param digits \code{integer} number of digits for printing.
 #' @param ... additional arguments to underlying methods.
 #'
@@ -45,3 +44,20 @@ print.summary.pcanova <- function(x, digits=2, ...){
   print(anos)
   invisible(anos)
 }
+
+#' @export
+#' @rdname pcanova_results
+print.pcanova <- function(x, ...){
+  cat("PC-ANOVA - Principal Components Analysis of Variance\n")
+  cat("\nCall:\n", deparse(x$call), "\n", sep = "")
+  invisible(x$anovas)
+}
+
+#' @export
+#' @rdname pcanova_results
+summary.pcanova <- function(object, ...){
+  cat("PC-ANOVA - Principal Components Analysis of Variance\n")
+  cat("\nCall:\n", deparse(object$call), "\n", sep = "")
+  print(object$anovas)
+}
+

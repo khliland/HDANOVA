@@ -4,13 +4,6 @@
 #'
 #' @param formula Model formula accepting a single response (block) and predictors. See Details for more information.
 #' @param data The data set to analyse.
-#' @param subset Expression for subsetting the data before modelling.
-#' @param weights Optional object weights.
-#' @param subset Subset of objects
-#' @param na.action How to handle NAs (no action implemented).
-#' @param family Error distributions and link function for Generalized Linear Models.
-#' @param permute Perform approximate permutation testing, default = FALSE (numeric or TRUE = 1000).
-#' @param pca.in Compress response before ASCA (number of components).
 #' @param ... Additional arguments to \code{\link{asca_fit}}.
 #'
 #' @return An \code{asca} object containing loadings, scores, explained variances, etc. The object has

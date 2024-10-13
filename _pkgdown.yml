@@ -7,6 +7,7 @@ reference:
   - asca
   - asca_results
   - asca_plots
+  - asca_fit
   - apca
   - msca
   - limmpca
@@ -23,7 +24,7 @@ reference:
   - dummycode
   - extended.model.frame
   - timeplot
-  - update.without.factor
+  - update_without_factor
 - title: "Datasets"
 - contents:
   - candies

@@ -2,19 +2,26 @@ Package: HDANOVA
 Type: Package
 Title: High-Dimensional Analysis of Variance
 Version: 0.8.0
+Date: 2024-10-07
 Authors@R: 
     c(person(given = "Kristian Hovde",
              family = "Liland",
              role = c("aut", "cre"),
              email = "kristian.liland@nmbu.no",
              comment = c(ORCID = "0000-0001-6468-9423")))
-Description: Functions and datasets to support Smilde, Marini, Westerhuis and Liland (2025) 
-   "Multiblock Data Fusion in Statistics and Machine Learning - Applications in the Natural and Life Sciences". 
-   This implements and imports a  collection of methods for HD-ANOVA data analysis with common interfaces, result- and plotting 
+Description: Functions and datasets to support 'Smilde', 'Marini', 'Westerhuis' and 'Liland' (2025) 
+   "Analysis of Variance for High-Dimensional Data - Applications in Life, Food and Chemical Sciences". 
+   This implements and imports a  collection of methods for 'HD-ANOVA' data analysis with common interfaces, result- and plotting 
    functions, multiple real data sets and four vignettes covering a range different applications.
-Imports: pls,
-    mixlm
-Suggests: vegan
+Depends: R (>= 3.5.0)
+Imports: car,
+    lme4,
+    mixlm (>= 1.4.0),
+    pls,
+    pracma,
+    progress,
+    RSpectra
+Suggests: knitr, vegan
 License: GPL (>= 2)
 URL: https://github.com/khliland/HDANOVA/
 BugReports: https://github.com/khliland/HDANOVA/issues/

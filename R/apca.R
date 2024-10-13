@@ -4,6 +4,7 @@
 #'
 #' @param formula Model formula accepting a single response (block) and predictors.
 #' @param data The data set to analyse.
+#' @param add_error Add error to LS means (default = TRUE).
 #' @param ... Additional parameters for the asca_fit function.
 #'
 #' @return An object of class \code{apca}, inheriting from the general \code{asca} class.

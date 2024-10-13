@@ -45,13 +45,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pcanova</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, ncomp <span class="op">=</span> <span class="fl">0.9</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'pcanova'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'pcanova'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pcanova</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, ncomp <span class="op">=</span> <span class="fl">0.9</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -70,24 +64,8 @@
 <dd><p>The number of components to retain, proportion of variation or default = minimum cross-validation error.</p></dd>
 
 
-<dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
-<dd><p>Optional object weights.</p></dd>
-
-
-<dt id="arg-subset">subset<a class="anchor" aria-label="anchor" href="#arg-subset"></a></dt>
-<dd><p>Subset of objects</p></dd>
-
-
-<dt id="arg-na-action">na.action<a class="anchor" aria-label="anchor" href="#arg-na-action"></a></dt>
-<dd><p>How to handle NAs (no action implemented).</p></dd>
-
-
-<dt id="arg-family">family<a class="anchor" aria-label="anchor" href="#arg-family"></a></dt>
-<dd><p>Error distributions and link function for Generalized Linear Models.</p></dd>
-
-
-<dt id="arg-sstype">SStype<a class="anchor" aria-label="anchor" href="#arg-sstype"></a></dt>
-<dd><p>Sums-of-squares type for Analysis of Variance (I/II/III), defaults to "III".</p></dd>
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Additional parameters for the asca_fit function.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -110,7 +88,7 @@ component analysis and analysis of variance. Food Qual Prefer. 2009;20(3):167-17
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Main methods: <code><a href="asca.html">asca</a></code>, <code><a href="apca.html">apca</a></code>, <code><a href="limmpca.html">limmpca</a></code>, <code><a href="msca.html">msca</a></code>, <code>pcanova</code>, <code><a href="prc.html">prc</a></code> and <code><a href="permanova.html">permanova</a></code>.
-Workhorse function underpinning most methods: <code>asca_fit</code>.
+Workhorse function underpinning most methods: <code><a href="asca_fit.html">asca_fit</a></code>.
 Extraction of results and plotting: <code><a href="asca_results.html">asca_results</a></code>, <code><a href="asca_plots.html">asca_plots</a></code>, <code><a href="pcanova_results.html">pcanova_results</a></code> and <code><a href="pcanova_plots.html">pcanova_plots</a></code></p></div>
     </div>
 
@@ -135,8 +113,11 @@ Extraction of results and plotting: <code><a href="asca_results.html">asca_resul
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> pcanova(formula = assessment ~ candy * assessor, data = candies,     ncomp = 0.9)</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PC-ANOVA fitted using 'lm' (Linear Model) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $`Comp. 1 (74.69%)`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PC-ANOVA - Principal Components Analysis of Variance</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pcanova(formula = assessment ~ candy * assessor, data = candies,     ncomp = 0.9)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`Comp. 1`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Anova Table (Type II tests)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Response: assessment</span>
@@ -148,7 +129,7 @@ Extraction of results and plotting: <code><a href="asca_results.html">asca_resul
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $`Comp. 2 (9.38%)`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`Comp. 2`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Anova Table (Type II tests)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Response: assessment</span>
@@ -160,7 +141,7 @@ Extraction of results and plotting: <code><a href="asca_results.html">asca_resul
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $`Comp. 3 (6.47%)`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`Comp. 3`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Anova Table (Type II tests)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Response: assessment</span>
@@ -215,15 +196,18 @@ Extraction of results and plotting: <code><a href="asca_results.html">asca_resul
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/pls/man/scoreplot.html" class="external-link">loadingplot</a></span><span class="op">(</span><span class="va">mod</span>, scatter<span class="op">=</span><span class="cn">TRUE</span>, labels<span class="op">=</span><span class="st">"names"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="pcanova-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/pls/man/scoreplot.html" class="external-link">scoreplot</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="pcanova-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Mixed Model PC-ANOVA, random assessor</span></span></span>
 <span class="r-in"><span><span class="va">mod.mix</span> <span class="op">&lt;-</span> <span class="fu">pcanova</span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span> <span class="op">+</span> <span class="fu">r</span><span class="op">(</span><span class="va">assessor</span><span class="op">)</span>, data<span class="op">=</span><span class="va">candies</span>, ncomp <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/pls/man/scoreplot.html" class="external-link">scoreplot</a></span><span class="op">(</span><span class="va">mod.mix</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="pcanova-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># Fixed effects</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod.mix</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PC-ANOVA fitted using 'lmm' (Linear Mixed Model) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $`Comp. 1 (74.69%)`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PC-ANOVA - Principal Components Analysis of Variance</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pcanova(formula = assessment ~ candy + r(assessor), data = candies,     ncomp = 0.9)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`Comp. 1`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Analysis of variance (restricted model)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Response: assessment</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Mean Sq   Sum Sq  Df F value Pr(&gt;F)</span>
@@ -242,7 +226,7 @@ Extraction of results and plotting: <code><a href="asca_results.html">asca_resul
 <span class="r-out co"><span class="r-pr">#&gt;</span> assessor          (3) + 15 (2) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Residuals         (3)          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $`Comp. 2 (9.38%)`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`Comp. 2`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Analysis of variance (restricted model)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Response: assessment</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Mean Sq  Sum Sq  Df F value Pr(&gt;F)</span>
@@ -261,7 +245,7 @@ Extraction of results and plotting: <code><a href="asca_results.html">asca_resul
 <span class="r-out co"><span class="r-pr">#&gt;</span> assessor          (3) + 15 (2) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Residuals         (3)          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $`Comp. 3 (6.47%)`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`Comp. 3`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Analysis of variance (restricted model)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Response: assessment</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Mean Sq  Sum Sq  Df F value Pr(&gt;F)</span>
@@ -292,7 +276,7 @@ Extraction of results and plotting: <code><a href="asca_results.html">asca_resul
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

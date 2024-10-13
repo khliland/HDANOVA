@@ -11,6 +11,8 @@
 #' @param object \code{pcanova} object.
 #' @param factor \code{integer/character} for selecting a model factor.
 #' @param comps \code{integer} vector of selected components.
+#' @param col \code{character} for selecting a factor to use for colouring
+#' (default = first factor) or ordinary colour specifications.
 #' @param ... additional arguments to underlying methods.
 #'
 #' @return The plotting routines have no return.

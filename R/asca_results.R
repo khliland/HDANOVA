@@ -15,6 +15,8 @@
 #' @param object \code{asca} object.
 #' @param x \code{asca} object.
 #' @param factor \code{integer/character} for selecting a model factor.
+#' @param extended Extended output in summary (default = TRUE).
+#' @param df Show degrees of freedom in summary (default = FALSE).
 #' @param digits \code{integer} number of digits for printing.
 #' @param ... additional arguments to underlying methods.
 #'

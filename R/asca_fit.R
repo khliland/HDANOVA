@@ -1,12 +1,41 @@
 # Weighted coding is only available for lm, not lme4??
+#' @title ASCA Fitting Workhorse Function
+#'
+#' @description This function is called by all ASCA related methods in this package. It is documented
+#' so that one can have access to a richer set of parameters from the various methods or call this
+#' function directly. The latter should be done with care as there are many possibilities and not all
+#' have been used in publications or tested thoroughly.
+#'
+#' @param formula Model formula accepting a single response (block) and predictors. See Details for more information.
+#' @param data The data set to analyse.
+#' @param subset Expression for subsetting the data before modelling.
+#' @param weights Optional object weights.
+#' @param na.action How to handle NAs (no action implemented).
+#' @param family Error distributions and link function for Generalized Linear Models.
+#' @param permute Perform approximate permutation testing, default = FALSE (numeric or TRUE = 1000).
+#' @param perm.type Type of permutation: "approximate" (default) or "exact".
+#' @param unrestricted Use unrestricted ANOVA decomposition (default = FALSE).
+#' @param add_error Add error to LS means, e.g., for APCA.
+#' @param aug_error Augment score matrices in backprojection. Default = "denominator"
+#' (of F test), "residual" (force error term), nueric value (alpha-value in LiMM-PCA).
+#' @param use_ED Use "effective dimensions" for score rescaling in LiMM-PCA.
+#' @param pca.in Compress response before ASCA (number of components).
+#' @param coding Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".
+#' @param SStype Type of sum-of-squares: "I" = sequential, "II" (default) = last term, obeying marginality,
+#' "III" = last term, not obeying marginality.
+#' @param REML Parameter to mixlm: NULL (default) = sum-of-squares, TRUE = REML, FALSE = ML.
+#'
 #' @importFrom lme4 lmer glmer getME ranef VarCorr fixef
 #' @importFrom progress progress_bar
+#' @importFrom grDevices adjustcolor palette
+#' @importFrom graphics abline axis box hist legend lines points
+#' @importFrom stats anova coefficients contr.sum contr.treatment contrasts<- formula getCall model.frame model.matrix model.response qf rnorm sigma terms update
 #' @export
 asca_fit <- function(formula, data, subset, weights, na.action, family,
                      permute=FALSE,
                      perm.type=c("approximate","exact"),
                      unrestricted = FALSE,
-                     add_error = FALSE, # TRUE => APCA/LiMM-PCA
+                     add_error = FALSE, # TRUE => APCA
                      aug_error = "denominator", # "residual" => Mixed, alpha-value => LiMM-PCA
                      use_ED = FALSE,
                      pca.in = FALSE, # n>1 => LiMM-PCA and PC-ANOVA
@@ -103,11 +132,11 @@ asca_fit <- function(formula, data, subset, weights, na.action, family,
     j <- 1
     for(i in 1:length(tl)){
       if(grepl("comb(", tl[i], fixed=TRUE)){
-        combined[[j]] <- attr(terms(HDANOVA:::cparse(formula(paste0(".~", tl[i])))), "term.labels")
+        combined[[j]] <- attr(terms(cparse(formula(paste0(".~", tl[i])))), "term.labels")
         j <- j+1
       }
     }
-    formula <- HDANOVA:::cparse(formula)
+    formula <- cparse(formula)
   }
 
   # Pre-run of model to extract useful information and names

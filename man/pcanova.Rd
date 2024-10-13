@@ -2,15 +2,9 @@
 % Please edit documentation in R/pcanova.R
 \name{pcanova}
 \alias{pcanova}
-\alias{print.pcanova}
-\alias{summary.pcanova}
 \title{Principal Components Analysis of Variance Simultaneous Component Analysis - PC-ANOVA}
 \usage{
 pcanova(formula, data, ncomp = 0.9, ...)
-
-\method{print}{pcanova}(x, ...)
-
-\method{summary}{pcanova}(object, ...)
 }
 \arguments{
 \item{formula}{Model formula accepting a single response (block) and predictor names separated by + signs.}
@@ -19,15 +13,7 @@ pcanova(formula, data, ncomp = 0.9, ...)
 
 \item{ncomp}{The number of components to retain, proportion of variation or default = minimum cross-validation error.}
 
-\item{weights}{Optional object weights.}
-
-\item{subset}{Subset of objects}
-
-\item{na.action}{How to handle NAs (no action implemented).}
-
-\item{family}{Error distributions and link function for Generalized Linear Models.}
-
-\item{SStype}{Sums-of-squares type for Analysis of Variance (I/II/III), defaults to "III".}
+\item{...}{Additional parameters for the asca_fit function.}
 }
 \value{
 A \code{pcanova} object containing loadings, scores, explained variances, etc. The object has

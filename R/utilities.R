@@ -114,8 +114,19 @@ extended.model.frame <- function(formula, data, ..., sep = "."){
   mf
 }
 
+
 #' Update a Model without Factor
-update.without.factor <- function(model, fac, hierarchical = TRUE){
+#' @description
+#' Perform a model update while removing a chosen factor. Hierarchical
+#' corresponds to type "II" sum-of-squares, i.e., obeying marginality,
+#' while non-hierarchical corresponds to type "III" sum-of-squares.
+#'
+#' @param model \code{model} object to update.
+#' @param fac \code{character} factor to remove.
+#' @param hierarchical \code{logical} obey hierarchy when removing factor (default = TRUE).
+#' @importFrom lme4 findbars
+#' @export
+update_without_factor <- function(model, fac, hierarchical = TRUE){
   # Extract formula from model
   form <- formula(model)
   if(hierarchical){
@@ -141,6 +152,7 @@ update.without.factor <- function(model, fac, hierarchical = TRUE){
     update(model, form)
   }
 }
+
 
 #' @title Block-wise indexable data.frame
 #'

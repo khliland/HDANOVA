@@ -5,12 +5,7 @@
 #' @param formula Model formula accepting a single response (block) and predictor names separated by + signs.
 #' @param data The data set to analyse.
 #' @param ncomp The number of components to retain, proportion of variation or default = minimum cross-validation error.
-#' @param subset Expression for subsetting the data before modelling.
-#' @param weights Optional object weights.
-#' @param subset Subset of objects
-#' @param na.action How to handle NAs (no action implemented).
-#' @param family Error distributions and link function for Generalized Linear Models.
-#' @param SStype Sums-of-squares type for Analysis of Variance (I/II/III), defaults to "III".
+#' @param ... Additional parameters for the asca_fit function.
 #'
 #' @return A \code{pcanova} object containing loadings, scores, explained variances, etc. The object has
 #' associated plotting (\code{\link{pcanova_plots}}) and result (\code{\link{pcanova_results}}) functions.
@@ -77,22 +72,6 @@ pcanova <- function(formula, data, ncomp = 0.9, ...){
   pc$call <- match.call()
   class(pc) <- c('pcanova', 'asca', 'list')
   pc
-}
-
-#' @export
-#' @rdname pcanova
-print.pcanova <- function(x, ...){
-  cat("PC-ANOVA - Principal Components Analysis of Variance\n")
-  cat("\nCall:\n", deparse(x$call), "\n", sep = "")
-  invisible(x$anovas)
-}
-
-#' @export
-#' @rdname pcanova
-summary.pcanova <- function(object, ...){
-  cat("PC-ANOVA - Principal Components Analysis of Variance\n")
-  cat("\nCall:\n", deparse(object$call), "\n", sep = "")
-  print(object$anovas)
 }
 
 # # Experimental features

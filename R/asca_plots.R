@@ -12,6 +12,10 @@
 #' @param factor \code{integer/character} for selecting a model factor. If factor <= 0 or "global",
 #' the PCA of the input is used (negativ factor to include factor level colouring with global PCA).
 #' @param comps \code{integer} vector of selected components.
+#' @param within_level MSCA parameter for chosing plot level (default = "all").
+#' @param projections Include backprojections in score plot (default = TRUE).
+#' @param spider Draw lines between group centers and backprojections (default = FALSE).
+#' @param main Plot title.
 #' @param pch.scores \code{integer} plotting symbol.
 #' @param pch.projections \code{integer} plotting symbol.
 #' @param gr.col \code{integer} vector of colours for groups.
