@@ -87,7 +87,7 @@ of categories. This package has a function __dummycode__ for converting
 categorical data to various dummy formats.
 
 ```{r}
-# Default is sum coding
+# Default is sum-coding
 dummycode(meta_data$colour)
 
 # Treatment coding

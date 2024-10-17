@@ -145,7 +145,7 @@ Since we are running lm() through the mixlm package, we can use the `contrasts`
 argument to specify the coding for all effects simultaneously.
 
 ```{r}
-# Sum coding, i.e., the sum of all levels is zero and all effects
+# Sum-coding, i.e., the sum of all levels is zero and all effects
 # are orthogonal in the balanced case.
 mod <- lm(yield ~ feed*breed, data = dat, contrasts="contr.sum")
 print(Anova(mod, type="III"))

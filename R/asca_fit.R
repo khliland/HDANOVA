@@ -12,7 +12,7 @@
 #' @param weights Optional object weights.
 #' @param na.action How to handle NAs (no action implemented).
 #' @param family Error distributions and link function for Generalized Linear Models.
-#' @param permute Perform approximate permutation testing, default = FALSE (numeric or TRUE = 1000).
+#' @param permute Perform approximate permutation testing, default = FALSE (numeric or TRUE = 1000 permutations).
 #' @param perm.type Type of permutation: "approximate" (default) or "exact".
 #' @param unrestricted Use unrestricted ANOVA decomposition (default = FALSE).
 #' @param add_error Add error to LS means, e.g., for APCA.
@@ -24,6 +24,9 @@
 #' @param SStype Type of sum-of-squares: "I" = sequential, "II" (default) = last term, obeying marginality,
 #' "III" = last term, not obeying marginality.
 #' @param REML Parameter to mixlm: NULL (default) = sum-of-squares, TRUE = REML, FALSE = ML.
+#'
+#' @return An \code{asca} object containing loadings, scores, explained variances, etc. The object has
+#' associated plotting (\code{\link{asca_plots}}) and result (\code{\link{asca_results}}) functions.
 #'
 #' @importFrom lme4 lmer glmer getME ranef VarCorr fixef
 #' @importFrom progress progress_bar
@@ -575,7 +578,8 @@ asca_fit <- function(formula, data, subset, weights, na.action, family,
     # Default to 1000 permutations
     if(is.logical(permute)){
       permute <- 1000
-      cat("Defaulting to 1000 permutations\n")
+      if(interactive())
+        message("Defaulting to 1000 permutations\n")
     }
     if(perm.type[1] == "approximate"){
       ssqa <- pvals <- numeric(length(approved))

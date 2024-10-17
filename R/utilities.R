@@ -121,6 +121,10 @@ extended.model.frame <- function(formula, data, ..., sep = "."){
 #' corresponds to type "II" sum-of-squares, i.e., obeying marginality,
 #' while non-hierarchical corresponds to type "III" sum-of-squares.
 #'
+#' @return An updated model object is returned. If the supplied model is of
+#' type \code{lmerMod} and no random effects are left, the model is
+#' automatically converted to a linear model before updating.
+#'
 #' @param model \code{model} object to update.
 #' @param fac \code{character} factor to remove.
 #' @param hierarchical \code{logical} obey hierarchy when removing factor (default = TRUE).

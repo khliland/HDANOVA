@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">HDANOVA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,11 +121,10 @@ Extraction of results and plotting: <code><a href="asca_results.html">asca_resul
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Permutation testing</span></span></span>
 <span class="r-in"><span><span class="va">mod.perm</span> <span class="op">&lt;-</span> <span class="fu"><a href="asca.html">asca</a></span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span> <span class="op">*</span> <span class="va">assessor</span>, data<span class="op">=</span><span class="va">candies</span>, permute<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Defaulting to 1000 permutations</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod.perm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II, sum coding, restricted model, least squares estimation, 1000 permutations </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 Sum.Sq. Expl.var.(%) P-value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 Sum.Sq. Expl.var.(%) p-value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> candy          33416.66        74.48       0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> assessor        1961.37         4.37       0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> assessor:candy  3445.73         7.68       0</span>

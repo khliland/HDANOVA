@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">HDANOVA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -269,7 +269,7 @@ using the <code>contrasts</code> Since we are running lm() through the
 mixlm package, we can use the <code>contrasts</code> argument to specify
 the coding for all effects simultaneously.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Sum coding, i.e., the sum of all levels is zero and all effects</span></span>
+<code class="sourceCode R"><span><span class="co"># Sum-coding, i.e., the sum of all levels is zero and all effects</span></span>
 <span><span class="co"># are orthogonal in the balanced case.</span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mixlm/man/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">yield</span> <span class="op">~</span> <span class="va">feed</span><span class="op">*</span><span class="va">breed</span>, data <span class="op">=</span> <span class="va">dat</span>, contrasts<span class="op">=</span><span class="st">"contr.sum"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/car/man/Anova.html" class="external-link">Anova</a></span><span class="op">(</span><span class="va">mod</span>, type<span class="op">=</span><span class="st">"III"</span><span class="op">)</span><span class="op">)</span></span>

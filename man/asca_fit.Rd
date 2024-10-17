@@ -36,7 +36,7 @@ asca_fit(
 
 \item{family}{Error distributions and link function for Generalized Linear Models.}
 
-\item{permute}{Perform approximate permutation testing, default = FALSE (numeric or TRUE = 1000).}
+\item{permute}{Perform approximate permutation testing, default = FALSE (numeric or TRUE = 1000 permutations).}
 
 \item{perm.type}{Type of permutation: "approximate" (default) or "exact".}
 
@@ -57,6 +57,10 @@ asca_fit(
 "III" = last term, not obeying marginality.}
 
 \item{REML}{Parameter to mixlm: NULL (default) = sum-of-squares, TRUE = REML, FALSE = ML.}
+}
+\value{
+An \code{asca} object containing loadings, scores, explained variances, etc. The object has
+associated plotting (\code{\link{asca_plots}}) and result (\code{\link{asca_results}}) functions.
 }
 \description{
 This function is called by all ASCA related methods in this package. It is documented

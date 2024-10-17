@@ -58,7 +58,7 @@ summary.asca <- function(object, extended=TRUE, df=FALSE, ...){
     pv <- rep(NA,nrow(dat))
     names(pv) <- rownames(dat)
     pv[names(pvals)] <- pvals
-    dat <- cbind(dat, "P-value"=pv)
+    dat <- cbind(dat, "p-value"=pv)
   }
   mod <- "Anova Simultaneous Component Analysis"
   if(inherits(object, "apca"))

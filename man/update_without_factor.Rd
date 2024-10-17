@@ -13,6 +13,11 @@ update_without_factor(model, fac, hierarchical = TRUE)
 
 \item{hierarchical}{\code{logical} obey hierarchy when removing factor (default = TRUE).}
 }
+\value{
+An updated model object is returned. If the supplied model is of
+type \code{lmerMod} and no random effects are left, the model is
+automatically converted to a linear model before updating.
+}
 \description{
 Perform a model update while removing a chosen factor. Hierarchical
 corresponds to type "II" sum-of-squares, i.e., obeying marginality,
