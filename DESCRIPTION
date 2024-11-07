@@ -23,7 +23,7 @@ Imports: car,
     RSpectra
 Suggests: knitr, vegan
 License: GPL (>= 2)
-URL: https://github.com/khliland/HDANOVA/
+URL: https://khliland.github.io/HDANOVA, https://github.com/khliland/HDANOVA/
 BugReports: https://github.com/khliland/HDANOVA/issues/
 Encoding: UTF-8
 LazyData: true

@@ -22,6 +22,12 @@
 #' data(candies)
 #' ap <- apca(assessment ~ candy, data=candies)
 #' scoreplot(ap)
+#'
+#' # Numeric effects
+#' candies$num <- eff <- 1:165
+#' mod <- apca(assessment ~ candy + assessor + num, data=candies)
+#' summary(mod)
+#' scoreplot(mod, factor=3, gr.col=rgb(eff/max(eff), 1-eff/max(eff),0), pch.scores="x")
 apca <- function(formula, data, add_error = TRUE, ...){
   object <- asca_fit(formula, data, add_error = add_error, ...)
   object$call <- match.call()

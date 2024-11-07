@@ -26,6 +26,12 @@ APCA function for fitting ANOVA Principal Component Analysis models.
 data(candies)
 ap <- apca(assessment ~ candy, data=candies)
 scoreplot(ap)
+
+# Numeric effects
+candies$num <- eff <- 1:165
+mod <- apca(assessment ~ candy + assessor + num, data=candies)
+summary(mod)
+scoreplot(mod, factor=3, gr.col=rgb(eff/max(eff), 1-eff/max(eff),0), pch.scores="x")
 }
 \references{
 Harrington, P.d.B., Vieira, N.E., Espinoza, J., Nien, J.K., Romero, R., and Yergey, A.L. (2005)

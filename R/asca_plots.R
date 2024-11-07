@@ -118,12 +118,16 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, within_level = "all"
   nlev <- 0
   if(!(factor==0) && !global && !factor == "Residuals" && !factor == length(object$scores)){
     # Number of levels in current factor
-    nlev  <- nlevels(object$effects[[factor]])
+    nlev  <-  nlevels(object$effects[[factor]])
     # Remove redundant levels
-    comps <- comps[comps <= nlev-1]
+    nscores <- ncol(object$scores[[factor]])
+    comps <- comps[comps <= nscores-1]
     # Set gr.col if missing
     if(missing(gr.col)){
-      gr.col <- adjustcolor(rep(palette(), max(1, nlev%/%8+1))[1:nlev], alpha.f = 0.7)
+      if(object$add_error)
+        gr.col <- 1
+      else
+        gr.col <- adjustcolor(rep(palette(), max(1, nlev%/%8+1))[1:nscores], alpha.f = 0.7)
     }
   }
   if(!global){
@@ -176,22 +180,26 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, within_level = "all"
       pls::scoreplot(scors, comps=comps, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, pch=pch.scores.vec, ...)
     # Add projections
     if(factor!=0 && !global && !factor == "Residuals" && !factor == length(object$scores))
-      for(i in 1:nlev){
-        lev <- levels(object$effects[[factor]])[i]
-        if(!object$add_error) # Skip plotting of scores if error is added (APCA)
-          points(scors[object$effects[[factor]] == lev, comps], pch=pch.scores[(i-1)%%length(pch.scores)+1], col=gr.col[i])
-        # Backprojections
-        if(projections && !(factor==0)) # Skip projections if global PCA is used
-          points(projs[object$effects[[factor]] == lev, comps], pch=pch.projections, col=gr.col[i])
-        # Spider plot
-        if(spider && !(factor==0)){
-          score_j <- scors[object$effects[[factor]] == lev, comps]
-          projs_j <- projs[object$effects[[factor]] == lev, comps]
-          for(j in 1:nrow(projs_j)){
-            lines(c(score_j[j,1], projs_j[j,1]), c(score_j[j,2], projs_j[j,2]), col=gr.col[i])
+      if(nlev>0)
+        for(i in 1:nlev){
+          lev <- levels(object$effects[[factor]])[i]
+          if(!object$add_error) # Skip plotting of scores if error is added (APCA)
+            points(scors[object$effects[[factor]] == lev, comps], pch=pch.scores[(i-1)%%length(pch.scores)+1], col=gr.col[i])
+          # Backprojections
+          if(projections && !(factor==0)) # Skip projections if global PCA is used
+            points(projs[object$effects[[factor]] == lev, comps], pch=pch.projections, col=gr.col[i])
+          # Spider plot
+          if(spider && !(factor==0)){
+            score_j <- scors[object$effects[[factor]] == lev, comps]
+            projs_j <- projs[object$effects[[factor]] == lev, comps]
+            for(j in 1:nrow(projs_j)){
+              lines(c(score_j[j,1], projs_j[j,1]), c(score_j[j,2], projs_j[j,2]), col=gr.col[i])
+            }
           }
         }
-      }
+    else { # Numeric effect in APCA
+      points(scors[,comps], col=gr.col, pch=pch.scores, ...)
+    }
     # MSCA scoreplot for within factor
     if(inherits(object, "msca") && (factor == length(object$scores) || factor == "Residuals")){
       scors1 <- scores(object=object, factor=1)

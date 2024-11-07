@@ -181,8 +181,10 @@ asca_fit <- function(formula, data, subset, weights, na.action, family,
     }
   }
 
-  # Exclude numeric effects and their interactions
+  # Exclude numeric effects and their interactions unless fit.func is lm
   nums <- names(unlist(lapply(modFra, class)))[which(unlist(lapply(modFra, class)) %in% c("numeric","integer"))]
+  if(fit.func == "lm")
+    nums <- numeric(0)
   if(length(nums)>0){
     exclude  <- match(nums, rownames(attr(terms(modFra), "factors")))
     approved <- which(colSums(attr(terms(modFra), "factors")[exclude,,drop=FALSE])==0)
@@ -206,12 +208,12 @@ asca_fit <- function(formula, data, subset, weights, na.action, family,
     dat_a <- dat[[effs[a]]]
     if(!missing(subset))
       dat_a <- subset(dat_a, subset)
-    if(coding == "sum")
+    if(coding == "sum" && is.factor(dat_a))
       contrasts(dat[[effs[a]]]) <- contr.sum(levels(dat_a))
-    if(coding == "weighted"){
+    if(coding == "weighted" && is.factor(dat_a)){
       contrasts(dat[[effs[a]]]) <- contr.weighted(dat_a)
     }
-    if(coding == "reference" || coding == "treatment")
+    if((coding == "reference" || coding == "treatment")  && is.factor(dat_a))
       contrasts(dat[[effs[a]]]) <- contr.treatment(levels(dat_a))
   }
   if(fit.func == "lm" && !is.logical(REML)){
@@ -629,6 +631,8 @@ asca_fit <- function(formula, data, subset, weights, na.action, family,
     maxDiri <- maxDir[i]
     if(pca.in != 0)
       maxDiri <- min(maxDiri, pca.in)
+    if(add_error)
+      maxDiri <- min(N-1, p)
     # NEW
     pcai <- .pca(LS[[effs[i]]], ncomp=maxDiri, proj=error[[effs[i]]])
     scores[[effs[i]]] <- pcai$scores
