@@ -54,7 +54,7 @@ loadingplot.asca <- function(object, factor = 1, comps = 1:2, ...){
     comps <- comps[1]
     nComps <- length(comps)
   }
-  # Check if input PCA should be used instead of PCAs of factor LS matrices.
+  # Check if input PCA of X should be used instead of PCAs of factor LS matrices.
   global <- FALSE
   if(factor < 1 || factor == "global"){
     if(!is.null(object$Ypca)){
@@ -83,12 +83,7 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, within_level = "all"
 
   if(factor == "within" || factor == "Within")
     factor <- "Residuals"
-  if(is.null(gr.col)){
-    if(inherits(object,"msca"))
-      gr.col <- 1:nlevels(object$effects[[1]])
-    else
-      gr.col <- 1:nlevels(object$effects[[factor]])
-  }
+
   if(inherits(object,"pcanova")){
     # Remove too high component numbers
     comps <- comps[comps <= length(object$anovas)]
@@ -121,15 +116,29 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, within_level = "all"
     nlev  <-  nlevels(object$effects[[factor]])
     # Remove redundant levels
     nscores <- ncol(object$scores[[factor]])
-    comps <- comps[comps <= nscores-1]
+    comps <- comps[comps <= nscores]
     # Set gr.col if missing
-    if(missing(gr.col)){
-      if(object$add_error)
-        gr.col <- 1
+    # if(missing(gr.col)){
+    #   if(nlev == 0)
+    #     gr.col <- 1
+    #   else {
+    #     gr.col <- adjustcolor(rep(palette(), max(1, nlev%/%8+1))[1:nscores], alpha.f = 0.7)
+    #   }
+    # }
+  }
+  autocol <- FALSE
+  if(is.null(gr.col)){
+    autocol <- TRUE
+    if(inherits(object,"msca")){
+      gr.col <- ((1:nlevels(object$effects[[1]]))-1)%%8 + 1
+    } else {
+      if(nlev > 0)
+        gr.col <- ((1:nlevels(object$effects[[factor]]))-1)%%8 + 1
       else
-        gr.col <- adjustcolor(rep(palette(), max(1, nlev%/%8+1))[1:nscores], alpha.f = 0.7)
+        gr.col <- 1
     }
   }
+
   if(!global){
     # Get scores and projections
     projs <- scors <- scores(object=object, factor=factor)
@@ -175,19 +184,24 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, within_level = "all"
   # Scatter plot
   if(length(comps)>1){
     if(object$add_error || inherits(object, "msca")) # Skip plotting of scores if error is added (APCA)
-      pls::scoreplot(scors, comps=comps, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, pch=pch.projections, col="white", ...)
+      pls::scoreplot(scors, comps=comps, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, pch=pch.projections, col="transparent", ...)
     else
       pls::scoreplot(scors, comps=comps, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, pch=pch.scores.vec, ...)
     # Add projections
-    if(factor!=0 && !global && !factor == "Residuals" && !factor == length(object$scores))
-      if(nlev>0)
+    if(factor!=0 && !global && !factor == "Residuals" && !factor == length(object$scores)){
+      if(nlev>0){
         for(i in 1:nlev){
           lev <- levels(object$effects[[factor]])[i]
           if(!object$add_error) # Skip plotting of scores if error is added (APCA)
             points(scors[object$effects[[factor]] == lev, comps], pch=pch.scores[(i-1)%%length(pch.scores)+1], col=gr.col[i])
           # Backprojections
-          if(projections && !(factor==0)) # Skip projections if global PCA is used
-            points(projs[object$effects[[factor]] == lev, comps], pch=pch.projections, col=gr.col[i])
+          if(projections && !(factor==0)){ # Skip projections if global PCA is used
+            if(autocol)
+              the_col <- adjustcolor(gr.col[i], alpha.f = 0.7)
+            else
+              the_col <- gr.col[i]
+            points(projs[object$effects[[factor]] == lev, comps], pch=pch.projections, col=the_col)
+          }
           # Spider plot
           if(spider && !(factor==0)){
             score_j <- scors[object$effects[[factor]] == lev, comps]
@@ -197,9 +211,11 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, within_level = "all"
             }
           }
         }
-    else { # Numeric effect in APCA
-      points(scors[,comps], col=gr.col, pch=pch.scores, ...)
+      } else { # Numeric effect in APCA
+        points(scors[,comps], col=gr.col, pch=pch.scores, ...)
+      }
     }
+
     # MSCA scoreplot for within factor
     if(inherits(object, "msca") && (factor == length(object$scores) || factor == "Residuals")){
       scors1 <- scores(object=object, factor=1)
@@ -254,39 +270,43 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, within_level = "all"
       }
     }
   } else { # Line plot
-    plot(scors[,comps], as.numeric(object$effects[[factor]]), xlim=xlim,
-         ylim=ylim, xlab=xlab, ylab=ylab, axes = FALSE)
-    axis(1)
-    axis(2, at=1:nlev, labels = levels(object$effects[[factor]]))
-    box()
-    for(i in 1:nlev){
-      lev <- levels(object$effects[[factor]])[i]
-      if(!object$add_error) # Skip plotting of scores if error is added (APCA/LiMM-PCA)
-        points(scors[object$effects[[factor]] == lev, comps], rep(i,sum(as.numeric(object$effects[[factor]]) == i)), pch=pch.scores, col=gr.col[i])
-      if(!(factor==0)) # Skip projections if global PCA is used
-        points(projs[object$effects[[factor]] == lev, comps], rep(i,sum(as.numeric(object$effects[[factor]]) == i)), pch=pch.projections, col=gr.col[i])
-    }
-    if(!missing(ellipsoids)){
-      if(missing(confidence))
-        confidence <- c(0.4,0.68,0.95)
-      if(ellipsoids == "confidence" || ellipsoids == "conf" || ellipsoids == "model"){
-        sigma <- crossprod(object$error[[factor]]-object$LS[[factor]])/nobj
-        # sigma <- crossprod(object$residuals)/nobj
-        L <- object$loadings[[factor]][,comps]
-        # Transformed covariance matrix
-        LSL <- sqrt(crossprod(L,sigma) %*% L * nlev / (nobj-nlev))
-        # Scaling by confidence
-        cx <- list()
-        for(c in 1:length(confidence))
-          cx[[c]] <- sqrt((nobj-nlev)*1 / (nobj-nlev-1+1) * qf(confidence[c], 1, nobj-nlev-1+1))
-        for(i in 1:nlev){
-          lev <- levels(object$effects[[factor]])[i]
-          for(c in 1:length(confidence)){
-            lines(mean(scors[object$effects[[factor]] == lev,comps])*c(1,1)+c(LSL)*cx[[c]], i+c(-0.2,0.2), col=gr.col[i])
-            lines(mean(scors[object$effects[[factor]] == lev,comps])*c(1,1)-c(LSL)*cx[[c]], i+c(-0.2,0.2), col=gr.col[i])
+    if(nlev >0){
+      plot(scors[,comps], as.numeric(object$effects[[factor]]), xlim=xlim,
+           ylim=ylim, xlab=xlab, ylab=ylab, axes = FALSE)
+      axis(1)
+      axis(2, at=1:nlev, labels = levels(object$effects[[factor]]))
+      box()
+      for(i in 1:nlev){
+        lev <- levels(object$effects[[factor]])[i]
+        if(!object$add_error) # Skip plotting of scores if error is added (APCA/LiMM-PCA)
+          points(scors[object$effects[[factor]] == lev, comps], rep(i,sum(as.numeric(object$effects[[factor]]) == i)), pch=pch.scores, col=gr.col[i])
+        if(!(factor==0)) # Skip projections if global PCA is used
+          points(projs[object$effects[[factor]] == lev, comps], rep(i,sum(as.numeric(object$effects[[factor]]) == i)), pch=pch.projections, col=gr.col[i])
+      }
+      if(!missing(ellipsoids)){
+        if(missing(confidence))
+          confidence <- c(0.4,0.68,0.95)
+        if(ellipsoids == "confidence" || ellipsoids == "conf" || ellipsoids == "model"){
+          sigma <- crossprod(object$error[[factor]]-object$LS[[factor]])/nobj
+          # sigma <- crossprod(object$residuals)/nobj
+          L <- object$loadings[[factor]][,comps]
+          # Transformed covariance matrix
+          LSL <- sqrt(crossprod(L,sigma) %*% L * nlev / (nobj-nlev))
+          # Scaling by confidence
+          cx <- list()
+          for(c in 1:length(confidence))
+            cx[[c]] <- sqrt((nobj-nlev)*1 / (nobj-nlev-1+1) * qf(confidence[c], 1, nobj-nlev-1+1))
+          for(i in 1:nlev){
+            lev <- levels(object$effects[[factor]])[i]
+            for(c in 1:length(confidence)){
+              lines(mean(scors[object$effects[[factor]] == lev,comps])*c(1,1)+c(LSL)*cx[[c]], i+c(-0.2,0.2), col=gr.col[i])
+              lines(mean(scors[object$effects[[factor]] == lev,comps])*c(1,1)-c(LSL)*cx[[c]], i+c(-0.2,0.2), col=gr.col[i])
+            }
           }
         }
       }
+    } else {
+      plot(scors[,comps], ylab=xlab, xlab="index", pch = pch.projections, col=gr.col, ...)
     }
   }
 }
