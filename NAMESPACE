@@ -2,6 +2,8 @@
 
 S3method(loadingplot,asca)
 S3method(loadings,asca)
+S3method(model.frame,asca)
+S3method(model.matrix,asca)
 S3method(print,asca)
 S3method(print,pcanova)
 S3method(print,summary.asca)

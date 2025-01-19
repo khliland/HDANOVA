@@ -4,6 +4,7 @@
 #'
 #' @param formula Model formula accepting a single response (block) and predictors. See Details for more information.
 #' @param data The data set to analyse.
+#' @param contrasts Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".
 #' @param ... Additional arguments to \code{\link{asca_fit}}.
 #'
 #' @return An \code{asca} object containing loadings, scores, explained variances, etc. The object has
@@ -47,7 +48,7 @@
 #' summary(mod.perm)
 #'
 #' @export
-msca <- function(formula, data, ...){
+msca <- function(formula, data, contrasts = "contr.sum", ...){
   # formula, data, subset, weights, na.action, family, permute=FALSE,
   # unrestricted = FALSE,
   # add_error = FALSE, # TRUE => APCA/LiMM-PCA
@@ -56,7 +57,7 @@ msca <- function(formula, data, ...){
   # coding = c("sum","weighted","reference","treatment"),
   # SStype = "II",
   # REML = NULL
-  object <- asca_fit(formula=formula, data=data, ...)
+  object <- asca_fit(formula=formula, data=data, contrasts = contrasts, ...)
   object$call <- match.call()
 
   # Split within scores per factor level

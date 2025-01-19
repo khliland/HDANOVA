@@ -5,6 +5,7 @@
 #' @param formula Model formula accepting a single response (block) and predictor names separated by + signs.
 #' @param data The data set to analyse.
 #' @param ncomp The number of components to retain, proportion of variation or default = minimum cross-validation error.
+#' @param contrasts Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".
 #' @param ... Additional parameters for the asca_fit function.
 #'
 #' @return A \code{pcanova} object containing loadings, scores, explained variances, etc. The object has
@@ -56,9 +57,9 @@
 #' summary(mod.mix)
 #'
 #' @export
-pcanova <- function(formula, data, ncomp = 0.9, ...){
+pcanova <- function(formula, data, ncomp = 0.9, contrasts = "contr.sum", ...){
   # Run ASCA
-  object <- asca_fit(formula, data, pca.in = ncomp, ...)
+  object <- asca_fit(formula, data, pca.in = ncomp, contrasts = contrasts, ...)
   # Extract relevant parts
   pc <- object$Ypca$pca
   pc$Ypca <- object$Ypca

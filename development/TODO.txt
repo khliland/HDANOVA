@@ -7,10 +7,10 @@ rmarkdown::pandoc_convert("vignette_C_ASCA.Rmd", to = "latex", from = "markdown"
 pkgdown
 
 ASCA:
-- Noe er galt med coding!="sum". Scores endrer seg, mens projections er like muligens fordi error ikke lenger er sentrert.
++ Noe er galt med coding!="sum". Scores endrer seg, mens projections er like muligens fordi error ikke lenger er sentrert.
 - scale-parameter
 - Skille ut Mean Effect som eget element?
-- Ellipser i 1D (ikke bare 3D)
++ Ellipser i 1D (ikke bare 3D)
 - loadingplot for 2 grupper, kopier fiks fra metabolomics-pakken.
 - Om LiMM-PCA, sjekk Manon Martin om han bruker en spesiell koding eller restriction.
 - Tormod: Mixed model ASCA. Residual byttes ut med LS(effect) - LS(denominator). Kan vi putte dette rett inn i ellipseberegningene? Behov for titt i teori

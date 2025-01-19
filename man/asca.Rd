@@ -4,12 +4,14 @@
 \alias{asca}
 \title{Analysis of Variance Simultaneous Component Analysis - ASCA}
 \usage{
-asca(formula, data, ...)
+asca(formula, data, contrasts = "contr.sum", ...)
 }
 \arguments{
 \item{formula}{Model formula accepting a single response (block) and predictors. See Details for more information.}
 
 \item{data}{The data set to analyse.}
+
+\item{contrasts}{Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".}
 
 \item{...}{Additional arguments to \code{\link{asca_fit}}.}
 }

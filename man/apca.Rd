@@ -4,7 +4,7 @@
 \alias{apca}
 \title{ANOVA Principal Component Analysis - APCA}
 \usage{
-apca(formula, data, add_error = TRUE, ...)
+apca(formula, data, add_error = TRUE, contrasts = "contr.sum", ...)
 }
 \arguments{
 \item{formula}{Model formula accepting a single response (block) and predictors.}
@@ -12,6 +12,8 @@ apca(formula, data, add_error = TRUE, ...)
 \item{data}{The data set to analyse.}
 
 \item{add_error}{Add error to LS means (default = TRUE).}
+
+\item{contrasts}{Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".}
 
 \item{...}{Additional parameters for the asca_fit function.}
 }

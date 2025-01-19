@@ -18,7 +18,9 @@ asca_fit(
   aug_error = "denominator",
   use_ED = FALSE,
   pca.in = FALSE,
-  coding = c("sum", "weighted", "reference", "treatment"),
+  contrasts = "contr.sum",
+  coding,
+  equal_baseline = FALSE,
   SStype = "II",
   REML = NULL
 )
@@ -51,7 +53,13 @@ asca_fit(
 
 \item{pca.in}{Compress response before ASCA (number of components).}
 
-\item{coding}{Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".}
+\item{contrasts}{Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".}
+
+\item{coding}{Defunct. Use 'contrasts' instead.}
+
+\item{equal_baseline}{Experimental: Set to \code{TRUE} to let interactions, where a main effect is missing,
+e.g., a nested model, be handled with the same baseline as a cross effect model. If \code{TRUE} the corresponding
+interactions will be put in quotation marks and included in the \code{model.frame}.}
 
 \item{SStype}{Type of sum-of-squares: "I" = sequential, "II" (default) = last term, obeying marginality,
 "III" = last term, not obeying marginality.}

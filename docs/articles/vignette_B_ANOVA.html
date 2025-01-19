@@ -96,7 +96,7 @@ nested under bull.</p>
 <span>  feed  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"low"</span>,<span class="st">"high"</span><span class="op">)</span>, each<span class="op">=</span><span class="fl">6</span><span class="op">)</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  breed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NRF"</span>,<span class="st">"Hereford"</span>,<span class="st">"Angus"</span><span class="op">)</span>, <span class="fl">16</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  bull  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, each <span class="op">=</span> <span class="fl">12</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  daughter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, <span class="fl">12</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  daughter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">letters</span><span class="op">[</span><span class="fl">5</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">letters</span><span class="op">[</span><span class="fl">9</span><span class="op">:</span><span class="fl">12</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">letters</span><span class="op">[</span><span class="fl">13</span><span class="op">:</span><span class="fl">16</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  age   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">48</span>, mean <span class="op">=</span> <span class="fl">36</span>, sd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">dat</span><span class="op">$</span><span class="va">yield</span> <span class="op">&lt;-</span> <span class="fl">150</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">dat</span>, <span class="fl">10</span> <span class="op">+</span> <span class="fl">3</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">feed</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">breed</span><span class="op">)</span> <span class="op">+</span> </span>
@@ -105,11 +105,11 @@ nested under bull.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   feed    breed bull daughter age    yield</span></span>
 <span><span class="co">#&gt; 1  low      NRF    A        a  33 5541.301</span></span>
-<span><span class="co">#&gt; 2  low Hereford    A        b  35 5662.560</span></span>
-<span><span class="co">#&gt; 3  low    Angus    A        c  44 6354.182</span></span>
-<span><span class="co">#&gt; 4  low      NRF    A        d  36 6325.363</span></span>
-<span><span class="co">#&gt; 5  low Hereford    A        a  37 6144.458</span></span>
-<span><span class="co">#&gt; 6  low    Angus    A        b  45 6187.227</span></span></code></pre></div>
+<span><span class="co">#&gt; 2  low Hereford    A        b  35 6862.560</span></span>
+<span><span class="co">#&gt; 3  low    Angus    A        c  44 6954.182</span></span>
+<span><span class="co">#&gt; 4  low      NRF    A        d  36 8125.363</span></span>
+<span><span class="co">#&gt; 5  low Hereford    A        a  37 7344.458</span></span>
+<span><span class="co">#&gt; 6  low    Angus    A        b  45 7987.227</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="fixed-effect-models">Fixed effect models<a class="anchor" aria-label="anchor" href="#fixed-effect-models"></a>
@@ -134,11 +134,9 @@ is the observation within the feed level.</p>
 <span><span class="co">#&gt; Analysis of Variance Table</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Response: yield</span></span>
-<span><span class="co">#&gt;           Df   Sum Sq Mean Sq F value  Pr(&gt;F)  </span></span>
-<span><span class="co">#&gt; feed       1   957882  957882  3.1072 0.08459 .</span></span>
-<span><span class="co">#&gt; Residuals 46 14180730  308277                  </span></span>
-<span><span class="co">#&gt; ---</span></span>
-<span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
+<span><span class="co">#&gt;           Df   Sum Sq Mean Sq F value Pr(&gt;F)</span></span>
+<span><span class="co">#&gt; feed       1  1755955 1755955  2.3294 0.1338</span></span>
+<span><span class="co">#&gt; Residuals 46 34675246  753810</span></span></code></pre></div>
 <p>In the ANOVA table one can look at Pr(&gt;F) to see if the feed
 factor has a significant effect on yield. The summary function can be
 used to get more information about the underlying regression model.</p>
@@ -150,19 +148,19 @@ used to get more information about the underlying regression model.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Residuals:</span></span>
 <span><span class="co">#&gt;     Min      1Q  Median      3Q     Max </span></span>
-<span><span class="co">#&gt; -954.25 -480.25   75.11  470.14 1240.91 </span></span>
+<span><span class="co">#&gt; -1904.2  -552.8  -135.1   581.1  1898.4 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
-<span><span class="co">#&gt; (Intercept)  6354.28      80.14  79.290   &lt;2e-16 ***</span></span>
-<span><span class="co">#&gt; feed(low)    -141.27      80.14  -1.763   0.0846 .  </span></span>
+<span><span class="co">#&gt; (Intercept)   7254.3      125.3  57.887   &lt;2e-16 ***</span></span>
+<span><span class="co">#&gt; feed(low)     -191.3      125.3  -1.526    0.134    </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; s: 555.2 on 46 degrees of freedom</span></span>
-<span><span class="co">#&gt; Multiple R-squared: 0.06327,</span></span>
-<span><span class="co">#&gt; Adjusted R-squared: 0.04291 </span></span>
-<span><span class="co">#&gt; F-statistic: 3.107 on 1 and 46 DF,  p-value: 0.08459</span></span></code></pre></div>
+<span><span class="co">#&gt; s: 868.2 on 46 degrees of freedom</span></span>
+<span><span class="co">#&gt; Multiple R-squared: 0.0482,</span></span>
+<span><span class="co">#&gt; Adjusted R-squared: 0.02751 </span></span>
+<span><span class="co">#&gt; F-statistic: 2.329 on 1 and 46 DF,  p-value: 0.1338</span></span></code></pre></div>
 <p>Basic model assessment can be done using the plot function.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">old.par</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span>, mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">2</span>,<span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
@@ -188,13 +186,11 @@ is the observation within the feed level.</p>
 <span><span class="co">#&gt; Analysis of Variance Table</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Response: yield</span></span>
-<span><span class="co">#&gt;            Df   Sum Sq Mean Sq F value Pr(&gt;F)  </span></span>
-<span><span class="co">#&gt; feed        1   957882  957882  2.9904 0.0911 .</span></span>
-<span><span class="co">#&gt; breed       2   284231  142116  0.4437 0.6447  </span></span>
-<span><span class="co">#&gt; feed:breed  2   443052  221526  0.6916 0.5064  </span></span>
-<span><span class="co">#&gt; Residuals  42 13453447  320320                 </span></span>
-<span><span class="co">#&gt; ---</span></span>
-<span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
+<span><span class="co">#&gt;            Df   Sum Sq Mean Sq F value Pr(&gt;F)</span></span>
+<span><span class="co">#&gt; feed        1  1755955 1755955  2.1892 0.1464</span></span>
+<span><span class="co">#&gt; breed       2   126874   63437  0.0791 0.9241</span></span>
+<span><span class="co">#&gt; feed:breed  2   860065  430032  0.5361 0.5890</span></span>
+<span><span class="co">#&gt; Residuals  42 33688307  802103</span></span></code></pre></div>
 <p>If the interaction effect is not significant, we can simplify the
 model to:
 <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mi>i</mi><mi>e</mi><mi>l</mi><msub><mi>d</mi><mrow><mi>a</mi><mi>b</mi><mi>n</mi></mrow></msub><mo>=</mo><mi>μ</mi><mo>+</mo><mi>f</mi><mi>e</mi><mi>e</mi><msub><mi>d</mi><mi>a</mi></msub><mo>+</mo><mi>b</mi><mi>r</mi><mi>e</mi><mi>e</mi><msub><mi>d</mi><mi>b</mi></msub><mo>+</mo><msub><mi>ϵ</mi><mrow><mi>a</mi><mi>b</mi><mi>n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">yield_{abn} = \mu + feed_a + breed_b + \epsilon_{abn}</annotation></semantics></math></p>
@@ -204,12 +200,10 @@ model to:
 <span><span class="co">#&gt; Analysis of Variance Table</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Response: yield</span></span>
-<span><span class="co">#&gt;           Df   Sum Sq Mean Sq F value  Pr(&gt;F)  </span></span>
-<span><span class="co">#&gt; feed       1   957882  957882  3.0329 0.08858 .</span></span>
-<span><span class="co">#&gt; breed      2   284231  142116  0.4500 0.64055  </span></span>
-<span><span class="co">#&gt; Residuals 44 13896499  315830                  </span></span>
-<span><span class="co">#&gt; ---</span></span>
-<span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
+<span><span class="co">#&gt;           Df   Sum Sq Mean Sq F value Pr(&gt;F)</span></span>
+<span><span class="co">#&gt; feed       1  1755955 1755955  2.2363 0.1419</span></span>
+<span><span class="co">#&gt; breed      2   126874   63437  0.0808 0.9225</span></span>
+<span><span class="co">#&gt; Residuals 44 34548372  785190</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="types-of-sums-of-squares">Types of sums of squares<a class="anchor" aria-label="anchor" href="#types-of-sums-of-squares"></a>
@@ -223,12 +217,10 @@ in the car package.</p>
 <span><span class="co">#&gt; Analysis of Variance Table</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Response: yield</span></span>
-<span><span class="co">#&gt;           Df   Sum Sq Mean Sq F value  Pr(&gt;F)  </span></span>
-<span><span class="co">#&gt; feed       1   957882  957882  3.0329 0.08858 .</span></span>
-<span><span class="co">#&gt; breed      2   284231  142116  0.4500 0.64055  </span></span>
-<span><span class="co">#&gt; Residuals 44 13896499  315830                  </span></span>
-<span><span class="co">#&gt; ---</span></span>
-<span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">#&gt;           Df   Sum Sq Mean Sq F value Pr(&gt;F)</span></span>
+<span><span class="co">#&gt; feed       1  1755955 1755955  2.2363 0.1419</span></span>
+<span><span class="co">#&gt; breed      2   126874   63437  0.0808 0.9225</span></span>
+<span><span class="co">#&gt; Residuals 44 34548372  785190</span></span>
 <span></span>
 <span><span class="co"># Type II - Testing each term after all others, </span></span>
 <span><span class="co"># except ignoring the term's higher-order relatives</span></span>
@@ -236,12 +228,10 @@ in the car package.</p>
 <span><span class="co">#&gt; Anova Table (Type II tests)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Response: yield</span></span>
-<span><span class="co">#&gt;             Sum Sq Df F value  Pr(&gt;F)  </span></span>
-<span><span class="co">#&gt; feed        957882  1  3.0329 0.08858 .</span></span>
-<span><span class="co">#&gt; breed       284231  2  0.4500 0.64055  </span></span>
-<span><span class="co">#&gt; Residuals 13896499 44                  </span></span>
-<span><span class="co">#&gt; ---</span></span>
-<span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">#&gt;             Sum Sq Df F value Pr(&gt;F)</span></span>
+<span><span class="co">#&gt; feed       1755955  1  2.2363 0.1419</span></span>
+<span><span class="co">#&gt; breed       126874  2  0.0808 0.9225</span></span>
+<span><span class="co">#&gt; Residuals 34548372 44</span></span>
 <span></span>
 <span><span class="co"># Type III - Testing each term after all others,</span></span>
 <span><span class="co"># including the term's higher-order relatives</span></span>
@@ -249,11 +239,11 @@ in the car package.</p>
 <span><span class="co">#&gt; Anova Table (Type III tests)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Response: yield</span></span>
-<span><span class="co">#&gt;                 Sum Sq Df   F value  Pr(&gt;F)    </span></span>
-<span><span class="co">#&gt; (Intercept) 1938092247  1 6136.5139 &lt; 2e-16 ***</span></span>
-<span><span class="co">#&gt; feed            957882  1    3.0329 0.08858 .  </span></span>
-<span><span class="co">#&gt; breed           284231  2    0.4500 0.64055    </span></span>
-<span><span class="co">#&gt; Residuals     13896499 44                      </span></span>
+<span><span class="co">#&gt;                 Sum Sq Df   F value Pr(&gt;F)    </span></span>
+<span><span class="co">#&gt; (Intercept) 2525982362  1 3217.0322 &lt;2e-16 ***</span></span>
+<span><span class="co">#&gt; feed           1755955  1    2.2363 0.1419    </span></span>
+<span><span class="co">#&gt; breed           126874  2    0.0808 0.9225    </span></span>
+<span><span class="co">#&gt; Residuals     34548372 44                     </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
 <p>For the two-way ANOVA model, the Type I and Type II sums of squares
@@ -277,11 +267,11 @@ the coding for all effects simultaneously.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Response: yield</span></span>
 <span><span class="co">#&gt;                 Sum Sq Df   F value Pr(&gt;F)    </span></span>
-<span><span class="co">#&gt; (Intercept) 1938092247  1 6050.4845 &lt;2e-16 ***</span></span>
-<span><span class="co">#&gt; feed            957882  1    2.9904 0.0911 .  </span></span>
-<span><span class="co">#&gt; breed           284231  2    0.4437 0.6447    </span></span>
-<span><span class="co">#&gt; feed:breed      443052  2    0.6916 0.5064    </span></span>
-<span><span class="co">#&gt; Residuals     13453447 42                     </span></span>
+<span><span class="co">#&gt; (Intercept) 2525982362  1 3149.2013 &lt;2e-16 ***</span></span>
+<span><span class="co">#&gt; feed           1755955  1    2.1892 0.1464    </span></span>
+<span><span class="co">#&gt; breed           126874  2    0.0791 0.9241    </span></span>
+<span><span class="co">#&gt; feed:breed      860065  2    0.5361 0.5890    </span></span>
+<span><span class="co">#&gt; Residuals     33688307 42                     </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span></span>
@@ -293,11 +283,11 @@ the coding for all effects simultaneously.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Response: yield</span></span>
 <span><span class="co">#&gt;                 Sum Sq Df   F value Pr(&gt;F)    </span></span>
-<span><span class="co">#&gt; (Intercept) 1938092247  1 6050.4845 &lt;2e-16 ***</span></span>
-<span><span class="co">#&gt; feed            957882  1    2.9904 0.0911 .  </span></span>
-<span><span class="co">#&gt; breed           284231  2    0.4437 0.6447    </span></span>
-<span><span class="co">#&gt; feed:breed      443052  2    0.6916 0.5064    </span></span>
-<span><span class="co">#&gt; Residuals     13453447 42                     </span></span>
+<span><span class="co">#&gt; (Intercept) 2525982362  1 3149.2013 &lt;2e-16 ***</span></span>
+<span><span class="co">#&gt; feed           1755955  1    2.1892 0.1464    </span></span>
+<span><span class="co">#&gt; breed           126874  2    0.0791 0.9241    </span></span>
+<span><span class="co">#&gt; feed:breed      860065  2    0.5361 0.5890    </span></span>
+<span><span class="co">#&gt; Residuals     33688307 42                     </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
 <p>Instead of specifying the contrasts in a specific model, it is also
@@ -325,12 +315,12 @@ is its linear coefficient.</p>
 <span><span class="co">#&gt; Anova Table (Type II tests)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Response: yield</span></span>
-<span><span class="co">#&gt;             Sum Sq Df F value    Pr(&gt;F)    </span></span>
-<span><span class="co">#&gt; feed        938176  1  4.3325   0.04368 *  </span></span>
-<span><span class="co">#&gt; breed       368528  2  0.8509   0.43442    </span></span>
-<span><span class="co">#&gt; age        4575110  1 21.1278 4.064e-05 ***</span></span>
-<span><span class="co">#&gt; feed:breed   73643  2  0.1700   0.84422    </span></span>
-<span><span class="co">#&gt; Residuals  8878337 41                      </span></span>
+<span><span class="co">#&gt;              Sum Sq Df F value    Pr(&gt;F)    </span></span>
+<span><span class="co">#&gt; feed        1718601  1  2.9288 0.0945692 .  </span></span>
+<span><span class="co">#&gt; breed         13015  2  0.0111 0.9889747    </span></span>
+<span><span class="co">#&gt; age         9629682  1 16.4106 0.0002214 ***</span></span>
+<span><span class="co">#&gt; feed:breed   793690  2  0.6763 0.5140804    </span></span>
+<span><span class="co">#&gt; Residuals  24058625 41                      </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
 </div>
@@ -347,15 +337,15 @@ they are random effects. The model becomes:
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mixlm/man/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">yield</span> <span class="op">~</span> <span class="va">bull</span> <span class="op">+</span> <span class="va">daughter</span><span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span><span class="va">bull</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/car/man/Anova.html" class="external-link">Anova</a></span><span class="op">(</span><span class="va">mod</span>, type<span class="op">=</span><span class="st">"II"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Note: model has aliased coefficients</span></span>
+<span><span class="co">#&gt;       sums of squares computed by model comparison</span></span>
 <span><span class="co">#&gt; Anova Table (Type II tests)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Response: yield</span></span>
-<span><span class="co">#&gt;                Sum Sq Df F value    Pr(&gt;F)    </span></span>
-<span><span class="co">#&gt; bull          6293005  3  8.9924 0.0001822 ***</span></span>
-<span><span class="co">#&gt; bull:daughter 1380934 12  0.4933 0.9034247    </span></span>
-<span><span class="co">#&gt; Residuals     7464672 32                      </span></span>
-<span><span class="co">#&gt; ---</span></span>
-<span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
+<span><span class="co">#&gt;                 Sum Sq Df F value Pr(&gt;F)</span></span>
+<span><span class="co">#&gt; bull           2130879  3  0.8630 0.4703</span></span>
+<span><span class="co">#&gt; bull:daughter  7961749 12  0.8061 0.6421</span></span>
+<span><span class="co">#&gt; Residuals     26338573 32</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -372,23 +362,23 @@ through the lme4 package (or similar).</p>
 selection from the population of bulls, we can specify this as a random
 effect when focusing on feed. The model looks like a fixed effect model,
 but the error structure is different:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mi>i</mi><mi>e</mi><mi>l</mi><msub><mi>d</mi><mrow><mi>a</mi><mi>b</mi><mi>n</mi></mrow></msub><mo>=</mo><mi>μ</mi><mo>+</mo><mi>f</mi><mi>e</mi><mi>e</mi><msub><mi>d</mi><mi>a</mi></msub><mo>+</mo><mi>b</mi><mi>r</mi><mi>e</mi><mi>e</mi><msub><mi>d</mi><mi>b</mi></msub><mo>+</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mi>e</mi><mi>e</mi><mi>d</mi><mo>:</mo><mi>b</mi><mi>r</mi><mi>e</mi><mi>e</mi><mi>d</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>a</mi><mi>b</mi></mrow></msub><mo>+</mo><msub><mi>ϵ</mi><mrow><mi>a</mi><mi>b</mi><mi>n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">yield_{abn} = \mu + feed_a + breed_b + (feed:breed)_{ab} + \epsilon_{abn}</annotation></semantics></math></p>
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mi>i</mi><mi>e</mi><mi>l</mi><msub><mi>d</mi><mrow><mi>a</mi><mi>b</mi><mi>n</mi></mrow></msub><mo>=</mo><mi>μ</mi><mo>+</mo><mi>f</mi><mi>e</mi><mi>e</mi><msub><mi>d</mi><mi>a</mi></msub><mo>+</mo><mi>b</mi><mi>u</mi><mi>l</mi><msub><mi>l</mi><mi>b</mi></msub><mo>+</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mi>e</mi><mi>e</mi><mi>d</mi><mo>:</mo><mi>b</mi><mi>u</mi><mi>l</mi><mi>l</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>a</mi><mi>b</mi></mrow></msub><mo>+</mo><msub><mi>ϵ</mi><mrow><mi>a</mi><mi>b</mi><mi>n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">yield_{abn} = \mu + feed_a + bull_b + (feed:bull)_{ab} + \epsilon_{abn}</annotation></semantics></math></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mixlm/man/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">yield</span> <span class="op">~</span> <span class="va">feed</span><span class="op">*</span><span class="fu">r</span><span class="op">(</span><span class="va">bull</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/car/man/Anova.html" class="external-link">Anova</a></span><span class="op">(</span><span class="va">mod</span>, type<span class="op">=</span><span class="st">"II"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysis of variance (unrestricted model)</span></span>
 <span><span class="co">#&gt; Response: yield</span></span>
-<span><span class="co">#&gt;              Mean Sq     Sum Sq Df F value Pr(&gt;F)</span></span>
-<span><span class="co">#&gt; feed       957881.78  957881.78  1    3.75 0.1481</span></span>
-<span><span class="co">#&gt; bull      2097668.39 6293005.18  3    8.22 0.0587</span></span>
-<span><span class="co">#&gt; feed:bull  255297.76  765893.29  3    1.43 0.2472</span></span>
-<span><span class="co">#&gt; Residuals  178045.79 7121831.56 40       -      -</span></span>
+<span><span class="co">#&gt;              Mean Sq      Sum Sq Df F value Pr(&gt;F)</span></span>
+<span><span class="co">#&gt; feed      1755954.98  1755954.98  1    8.20 0.0644</span></span>
+<span><span class="co">#&gt; bull       710292.91  2130878.72  3    3.32 0.1755</span></span>
+<span><span class="co">#&gt; feed:bull  214160.94   642482.83  3    0.27 0.8477</span></span>
+<span><span class="co">#&gt; Residuals  797547.10 31901884.17 40       -      -</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;             Err.term(s) Err.df VC(SS)</span></span>
 <span><span class="co">#&gt; 1 feed              (3)      3  fixed</span></span>
-<span><span class="co">#&gt; 2 bull              (3)      3 153531</span></span>
-<span><span class="co">#&gt; 3 feed:bull         (4)     40  12875</span></span>
-<span><span class="co">#&gt; 4 Residuals           -      - 178046</span></span>
+<span><span class="co">#&gt; 2 bull              (3)      3  41344</span></span>
+<span><span class="co">#&gt; 3 feed:bull         (4)     40 -97231</span></span>
+<span><span class="co">#&gt; 4 Residuals           -      - 797547</span></span>
 <span><span class="co">#&gt; (VC = variance component)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;           Expected mean squares</span></span>
@@ -409,17 +399,17 @@ possible to turn on restriction.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/car/man/Anova.html" class="external-link">Anova</a></span><span class="op">(</span><span class="va">mod</span>, type<span class="op">=</span><span class="st">"II"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysis of variance (restricted model)</span></span>
 <span><span class="co">#&gt; Response: yield</span></span>
-<span><span class="co">#&gt;              Mean Sq     Sum Sq Df F value Pr(&gt;F)</span></span>
-<span><span class="co">#&gt; feed       957881.78  957881.78  1    3.75 0.1481</span></span>
-<span><span class="co">#&gt; bull      2097668.39 6293005.18  3   11.78 0.0000</span></span>
-<span><span class="co">#&gt; feed:bull  255297.76  765893.29  3    1.43 0.2472</span></span>
-<span><span class="co">#&gt; Residuals  178045.79 7121831.56 40       -      -</span></span>
+<span><span class="co">#&gt;              Mean Sq      Sum Sq Df F value Pr(&gt;F)</span></span>
+<span><span class="co">#&gt; feed      1755954.98  1755954.98  1    8.20 0.0644</span></span>
+<span><span class="co">#&gt; bull       710292.91  2130878.72  3    0.89 0.4543</span></span>
+<span><span class="co">#&gt; feed:bull  214160.94   642482.83  3    0.27 0.8477</span></span>
+<span><span class="co">#&gt; Residuals  797547.10 31901884.17 40       -      -</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;             Err.term(s) Err.df VC(SS)</span></span>
 <span><span class="co">#&gt; 1 feed              (3)      3  fixed</span></span>
-<span><span class="co">#&gt; 2 bull              (4)     40 159969</span></span>
-<span><span class="co">#&gt; 3 feed:bull         (4)     40  12875</span></span>
-<span><span class="co">#&gt; 4 Residuals           -      - 178046</span></span>
+<span><span class="co">#&gt; 2 bull              (4)     40  -7271</span></span>
+<span><span class="co">#&gt; 3 feed:bull         (4)     40 -97231</span></span>
+<span><span class="co">#&gt; 4 Residuals           -      - 797547</span></span>
 <span><span class="co">#&gt; (VC = variance component)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;           Expected mean squares</span></span>
@@ -444,6 +434,7 @@ effect does not necessarily need to be random.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span><span class="va">long</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>,<span class="fl">9</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"feed"</span>, <span class="st">"daughter"</span>, <span class="st">"yield"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">long</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">long</span>, <span class="va">long</span>, <span class="va">long</span><span class="op">)</span></span>
+<span><span class="va">long</span><span class="op">$</span><span class="va">daughter</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">long</span><span class="op">$</span><span class="va">daughter</span><span class="op">)</span> <span class="co"># Remove redundant daughter</span></span>
 <span><span class="va">long</span><span class="op">$</span><span class="va">time</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, each<span class="op">=</span><span class="fl">8</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">long</span><span class="op">$</span><span class="va">yield</span> <span class="op">&lt;-</span> <span class="va">long</span><span class="op">$</span><span class="va">yield</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">24</span>, sd <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>,<span class="fl">0</span>,<span class="fl">200</span><span class="op">)</span>, each<span class="op">=</span><span class="fl">8</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">yield</span><span class="op">~</span><span class="va">daughter</span>, data<span class="op">=</span><span class="va">long</span><span class="op">)</span></span></code></pre></div>
@@ -456,19 +447,19 @@ repeated inside daughters, with the model:
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/car/man/Anova.html" class="external-link">Anova</a></span><span class="op">(</span><span class="va">mod</span>, type<span class="op">=</span><span class="st">"II"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysis of variance (restricted model)</span></span>
 <span><span class="co">#&gt; Response: yield</span></span>
-<span><span class="co">#&gt;             Mean Sq     Sum Sq Df F value Pr(&gt;F)</span></span>
-<span><span class="co">#&gt; daughter  939109.89 2817329.67  3   18.26 0.0000</span></span>
-<span><span class="co">#&gt; feed      265158.98  265158.98  1   86.27 0.0114</span></span>
-<span><span class="co">#&gt; time      213465.79  426931.58  2    4.15 0.0368</span></span>
-<span><span class="co">#&gt; feed:time   3073.71    6147.41  2    0.06 0.9422</span></span>
-<span><span class="co">#&gt; Residuals  51429.27  771439.11 15       -      -</span></span>
+<span><span class="co">#&gt;              Mean Sq     Sum Sq Df F value Pr(&gt;F)</span></span>
+<span><span class="co">#&gt; daughter  1085642.42 3256927.25  3   1.854 0.1808</span></span>
+<span><span class="co">#&gt; feed        21759.92   21759.92  1   7.079 0.1170</span></span>
+<span><span class="co">#&gt; time       213465.79  426931.58  2   0.365 0.7005</span></span>
+<span><span class="co">#&gt; feed:time    3073.71    6147.41  2   0.005 0.9948</span></span>
+<span><span class="co">#&gt; Residuals  585554.07 8783311.09 15       -      -</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;             Err.term(s) Err.df VC(SS)</span></span>
-<span><span class="co">#&gt; 1 daughter          (5)     15 147947</span></span>
-<span><span class="co">#&gt; 2 feed              (4)      2  fixed</span></span>
-<span><span class="co">#&gt; 3 time              (5)     15  20255</span></span>
-<span><span class="co">#&gt; 4 feed:time         (5)     15 -12089</span></span>
-<span><span class="co">#&gt; 5 Residuals           -      -  51429</span></span>
+<span><span class="co">#&gt;             Err.term(s) Err.df  VC(SS)</span></span>
+<span><span class="co">#&gt; 1 daughter          (5)     15   83348</span></span>
+<span><span class="co">#&gt; 2 feed              (4)      2   fixed</span></span>
+<span><span class="co">#&gt; 3 time              (5)     15  -46511</span></span>
+<span><span class="co">#&gt; 4 feed:time         (5)     15 -145620</span></span>
+<span><span class="co">#&gt; 5 Residuals           -      -  585554</span></span>
 <span><span class="co">#&gt; (VC = variance component)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;           Expected mean squares</span></span>
@@ -486,13 +477,14 @@ can also do this through the mixlm package, leveraging the r()
 function.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mixlm/man/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">yield</span> <span class="op">~</span> <span class="va">feed</span><span class="op">*</span><span class="fu">r</span><span class="op">(</span><span class="va">bull</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">dat</span>, REML <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; boundary (singular) fit: see help('isSingular')</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/car/man/Anova.html" class="external-link">Anova</a></span><span class="op">(</span><span class="va">mod</span>, type<span class="op">=</span><span class="st">"III"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysis of Deviance Table (Type III Wald chisquare tests)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Response: yield</span></span>
-<span><span class="co">#&gt;               Chisq Df Pr(&gt;Chisq)    </span></span>
-<span><span class="co">#&gt; (Intercept) 923.918  1    &lt; 2e-16 ***</span></span>
-<span><span class="co">#&gt; feed          3.752  1    0.05274 .  </span></span>
+<span><span class="co">#&gt;                 Chisq Df Pr(&gt;Chisq)    </span></span>
+<span><span class="co">#&gt; (Intercept) 3350.9550  1     &lt;2e-16 ***</span></span>
+<span><span class="co">#&gt; feed           2.3294  1     0.1269    </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
 <p>To see how mixlm transforms the model to lme4, we can print the
@@ -502,16 +494,17 @@ model.</p>
 <span><span class="co">#&gt; Linear mixed model fit by REML ['lmerMod']</span></span>
 <span><span class="co">#&gt; Formula: yield ~ feed + (1 | bull) + (1 | feed:bull)</span></span>
 <span><span class="co">#&gt;    Data: dat</span></span>
-<span><span class="co">#&gt; REML criterion at convergence: 702.8962</span></span>
+<span><span class="co">#&gt; REML criterion at convergence: 760.7979</span></span>
 <span><span class="co">#&gt; Random effects:</span></span>
 <span><span class="co">#&gt;  Groups    Name        Std.Dev.</span></span>
-<span><span class="co">#&gt;  feed:bull (Intercept) 113.5   </span></span>
-<span><span class="co">#&gt;  bull      (Intercept) 391.8   </span></span>
-<span><span class="co">#&gt;  Residual              422.0   </span></span>
+<span><span class="co">#&gt;  feed:bull (Intercept)   0.0   </span></span>
+<span><span class="co">#&gt;  bull      (Intercept)   0.0   </span></span>
+<span><span class="co">#&gt;  Residual              868.2   </span></span>
 <span><span class="co">#&gt; Number of obs: 48, groups:  feed:bull, 8; bull, 4</span></span>
 <span><span class="co">#&gt; Fixed Effects:</span></span>
 <span><span class="co">#&gt; (Intercept)        feed1  </span></span>
-<span><span class="co">#&gt;      6354.3       -141.3</span></span></code></pre></div>
+<span><span class="co">#&gt;      7254.3       -191.3  </span></span>
+<span><span class="co">#&gt; optimizer (nloptwrap) convergence code: 0 (OK) ; 0 optimizer warnings; 1 lme4 warnings</span></span></code></pre></div>
 <p>We observe that (1 | bull) and (1 | <a href="feed:bull" class="uri">feed:bull</a>) are added to the model, which means that
 random intercepts are added for both bull and the interaction.</p>
 </div>
@@ -533,10 +526,10 @@ responses.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/car/man/Anova.html" class="external-link">Anova</a></span><span class="op">(</span><span class="va">mod</span>, type<span class="op">=</span><span class="st">"II"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Type II MANOVA Tests: Pillai test statistic</span></span>
-<span><span class="co">#&gt;            Df test stat approx F num Df den Df    Pr(&gt;F)    </span></span>
-<span><span class="co">#&gt; feed        1   0.20074   5.1487      2     41 0.0101188 *  </span></span>
-<span><span class="co">#&gt; breed       2   0.47524   6.5453      4     84 0.0001235 ***</span></span>
-<span><span class="co">#&gt; feed:breed  2   0.15162   1.7226      4     84 0.1525975    </span></span>
+<span><span class="co">#&gt;            Df test stat approx F num Df den Df   Pr(&gt;F)    </span></span>
+<span><span class="co">#&gt; feed        1   0.16426   4.0292      2     41 0.025260 *  </span></span>
+<span><span class="co">#&gt; breed       2   0.47415   6.5256      4     84 0.000127 ***</span></span>
+<span><span class="co">#&gt; feed:breed  2   0.14929   1.6939      4     84 0.159025    </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
 <p>The test statistics are joint for all responses, here in the form of
@@ -547,27 +540,27 @@ as follows:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Type II MANOVA Tests: Wilks test statistic</span></span>
 <span><span class="co">#&gt;            Df test stat approx F num Df den Df   Pr(&gt;F)    </span></span>
-<span><span class="co">#&gt; feed        1   0.79926   5.1487      2     41  0.01012 *  </span></span>
-<span><span class="co">#&gt; breed       2   0.52507   7.7908      4     82 2.26e-05 ***</span></span>
-<span><span class="co">#&gt; feed:breed  2   0.84974   1.7387      4     82  0.14936    </span></span>
+<span><span class="co">#&gt; feed        1   0.83574   4.0292      2     41  0.02526 *  </span></span>
+<span><span class="co">#&gt; breed       2   0.52761   7.7226      4     82 2.48e-05 ***</span></span>
+<span><span class="co">#&gt; feed:breed  2   0.85375   1.6865      4     82  0.16100    </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/car/man/Anova.html" class="external-link">Anova</a></span><span class="op">(</span><span class="va">mod</span>, type<span class="op">=</span><span class="st">"II"</span>, test<span class="op">=</span><span class="st">"Hotelling-Lawley"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Type II MANOVA Tests: Hotelling-Lawley test statistic</span></span>
 <span><span class="co">#&gt;            Df test stat approx F num Df den Df    Pr(&gt;F)    </span></span>
-<span><span class="co">#&gt; feed        1   0.25115   5.1487      2     41   0.01012 *  </span></span>
-<span><span class="co">#&gt; breed       2   0.90391   9.0391      4     80 4.473e-06 ***</span></span>
-<span><span class="co">#&gt; feed:breed  2   0.17522   1.7522      4     80   0.14676    </span></span>
+<span><span class="co">#&gt; feed        1   0.19655   4.0292      2     41   0.02526 *  </span></span>
+<span><span class="co">#&gt; breed       2   0.89201   8.9201      4     80 5.227e-06 ***</span></span>
+<span><span class="co">#&gt; feed:breed  2   0.16775   1.6775      4     80   0.16336    </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/car/man/Anova.html" class="external-link">Anova</a></span><span class="op">(</span><span class="va">mod</span>, type<span class="op">=</span><span class="st">"II"</span>, test<span class="op">=</span><span class="st">"Roy"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Type II MANOVA Tests: Roy test statistic</span></span>
 <span><span class="co">#&gt;            Df test stat approx F num Df den Df    Pr(&gt;F)    </span></span>
-<span><span class="co">#&gt; feed        1   0.25115   5.1487      2     41   0.01012 *  </span></span>
-<span><span class="co">#&gt; breed       2   0.90326  18.9685      2     42 1.351e-06 ***</span></span>
-<span><span class="co">#&gt; feed:breed  2   0.16551   3.4757      2     42   0.04010 *  </span></span>
+<span><span class="co">#&gt; feed        1   0.19655   4.0292      2     41   0.02526 *  </span></span>
+<span><span class="co">#&gt; breed       2   0.88826  18.6535      2     42 1.595e-06 ***</span></span>
+<span><span class="co">#&gt; feed:breed  2   0.14285   2.9999      2     42   0.06056 .  </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
 <p>The summary function can be used to get more information about the
@@ -581,23 +574,23 @@ performed separately for each response.</p>
 <span><span class="co">#&gt; lm(formula = yield ~ feed * breed, data = dat)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Residuals:</span></span>
-<span><span class="co">#&gt;      Min       1Q   Median       3Q      Max </span></span>
-<span><span class="co">#&gt; -1148.50  -489.54   -25.54   349.48  1142.16 </span></span>
+<span><span class="co">#&gt;     Min      1Q  Median      3Q     Max </span></span>
+<span><span class="co">#&gt; -2123.5  -506.2  -109.0   625.8  1762.0 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt;                            Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
-<span><span class="co">#&gt; (Intercept)                 6354.28      81.69  77.785   &lt;2e-16 ***</span></span>
-<span><span class="co">#&gt; feed(high)                  -141.27      81.69  -1.729   0.0911 .  </span></span>
-<span><span class="co">#&gt; breed(Angus)                 -71.72     115.53  -0.621   0.5381    </span></span>
-<span><span class="co">#&gt; breed(Hereford)              -35.02     115.53  -0.303   0.7633    </span></span>
-<span><span class="co">#&gt; feed(high):breed(Angus)      -46.25     115.53  -0.400   0.6909    </span></span>
-<span><span class="co">#&gt; feed(high):breed(Hereford)   133.76     115.53   1.158   0.2535    </span></span>
+<span><span class="co">#&gt; (Intercept)                 7254.28     129.27  56.118   &lt;2e-16 ***</span></span>
+<span><span class="co">#&gt; feed(high)                  -191.27     129.27  -1.480    0.146    </span></span>
+<span><span class="co">#&gt; breed(Angus)                  40.78     182.81   0.223    0.825    </span></span>
+<span><span class="co">#&gt; breed(Hereford)              -72.52     182.81  -0.397    0.694    </span></span>
+<span><span class="co">#&gt; feed(high):breed(Angus)      116.25     182.81   0.636    0.528    </span></span>
+<span><span class="co">#&gt; feed(high):breed(Hereford)    71.26     182.81   0.390    0.699    </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Residual standard error: 566 on 42 degrees of freedom</span></span>
-<span><span class="co">#&gt; Multiple R-squared:  0.1113, Adjusted R-squared:  0.00552 </span></span>
-<span><span class="co">#&gt; F-statistic: 1.052 on 5 and 42 DF,  p-value: 0.4003</span></span>
+<span><span class="co">#&gt; Residual standard error: 895.6 on 42 degrees of freedom</span></span>
+<span><span class="co">#&gt; Multiple R-squared:  0.07529,    Adjusted R-squared:  -0.03479 </span></span>
+<span><span class="co">#&gt; F-statistic: 0.6839 on 5 and 42 DF,  p-value: 0.6382</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Response mastitis :</span></span>

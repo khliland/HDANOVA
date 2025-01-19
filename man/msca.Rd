@@ -4,12 +4,14 @@
 \alias{msca}
 \title{Multilevel Simultaneous Component Analysis - MSCA}
 \usage{
-msca(formula, data, ...)
+msca(formula, data, contrasts = "contr.sum", ...)
 }
 \arguments{
 \item{formula}{Model formula accepting a single response (block) and predictors. See Details for more information.}
 
 \item{data}{The data set to analyse.}
+
+\item{contrasts}{Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".}
 
 \item{...}{Additional arguments to \code{\link{asca_fit}}.}
 }

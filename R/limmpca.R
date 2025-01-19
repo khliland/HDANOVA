@@ -8,6 +8,7 @@
 #' @param use_ED Use Effective Dimensions instead of degrees of freedom when scaling.
 #' @param REML Use restricted maximum likelihood estimation.
 #' Alternatives: TRUE (default), FALSE (ML), NULL (least squares).
+#' @param contrasts Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".
 #' @param ... Additional arguments to \code{\link{asca_fit}}.
 #'
 #' @description
@@ -46,7 +47,7 @@
 #' mod.comb <- limmpca(compounds ~ time + comb(r(light) + r(time:light)), data=caldana, pca.in=8)
 #' summary(mod.comb)
 limmpca <- function(formula, data, pca.in = 5, aug_error = 0.05,
-                    use_ED = FALSE, REML = TRUE, ...){
+                    use_ED = FALSE, REML = TRUE, contrasts = "contr.sum", ...){
   # formula, data, subset, weights, na.action, family, permute=FALSE,
   # unrestricted = FALSE,
   # add_error = FALSE, # TRUE => APCA/LiMM-PCA
@@ -56,7 +57,8 @@ limmpca <- function(formula, data, pca.in = 5, aug_error = 0.05,
   # SStype = "II",
   # REML = NULL
   object <- asca_fit(formula=formula, data=data, pca.in=pca.in,
-                     aug_error=aug_error, use_ED=use_ED, REML=REML, ...)
+                     aug_error=aug_error, use_ED=use_ED, REML=REML,
+                     contrasts = contrasts, ...)
   object$call <- match.call()
   class(object) <- c("limmpca", class(object))
   object

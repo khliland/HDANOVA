@@ -4,7 +4,7 @@
 \alias{pcanova}
 \title{Principal Components Analysis of Variance Simultaneous Component Analysis - PC-ANOVA}
 \usage{
-pcanova(formula, data, ncomp = 0.9, ...)
+pcanova(formula, data, ncomp = 0.9, contrasts = "contr.sum", ...)
 }
 \arguments{
 \item{formula}{Model formula accepting a single response (block) and predictor names separated by + signs.}
@@ -12,6 +12,8 @@ pcanova(formula, data, ncomp = 0.9, ...)
 \item{data}{The data set to analyse.}
 
 \item{ncomp}{The number of components to retain, proportion of variation or default = minimum cross-validation error.}
+
+\item{contrasts}{Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".}
 
 \item{...}{Additional parameters for the asca_fit function.}
 }

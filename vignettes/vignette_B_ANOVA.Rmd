@@ -198,7 +198,7 @@ Using the mixlm package, we specify the random effects using the `r()` function.
 If we assume that the bull is a random selection from the population of bulls,
 we can specify this as a random effect when focusing on feed. The model looks
 like a fixed effect model, but the error structure is different:
-$$yield_{abn} = \mu + feed_a + breed_b + (feed:breed)_{ab} + \epsilon_{abn}$$
+$$yield_{abn} = \mu + feed_a + bull_b + (feed:bull)_{ab} + \epsilon_{abn}$$
 
 ```{r}
 mod <- lm(yield ~ feed*r(bull), data = dat)

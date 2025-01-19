@@ -11,6 +11,7 @@ limmpca(
   aug_error = 0.05,
   use_ED = FALSE,
   REML = TRUE,
+  contrasts = "contr.sum",
   ...
 )
 }
@@ -28,6 +29,8 @@ The latter implies the first with a scaling factor.}
 
 \item{REML}{Use restricted maximum likelihood estimation.
 Alternatives: TRUE (default), FALSE (ML), NULL (least squares).}
+
+\item{contrasts}{Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".}
 
 \item{...}{Additional arguments to \code{\link{asca_fit}}.}
 }

@@ -308,7 +308,6 @@ dat <- data.frame(
   breed = factor(rep(c("NRF","Hereford","Angus"), 16)),
   bull  = factor(rep(LETTERS[1:4], each = 12)),
   daughter = factor(c(rep(letters[1:4], 3), rep(letters[5:8], 3), rep(letters[9:12], 3), rep(letters[13:16], 3))),
-#  daughter = factor(rep(letters[1:4], 12)),
   age   = round(rnorm(48, mean = 36, sd = 5))
 )
 dat$yield <- 150*with(dat, 10 + 3 * as.numeric(feed) + as.numeric(breed) + 
