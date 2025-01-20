@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">HDANOVA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">apca</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, add_error <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">apca</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, add_error <span class="op">=</span> <span class="cn">TRUE</span>, contrasts <span class="op">=</span> <span class="st">"contr.sum"</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -62,6 +62,10 @@
 
 <dt id="arg-add-error">add_error<a class="anchor" aria-label="anchor" href="#arg-add-error"></a></dt>
 <dd><p>Add error to LS means (default = TRUE).</p></dd>
+
+
+<dt id="arg-contrasts">contrasts<a class="anchor" aria-label="anchor" href="#arg-contrasts"></a></dt>
+<dd><p>Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -98,7 +102,7 @@ Extraction of results and plotting: <code><a href="asca_results.html">asca_resul
 <span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">apca</span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span> <span class="op">+</span> <span class="va">assessor</span> <span class="op">+</span> <span class="va">num</span>, data<span class="op">=</span><span class="va">candies</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Anova Principal Component Analysis fitted using 'lm' (Linear Model) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II, sum coding, restricted model, least squares estimation </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II,  coding, restricted model, least squares estimation </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            Sum.Sq. Expl.var.(%)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> candy     32438.46        72.30</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> assessor   1823.59         4.06</span>

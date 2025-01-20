@@ -4,6 +4,17 @@ Functions and datasets to support Smilde, Marini, Westerhuis and Liland (2025, I
 This implements and imports a  collection of methods for HD-ANOVA data analysis with common interfaces, result- and plotting
 functions, multiple real data sets and four vignettes covering a range different applications.
 
+##### Version 0.8.2
+Date: 20 January 2025
+>> Added support for numerical effects in lm() type models.
+>> Improved colour handling in scoreplot.
+>> Update regarding repeated measures.
+>> Improved contrasts handling.
+>> Experimental equal_baseline for nested models.
+>> Limited number of components in pca.in.
+>> model.frame and model.matrix.
+>> Various bug fixes.
+
 ##### Version 0.8.1
 Date: 15 October 2024
 >> Initial CRAN release of package HDANOVA.

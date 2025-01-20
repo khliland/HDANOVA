@@ -60,6 +60,10 @@ mod.pca <- asca(assessment ~ candy + assessor, data=candies, pca.in=5)
 mod.mix <- asca(assessment ~ candy + r(assessor), data=candies)
 scoreplot(mod.mix)
 
+# Mixed Model ASCA, REML estimation
+mod.mix <- asca(assessment ~ candy + r(assessor), data=candies, REML=TRUE)
+scoreplot(mod.mix)
+
 # Load Caldana data
 data(caldana)
 

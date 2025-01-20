@@ -23,6 +23,7 @@ reference:
   - block.data.frame
   - dummycode
   - extended.model.frame
+  - model.frame.asca
   - timeplot
   - update_without_factor
 - title: "Datasets"

@@ -13,7 +13,7 @@ for alternatives."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">HDANOVA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,7 @@ for alternatives.</p>
 <span>  aug_error <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  use_ED <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  REML <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  contrasts <span class="op">=</span> <span class="st">"contr.sum"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -95,6 +96,10 @@ The latter implies the first with a scaling factor.</p></dd>
 Alternatives: TRUE (default), FALSE (ML), NULL (least squares).</p></dd>
 
 
+<dt id="arg-contrasts">contrasts<a class="anchor" aria-label="anchor" href="#arg-contrasts"></a></dt>
+<dd><p>Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional arguments to <code><a href="asca_fit.html">asca_fit</a></code>.</p></dd>
 
@@ -125,7 +130,7 @@ Extraction of results and plotting: <code><a href="asca_results.html">asca_resul
 <span class="r-msg co"><span class="r-pr">#&gt;</span> boundary (singular) fit: see help('isSingular')</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> LiMM-PCA fitted using 'lmm' (Linear Mixed Model) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II, sum coding, restricted model, REML estimation </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II,  coding, restricted model, REML estimation </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                 Sum.Sq. Expl.var.(%)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> candy          33394.40        78.00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> assessor:candy   621.64         1.45</span>
@@ -138,7 +143,7 @@ Extraction of results and plotting: <code><a href="asca_results.html">asca_resul
 <span class="r-in"><span><span class="va">modLS</span> <span class="op">&lt;-</span> <span class="fu">limmpca</span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span><span class="op">*</span><span class="fu">r</span><span class="op">(</span><span class="va">assessor</span><span class="op">)</span>, data<span class="op">=</span><span class="va">candies</span>, REML<span class="op">=</span><span class="cn">NULL</span>, pca.in<span class="op">=</span><span class="fl">8</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">modLS</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> LiMM-PCA fitted using 'lmm' (Linear Mixed Model) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II, sum coding, restricted model, least squares estimation </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II,  coding, restricted model, least squares estimation </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                 Sum.Sq. Expl.var.(%)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> candy          33415.98        74.73</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> assessor        1948.75         4.36</span>
@@ -158,7 +163,7 @@ Extraction of results and plotting: <code><a href="asca_results.html">asca_resul
 <span class="r-msg co"><span class="r-pr">#&gt;</span> boundary (singular) fit: see help('isSingular')</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod.comb</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> LiMM-PCA fitted using 'lmm' (Linear Mixed Model) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II, sum coding, restricted model, REML estimation </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II,  coding, restricted model, REML estimation </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                  Sum.Sq. Expl.var.(%)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> time              129.51        11.20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> light+light:time   83.89         7.25</span>

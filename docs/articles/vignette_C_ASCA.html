@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">HDANOVA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -113,7 +113,7 @@ effect matrices.</p>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/asca.html">asca</a></span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span><span class="op">*</span><span class="va">assessor</span>, data<span class="op">=</span><span class="va">candies</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) </span></span>
-<span><span class="co">#&gt; - SS type II, sum coding, restricted model, least squares estimation </span></span>
+<span><span class="co">#&gt; - SS type II,  coding, restricted model, least squares estimation </span></span>
 <span><span class="co">#&gt;                 Sum.Sq. Expl.var.(%)</span></span>
 <span><span class="co">#&gt; candy          33416.66        74.48</span></span>
 <span><span class="co">#&gt; assessor        1961.37         4.37</span></span>
@@ -130,7 +130,7 @@ factors. Here we use approximate permutation.</p>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/asca.html">asca</a></span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span><span class="op">*</span><span class="va">assessor</span>, data<span class="op">=</span><span class="va">candies</span>, permute<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) </span></span>
-<span><span class="co">#&gt; - SS type II, sum coding, restricted model, least squares estimation, 1000 permutations </span></span>
+<span><span class="co">#&gt; - SS type II,  coding, restricted model, least squares estimation, 1000 permutations </span></span>
 <span><span class="co">#&gt;                 Sum.Sq. Expl.var.(%) p-value</span></span>
 <span><span class="co">#&gt; candy          33416.66        74.48       0</span></span>
 <span><span class="co">#&gt; assessor        1961.37         4.37       0</span></span>
@@ -156,7 +156,7 @@ version.</p>
 <span><span class="va">mod.mixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/asca.html">asca</a></span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span><span class="op">*</span><span class="fu">r</span><span class="op">(</span><span class="va">assessor</span><span class="op">)</span>, data<span class="op">=</span><span class="va">candies</span>, permute<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod.mixed</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Anova Simultaneous Component Analysis fitted using 'lmm' (Linear Mixed Model) </span></span>
-<span><span class="co">#&gt; - SS type II, sum coding, restricted model, least squares estimation, 1000 permutations </span></span>
+<span><span class="co">#&gt; - SS type II,  coding, restricted model, least squares estimation, 1000 permutations </span></span>
 <span><span class="co">#&gt;                 Sum.Sq. Expl.var.(%) p-value</span></span>
 <span><span class="co">#&gt; candy          33416.66        74.48       0</span></span>
 <span><span class="co">#&gt; assessor        1961.37         4.37       0</span></span>
@@ -257,7 +257,7 @@ Here, we use an example with the Caldana data where we combine the
 <span><span class="va">mod.comb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/asca.html">asca</a></span><span class="op">(</span><span class="va">compounds</span> <span class="op">~</span> <span class="va">time</span> <span class="op">+</span> <span class="fu">comb</span><span class="op">(</span><span class="va">light</span> <span class="op">+</span> <span class="va">light</span><span class="op">:</span><span class="va">time</span><span class="op">)</span>, data<span class="op">=</span><span class="va">caldana</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod.comb</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) </span></span>
-<span><span class="co">#&gt; - SS type II, sum coding, restricted model, least squares estimation </span></span>
+<span><span class="co">#&gt; - SS type II,  coding, restricted model, least squares estimation </span></span>
 <span><span class="co">#&gt;                  Sum.Sq. Expl.var.(%)</span></span>
 <span><span class="co">#&gt; time              154.58         9.69</span></span>
 <span><span class="co">#&gt; light+light:time  349.64        21.92</span></span>
@@ -288,7 +288,7 @@ handled as a linear continuous effect.</p>
 <span><span class="va">mod.num</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/asca.html">asca</a></span><span class="op">(</span><span class="va">compounds</span> <span class="op">~</span> <span class="va">time</span><span class="op">*</span><span class="va">light</span>, data <span class="op">=</span> <span class="va">caldanaNum</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod.num</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) </span></span>
-<span><span class="co">#&gt; - SS type II, sum coding, restricted model, least squares estimation </span></span>
+<span><span class="co">#&gt; - SS type II,  coding, restricted model, least squares estimation </span></span>
 <span><span class="co">#&gt;            Sum.Sq. Expl.var.(%)</span></span>
 <span><span class="co">#&gt; time         55.42         3.47</span></span>
 <span><span class="co">#&gt; light       102.49         6.42</span></span>
@@ -306,7 +306,7 @@ performing PCA instead of backprojecting errors afterwards.</p>
 <span><span class="va">modp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/apca.html">apca</a></span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span><span class="op">*</span><span class="va">assessor</span>, data<span class="op">=</span><span class="va">candies</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">modp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Anova Principal Component Analysis fitted using 'lm' (Linear Model) </span></span>
-<span><span class="co">#&gt; - SS type II, sum coding, restricted model, least squares estimation </span></span>
+<span><span class="co">#&gt; - SS type II,  coding, restricted model, least squares estimation </span></span>
 <span><span class="co">#&gt;                 Sum.Sq. Expl.var.(%)</span></span>
 <span><span class="co">#&gt; candy          33416.66        74.48</span></span>
 <span><span class="co">#&gt; assessor        1961.37         4.37</span></span>
@@ -398,7 +398,7 @@ factor, while the the within-individuals is assumed implicitly.</p>
 <span><span class="va">mod.msca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msca.html">msca</a></span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span>, data<span class="op">=</span><span class="va">candies</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod.msca</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Multilevel Simultaneous Component Analysis fitted using 'lm' (Linear Model) </span></span>
-<span><span class="co">#&gt; - SS type II, sum coding, restricted model, least squares estimation </span></span>
+<span><span class="co">#&gt; - SS type II,  coding, restricted model, least squares estimation </span></span>
 <span><span class="co">#&gt;          Sum.Sq. Expl.var.(%)</span></span>
 <span><span class="co">#&gt; Between 33416.66        74.48</span></span>
 <span><span class="co">#&gt; Within  11450.62        25.52</span></span></code></pre></div>
@@ -439,7 +439,7 @@ choice).</p>
 <span><span class="co">#&gt; boundary (singular) fit: see help('isSingular')</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod.reml</span><span class="op">)</span></span>
 <span><span class="co">#&gt; LiMM-PCA fitted using 'lmm' (Linear Mixed Model) </span></span>
-<span><span class="co">#&gt; - SS type II, sum coding, restricted model, REML estimation </span></span>
+<span><span class="co">#&gt; - SS type II,  coding, restricted model, REML estimation </span></span>
 <span><span class="co">#&gt;                 Sum.Sq. Expl.var.(%)</span></span>
 <span><span class="co">#&gt; candy          33415.98        74.73</span></span>
 <span><span class="co">#&gt; assessor:candy   697.41         1.56</span></span>
@@ -454,7 +454,7 @@ the random effects and scaling of backprojections.</p>
 <span><span class="va">mod.ls</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/limmpca.html">limmpca</a></span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span><span class="op">*</span><span class="fu">r</span><span class="op">(</span><span class="va">assessor</span><span class="op">)</span>, data<span class="op">=</span><span class="va">candies</span>, REML<span class="op">=</span><span class="cn">NULL</span>, pca.in<span class="op">=</span><span class="fl">8</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod.ls</span><span class="op">)</span></span>
 <span><span class="co">#&gt; LiMM-PCA fitted using 'lmm' (Linear Mixed Model) </span></span>
-<span><span class="co">#&gt; - SS type II, sum coding, restricted model, least squares estimation </span></span>
+<span><span class="co">#&gt; - SS type II,  coding, restricted model, least squares estimation </span></span>
 <span><span class="co">#&gt;                 Sum.Sq. Expl.var.(%)</span></span>
 <span><span class="co">#&gt; candy          33415.98        74.73</span></span>
 <span><span class="co">#&gt; assessor        1948.75         4.36</span></span>
@@ -477,7 +477,6 @@ added, and the response is extended to the multivariate case.</p>
 <span>  breed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NRF"</span>,<span class="st">"Hereford"</span>,<span class="st">"Angus"</span><span class="op">)</span>, <span class="fl">16</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  bull  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, each <span class="op">=</span> <span class="fl">12</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  daughter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">letters</span><span class="op">[</span><span class="fl">5</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">letters</span><span class="op">[</span><span class="fl">9</span><span class="op">:</span><span class="fl">12</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">letters</span><span class="op">[</span><span class="fl">13</span><span class="op">:</span><span class="fl">16</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span><span class="co">#  daughter = factor(rep(letters[1:4], 12)),</span></span>
 <span>  age   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">48</span>, mean <span class="op">=</span> <span class="fl">36</span>, sd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">dat</span><span class="op">$</span><span class="va">yield</span> <span class="op">&lt;-</span> <span class="fl">150</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">dat</span>, <span class="fl">10</span> <span class="op">+</span> <span class="fl">3</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">feed</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">breed</span><span class="op">)</span> <span class="op">+</span> </span>
@@ -497,7 +496,7 @@ added, and the response is extended to the multivariate case.</p>
 <span><span class="va">mod.rm.asca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/asca.html">asca</a></span><span class="op">(</span><span class="va">yield</span> <span class="op">~</span> <span class="fu">r</span><span class="op">(</span><span class="va">daughter</span><span class="op">)</span> <span class="op">+</span> <span class="va">feed</span><span class="op">*</span><span class="fu">r</span><span class="op">(</span><span class="va">time</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">long</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod.rm.asca</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Anova Simultaneous Component Analysis fitted using 'lmm' (Linear Mixed Model) </span></span>
-<span><span class="co">#&gt; - SS type II, sum coding, restricted model, least squares estimation </span></span>
+<span><span class="co">#&gt; - SS type II,  coding, restricted model, least squares estimation </span></span>
 <span><span class="co">#&gt;                Sum.Sq. Expl.var.(%)</span></span>
 <span><span class="co">#&gt; daughter   31997318.91        23.01</span></span>
 <span><span class="co">#&gt; feed         306570.25         0.22</span></span>
@@ -523,7 +522,7 @@ estimation.</p>
 <span><span class="co">#&gt; boundary (singular) fit: see help('isSingular')</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod.rm.limmpca</span><span class="op">)</span></span>
 <span><span class="co">#&gt; LiMM-PCA fitted using 'lmm' (Linear Mixed Model) </span></span>
-<span><span class="co">#&gt; - SS type II, sum coding, restricted model, REML estimation </span></span>
+<span><span class="co">#&gt; - SS type II,  coding, restricted model, REML estimation </span></span>
 <span><span class="co">#&gt;                Sum.Sq. Expl.var.(%)</span></span>
 <span><span class="co">#&gt; feed         306570.25         0.22</span></span>
 <span><span class="co">#&gt; feed:time         0.86         0.00</span></span>
