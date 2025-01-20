@@ -6,6 +6,8 @@
 \title{Model Frame and Model Matrix for ASCA-like Models}
 \usage{
 \method{model.frame}{asca}(formula, ...)
+
+\method{model.matrix}{asca}(object, ...)
 }
 \arguments{
 \item{formula}{The \code{asca} object.}
@@ -14,6 +16,25 @@
 
 \item{object}{The \code{asca} object.}
 }
+\value{
+A \code{data.frame} or \code{matrix} object.
+}
 \description{
 Extraction functions to retrieve the \code{model.frame} and \code{model.matrix} of an \code{asca} object.
+}
+\examples{
+# Load candies data
+data(candies)
+
+# Basic ASCA model with two factors
+mod <- asca(assessment ~ candy + assessor, data=candies)
+
+# Extract model frame and model matrix
+mf <- model.frame(mod)
+head(mf)
+mm <- model.matrix(mod)
+par.old <- par(mar=c(3,3,3,1), mgp=c(1,0.7,0))
+image(t(mm[seq(165,1,-1),]), main="Model Matrix", xlab="dummy values", ylab="samples",
+     axes=FALSE)
+par(par.old)
 }

@@ -74,8 +74,8 @@ asca_fit <- function(formula, data, subset, weights, na.action, family,
 
   ########################## PCA of response matrix ##########################
   if(pca.in != 0){ # Pre-decomposition, e.g., LiMM-PCA, PC-ANOVA
-    if(is.numeric(pca.in) && pca.in == 1)
-      stop('pca.in = 1 is not supported (single response)')
+#    if(is.numeric(pca.in) && pca.in == 1)
+#      stop('pca.in = 1 is not supported (single response)')
     # Automatic determination of dimension
     if(is.logical(pca.in) && pca.in)
       pca.in <- which.min(.PCAcv(Y))
@@ -83,6 +83,11 @@ asca_fit <- function(formula, data, subset, weights, na.action, family,
     if(pca.in < 1){
       pca <- .pca(Y)
       pca.in <- min(which(cumsum(pca$explvar/100) >= pca.in))
+    }
+    # Limit number of extracted components
+    if(pca.in > p){
+      warning(paste0("Reducing 'pca.in' from ", pca.in, " to the number of variables (",p,")"))
+      pca.in <- p
     }
     # PCA scores
     pca <- .pca(Y, ncomp = pca.in)
@@ -703,13 +708,17 @@ asca_fit <- function(formula, data, subset, weights, na.action, family,
   projected[["Residuals"]] <- pcaRes$projected
   singulars[["Residuals"]] <- pcaRes$singulars
 
+  # Create model.frame object
+  model <- model.frame(mod)
+  model[[1]] <- Yorig
+
   ########################## Return ##########################
   obj <- list(scores=scores, loadings=loadings, projected=projected, singulars=singulars,
               LS=LS, effects=effects, coefficients=coefs, Y=Yorig, X=M, residuals=residuals,
               error=error, eff_combined=eff_combined, SStype=SStype, contrasts=contrasts, unrestricted=unrestricted,
               ssq=ssq, ssqY=ssqY, explvar=ssq/ssqY, models=models, anovas=anovas, model.frame=modFra,
               call=match.call(), fit.type=fit.type, add_error=add_error, dfNum=dfNum, dfDenom=dfDenom,
-              model = mod$model)
+              model = model)
   if(pca.in!=0){
     obj$Ypca <- list(pca=pca, ncomp=pca.in)
   }
