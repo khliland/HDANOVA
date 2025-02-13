@@ -6,7 +6,9 @@
 #' @param data The data set to analyse.
 #' @param add_error Add error to LS means (default = TRUE).
 #' @param contrasts Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".
-#' @param ... Additional parameters for the asca_fit function.
+#' @param permute Number of permutations to perform (default = 1000).
+#' @param perm.type Type of permutation to perform, either "approximate" or "exact" (default = "approximate").
+#' @param ... Additional parameters for the \code{hdanova} function.
 #'
 #' @return An object of class \code{apca}, inheriting from the general \code{asca} class.
 #' Further arguments and plots can be found in the \code{\link{asca}} documentation.
@@ -17,7 +19,7 @@
 #' @export
 #'
 #' @seealso Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
-#' Workhorse function underpinning most methods: \code{\link{asca_fit}}.
+#' Workhorse function underpinning most methods: \code{\link{hdanova}}.
 #' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 #' @examples
 #' data(candies)
@@ -29,8 +31,19 @@
 #' mod <- apca(assessment ~ candy + assessor + num, data=candies)
 #' summary(mod)
 #' scoreplot(mod, factor=3, gr.col=rgb(eff/max(eff), 1-eff/max(eff),0), pch.scores="x")
-apca <- function(formula, data, add_error = TRUE, contrasts = "contr.sum", ...){
-  object <- asca_fit(formula, data, add_error = add_error, contrasts = contrasts, ...)
+apca <- function(formula, data, add_error = TRUE, contrasts = "contr.sum",
+                 permute = FALSE, perm.type=c("approximate","exact"), ...){
+  object <- hdanova(formula=formula, data=data, contrasts = contrasts, ...)
+  if(!(is.logical(permute) && !permute)){
+    # Default to 1000 permutations             ------------- Flytt testing til ASCA og venner
+    if(is.logical(permute)){
+      permute <- 1000
+      if(interactive())
+        message("Defaulting to 1000 permutations\n")
+    }
+    object <- permutation(object, permute=permute, perm.type=perm.type)
+  }
+  object <- sca(object)
   object$call <- match.call()
   class(object) <- c("apca", class(object))
   object

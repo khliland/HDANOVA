@@ -29,12 +29,14 @@
 #' * Martin, M. and Govaerts, B. (2020). LiMM-PCA: Combining ASCA+ and linear mixed models to analyse high-dimensional designed data. Journal of Chemometrics, 34(6), e3232.
 #'
 #' @seealso Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
-#' Workhorse function underpinning most methods: \code{\link{asca_fit}}.
+#' Workhorse function underpinning most methods: \code{\link{hdanova}}.
 #' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 #'
 #' @export
-print.asca <- function(x, ...){
-  mod <- "Anova Simultaneous Component Analysis"
+print.hdanova <- function(x, ...){
+  mod <- "High-Dimensional Analysis of Variance"
+  if(inherits(x, "asca"))
+    mod <- "Anova Simultaneous Component Analysis"
   if(inherits(x, "apca"))
     mod <- "Anova Principal Component Analysis"
   if(inherits(x, "limmpca"))
@@ -48,10 +50,9 @@ print.asca <- function(x, ...){
 
 #' @rdname asca_results
 #' @export
-summary.asca <- function(object, extended=TRUE, df=FALSE, ...){
+summary.hdanova <- function(object, extended=TRUE, df=FALSE, ...){
   dat <- data.frame(SSQ=object$ssq, "Expl.var"=object$explvar*100)
   colnames(dat) <- c("Sum.Sq.", "Expl.var.(%)")
-#  dat <- dat[-nrow(dat),,drop=FALSE]
   if(!is.null(object$permute)){
     pvals <- object$permute$pvalues
     pvals[pvals==0] <- 1/object$permute$permutations
@@ -60,7 +61,9 @@ summary.asca <- function(object, extended=TRUE, df=FALSE, ...){
     pv[names(pvals)] <- pvals
     dat <- cbind(dat, "p-value"=pv)
   }
-  mod <- "Anova Simultaneous Component Analysis"
+  mod <- "High-Dimensional Analysis of Variance"
+  if(inherits(object, "asca"))
+    mod <- "Anova Simultaneous Component Analysis"
   if(inherits(object, "apca"))
     mod <- "Anova Principal Component Analysis"
   if(inherits(object, "limmpca"))
@@ -84,13 +87,13 @@ summary.asca <- function(object, extended=TRUE, df=FALSE, ...){
   if(df){
     x$dat <- cbind(x$dat, "df"=object$dfNum, "df.denom"=object$dfDenom, "err.term"=object$denom)
   }
-  class(x) <- c('summary.asca')
+  class(x) <- c('summary.hdanova')
   x
 }
 
 #' @rdname asca_results
 #' @export
-print.summary.asca <- function(x, digits=2, ...){
+print.summary.hdanova <- function(x, digits=2, ...){
   cat(x$mod, "fitted using", x$fit.type, "\n")
   if(!is.null(x$info))
     cat("-", x$info, "\n")

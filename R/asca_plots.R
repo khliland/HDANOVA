@@ -36,7 +36,7 @@
 #' * Martin, M. and Govaerts, B. (2020). LiMM-PCA: Combining ASCA+ and linear mixed models to analyse high-dimensional designed data. Journal of Chemometrics, 34(6), e3232.
 #'
 #' @seealso Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
-#' Workhorse function underpinning most methods: \code{\link{asca_fit}}.
+#' Workhorse function underpinning most methods: \code{\link{hdanova}}.
 #' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 #'
 #' @export
@@ -315,7 +315,7 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, within_level = "all"
 #' @export
 permutationplot <- function(object, factor = 1, xlim, xlab = "SSQ", main, ...){
   if(is.null(object$permute))
-    stop("Re-run model with permutation testing enabled")
+    stop("Run permutation() function on object before plotting.")
   if(missing(xlim))
     xlim <- range(c(object$permute$ssqaperm[[factor]], object$ssq[factor]))
   if(missing(main)){
@@ -360,6 +360,8 @@ permutationplot <- function(object, factor = 1, xlim, xlab = "SSQ", main, ...){
 #' timeplot(mod.comb, factor="light", time="time", comb=2, comp=2, x_time=TRUE)
 timeplot <- function(object, factor, time, comb, comp=1, ylim, x_time = FALSE,
                      xlab = time, ylab = paste0("Score ",comp), lwd = 2, ...){
+  if(is.null(object$scores))
+    stop("Run sca() function on object before plotting.")
   # Extract levels for time and factor
   time_fac <- as.numeric(as.character(object$model.frame[[time]]))
   if(x_time)

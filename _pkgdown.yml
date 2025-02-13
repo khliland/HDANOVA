@@ -7,10 +7,13 @@ reference:
   - asca
   - asca_results
   - asca_plots
-  - asca_fit
+  - biplot.asca
   - apca
+  - hdanova
   - msca
   - limmpca
+  - permutation
+  - sca
 - title: "Additional methods"
 - contents:
   - pcanova
@@ -23,7 +26,9 @@ reference:
   - block.data.frame
   - dummycode
   - extended.model.frame
+  - extract_estimates
   - model.frame.asca
+  - signflip
   - timeplot
   - update_without_factor
 - title: "Datasets"

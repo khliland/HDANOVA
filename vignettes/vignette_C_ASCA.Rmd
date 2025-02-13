@@ -50,22 +50,41 @@ models (GLM) can be used. The following theory will be exemplified:
 * MSCA
 * LiMM-PCA
 
-## Basic ASCA
+## HDANOVA
+
 The ANOVA part of ASCA includes all the possible variations of ANOVA demonstrated in the
 ANOVA vignette and more. Also generalized linear models (GLM) can be used. We start
-by demonstrating ASCA with a fixed effect model of two factors with interactions
-and ordinary PCA on the effect matrices.
+by demonstrating HDANOVA with a fixed effect model of two factors with interactions.
 
 ```{r}
 # Load Candy data
 data(candies)
 
 # Fit ASCA model
-mod <- asca(assessment ~ candy*assessor, data=candies)
+mod <- hdanova(assessment ~ candy*assessor, data=candies)
 summary(mod)
 ```
 
 The summary shows that the candy effect is the largest by far. 
+
+## Basic ASCA
+
+If we use the ASCA function directly, we get the same result as with HDANOVA, but
+in addition PCAs on the effect matrices are computed.
+
+```{r}
+# Fit ASCA model
+mod <- asca(assessment ~ candy*assessor, data=candies)
+summary(mod)
+```
+
+This can also be done sequentially, expanding the model step by step.
+
+```{r}
+# Fit ASCA model step by step
+mod_hd <- hdanova(assessment ~ candy*assessor, data=candies)
+mod_asca <- sca(mod_hd)
+```
 
 ### Permutation testing
 To get more insight, we can perform permutation testing of the factors. Here we use approximate permutation.
@@ -80,6 +99,13 @@ Here we see that all effects are significant, where the Candy effect is the domi
 
 ```{r}
 permutationplot(mod, factor = "assessor")
+```
+
+Permutations can also be performed as a post processing of an ASCA object.
+
+```{r}
+mod <- asca(assessment ~ candy*assessor, data=candies)
+mod <- permutation(mod)
 ```
 
 ### Random effects
@@ -123,6 +149,16 @@ scoreplot(mod, factor="assessor", main="Assessor scores", spider=TRUE)
 par(par.old)
 ```
 
+If the directions of the scores or loadings are not as expected, the signs can be flipped.
+
+```{r, fig.width=4.5, fig.height=7}
+mod <- signflip(mod, factor="candy", comp=1)
+par.old <- par(mfrow=c(2,1), mar=c(4,4,2,1))
+loadingplot(mod, scatter=TRUE, labels="names", main="Candy loadings")
+scoreplot(mod, main="Candy scores")
+par(par.old)
+```
+
 And scores and loadings can be extracted for further analysis.
 
 ```{r}
@@ -130,6 +166,12 @@ L <- loadings(mod, factor="candy")
 head(L)
 S <- scores(mod, factor="candy")
 head(S)
+```
+
+Finally, scores and loadings can be combined into a biplot.
+
+```{r}
+biplot(mod, factor="candy", labels="names")
 ```
 
 ### Data ellipsoids and confidence ellipsoids
