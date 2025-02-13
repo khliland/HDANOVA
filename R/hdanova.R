@@ -1,10 +1,9 @@
-# Weighted coding is only available for lm, not lme4??
-#' @title ASCA Fitting Workhorse Function
+#' @title High-Dimensional Analysis of Variance
 #'
-#' @description This function is called by all ASCA related methods in this package. It is documented
-#' so that one can have access to a richer set of parameters from the various methods or call this
-#' function directly. The latter should be done with care as there are many possibilities and not all
-#' have been used in publications or tested thoroughly.
+#' @description This function provides a high-dimensional analysis of variance (HDANOVA) method
+#' which can be used alone or as part of a larger analysis, e.g., ASCA, APCA, LiMM-PCA, MSCA or PC-ANOVA. It
+#' can be called directly or through the convenince functions \code{\link{asca}}, \code{\link{apca}},
+#' \code{\link{limmpca}}, \code{\link{msca}} and \code{\link{pcanova}}.
 #'
 #' @param formula Model formula accepting a single response (block) and predictors. See Details for more information.
 #' @param data The data set to analyse.
@@ -12,8 +11,6 @@
 #' @param weights Optional object weights.
 #' @param na.action How to handle NAs (no action implemented).
 #' @param family Error distributions and link function for Generalized Linear Models.
-#' @param permute Perform approximate permutation testing, default = FALSE (numeric or TRUE = 1000 permutations).
-#' @param perm.type Type of permutation: "approximate" (default) or "exact".
 #' @param unrestricted Use unrestricted ANOVA decomposition (default = FALSE).
 #' @param add_error Add error to LS means, e.g., for APCA.
 #' @param aug_error Augment score matrices in backprojection. Default = "denominator"
@@ -29,8 +26,16 @@
 #' "III" = last term, not obeying marginality.
 #' @param REML Parameter to mixlm: NULL (default) = sum-of-squares, TRUE = REML, FALSE = ML.
 #'
-#' @return An \code{asca} object containing loadings, scores, explained variances, etc. The object has
+#' @return An \code{hdanova} object containing loadings, scores, explained variances, etc. The object has
 #' associated plotting (\code{\link{asca_plots}}) and result (\code{\link{asca_results}}) functions.
+#'
+#' @examples
+#' # Load candies data
+#' data(candies)
+#'
+#' # Basic HDANOVA model with two factors
+#' mod <- hdanova(assessment ~ candy + assessor, data=candies)
+#' summary(mod)
 #'
 #' @importFrom lme4 lmer glmer getME ranef VarCorr fixef
 #' @importFrom progress progress_bar
@@ -39,9 +44,7 @@
 #' @importFrom stats anova coefficients contr.sum contr.treatment contrasts<- formula getCall model.frame model.matrix model.response qf rnorm sigma terms update
 #' @importFrom pracma Rank
 #' @export
-asca_fit <- function(formula, data, subset, weights, na.action, family,
-                     permute=FALSE,
-                     perm.type=c("approximate","exact"),
+hdanova <- function(formula, data, subset, weights, na.action, family,
                      unrestricted = FALSE,
                      add_error = FALSE, # TRUE => APCA
                      aug_error = "denominator", # "residual" => Mixed, alpha-value => LiMM-PCA
@@ -57,7 +60,7 @@ asca_fit <- function(formula, data, subset, weights, na.action, family,
   if(is.character(SStype))
     SStype <- nchar(SStype)
   if(!missing(coding))
-    stop("Input 'coding' has been exchanged with 'contrasts'. See ?asca_fit.")
+    stop("Input 'coding' has been exchanged with 'contrasts'. See ?hdanova")
 
   ## Get the data matrices
   #Yorig <- Y <- data[[formula[[2]]]]
@@ -393,7 +396,7 @@ asca_fit <- function(formula, data, subset, weights, na.action, family,
   # Augment error term to LS for permutation testing, LiMM-PCA and similar
   error <- LS_aug <- LS
   if(aug_error == "residuals" || !mixed){ # Fixed effect models and forced "residuals"
-    # Input to asca_fit: aug_error = "residual", # "denominator" => Mixed, alpha-value => LiMM-PCA
+    # Input to hdanova: aug_error = "residual", # "denominator" => Mixed, alpha-value => LiMM-PCA
     # Add residuals to all LSs (augmented for LiMM-PCA and similar)
     for(i in 1:length(approved)){
       a <- approved[i]
@@ -625,105 +628,21 @@ asca_fit <- function(formula, data, subset, weights, na.action, family,
   names(ssq)[length(ssq)] <- "Residuals"
   eff_combined <- eff_combined[approved]
 
-  ########################## Permutation ##########################
-  # Permutation testing
-  if(!(is.logical(permute) && !permute)){
-    # Default to 1000 permutations
-    if(is.logical(permute)){
-      permute <- 1000
-      if(interactive())
-        message("Defaulting to 1000 permutations\n")
-    }
-    if(perm.type[1] == "approximate"){
-      ssqa <- pvals <- numeric(length(approved))
-      ssqaperm <- lapply(1:length(approved),function(i)"NA")
-      names(ssqa) <- names(ssqaperm) <- names(pvals) <- effs[approved]
-      for(i in 1:length(approved)){
-        a <- approvedAB[i]
-        perms <- numeric(permute)
-        # Subset of design matrix for effect a
-        D <- M[, assign%in%approvedComb[[names(a)]], drop=FALSE]
-        DD <- D %*% pracma::pinv(D)
-        # Base ssq
-        ssqa[effs[a]] <- norm(DD %*% LS_aug[[effs[a]]], "F")^2
-        pb <- progress_bar$new(total = permute, format = paste0("  Permuting ", effs[a], " (", i,"/",length(approved),") [:bar] :percent (:eta)"))
-        # Permuted ssqs
-        for(perm in 1:permute){
-          perms[perm] <- norm(DD %*% LS_aug[[effs[a]]][sample(N),], "F")^2
-          pb$tick()
-        }
-        ssqaperm[[effs[a]]] <- perms
-        pvals[effs[a]] <- sum(perms > ssqa[effs[a]])/(permute)
-      }
-    }
-    if(perm.type[1] == "exact"){
-      # lme4 vs LS
-      if(!lme4 && !is.logical(REML)){
-        stop("Exact permutations in lme4 models not implemented yet!")
-      }
-      # Loop over effects
-      for(i in 1:length(approved)){
-        stop("Exact permutations not implemented yet!")
-        a <- approvedAB[i]
-        perms <- numeric(permute)
-        # Subset of design matrix for effect a
-        #D <- M[, assign%in%approvedComb[[names(a)]], drop=FALSE]
-        #DD <- D %*% pracma::pinv(D)
-      # Find permissible units
-        # Check balance, warning
-      # Permute
-      }
-    }
-  }
-
-  ########################## SCA ##########################
-  # SCAs
-  scores <- loadings <- projected <- singulars <- list()
-  for(i in approved){
-    maxDiri <- min(Rank(LS[[effs[i]]]),maxDir[i])
-    if(pca.in != 0)
-      maxDiri <- min(maxDiri, pca.in)
-    if(add_error)
-      maxDiri <- min(N-1, p)
-    if(maxDiri == 0)
-      stop(paste0("Effect '", effs[i], "' has no estimable levels"))
-    pcai <- .pca(LS[[effs[i]]], ncomp=maxDiri, proj=error[[effs[i]]])
-    scores[[effs[i]]] <- pcai$scores
-    loadings[[effs[i]]] <- pcai$loadings
-    projected[[effs[i]]] <- pcai$projected
-    singulars[[effs[i]]] <- pcai$singulars
-
-    if(pca.in!=0){ # Transform back if PCA on Y has been performed
-      loadings[[effs[i]]] <- pca$loadings[,1:pca.in,drop=FALSE] %*% loadings[[effs[i]]]
-      dimnames(loadings[[effs[i]]]) <- list(colnames(Yorig), paste("Comp", 1:maxDiri, sep=" "))
-    }
-  }
-  # SCA of residuals
-  maxDirRes <- min(N-1,p)
-  if(pca.in != 0)
-    maxDirRes <- min(maxDirRes, pca.in)
-  pcaRes <- .pca(residuals, ncomp=maxDirRes)
-  scores[["Residuals"]] <- pcaRes$scores
-  loadings[["Residuals"]] <- pcaRes$loadings
-  projected[["Residuals"]] <- pcaRes$projected
-  singulars[["Residuals"]] <- pcaRes$singulars
-
   # Create model.frame object
   model <- model.frame(mod)
   model[[1]] <- Yorig
 
   ########################## Return ##########################
-  obj <- list(scores=scores, loadings=loadings, projected=projected, singulars=singulars,
-              LS=LS, effects=effects, coefficients=coefs, Y=Yorig, X=M, residuals=residuals,
+  obj <- list(LS=LS, effects=effects, coefficients=coefs, Y=Yorig, X=M, residuals=residuals,
               error=error, eff_combined=eff_combined, SStype=SStype, contrasts=contrasts, unrestricted=unrestricted,
               ssq=ssq, ssqY=ssqY, explvar=ssq/ssqY, models=models, anovas=anovas, model.frame=modFra,
               call=match.call(), fit.type=fit.type, add_error=add_error, dfNum=dfNum, dfDenom=dfDenom,
-              model = model)
+              model=model,
+              more=list(approved=approved, approvedAB=approvedAB, effs=effs, assign=assign,
+                        approvedComb=approvedComb, N=N, LS_aug=LS_aug, REML=REML, lme4=lme4,
+                        maxDir=maxDir, p=p, pca.in=pca.in))
   if(pca.in!=0){
     obj$Ypca <- list(pca=pca, ncomp=pca.in)
-  }
-  if(permute || is.numeric(permute)){
-    obj$permute <- list(ssqa=ssqa, ssqaperm=ssqaperm, pvalues=pvals, permutations=permute)
   }
   if(use_ED)
     obj$ED <- EDall
@@ -736,9 +655,10 @@ asca_fit <- function(formula, data, subset, weights, na.action, family,
     names(denoms) <- names(dfDenom)
     obj$denoms <- denoms
   }
-  class(obj) <- c('asca', 'list')
+  class(obj) <- c('hdanova', 'list')
   return(obj)
 }
+
 
 dummyvar <- function(x){
   dv <- model.matrix(~x-1, data.frame(x=x, check.names=FALSE))

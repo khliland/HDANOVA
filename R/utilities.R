@@ -93,7 +93,7 @@
 #' @export
 #'
 #' @seealso Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
-#' Workhorse function underpinning most methods: \code{\link{asca_fit}}.
+#' Workhorse function underpinning most methods: \code{\link{hdanova}}.
 #' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 #' @examples
 #' dat <- data.frame(Y = c(1,2,3,4,5,6),
@@ -169,7 +169,7 @@ update_without_factor <- function(model, fac, hierarchical = TRUE){
 #'
 #' @return A \code{data.frame} which can be indexed block-wise.
 #' @seealso Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
-#' Workhorse function underpinning most methods: \code{\link{asca_fit}}.
+#' Workhorse function underpinning most methods: \code{\link{hdanova}}.
 #' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 #' @examples
 #' # Random data

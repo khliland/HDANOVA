@@ -9,7 +9,9 @@
 #' @param REML Use restricted maximum likelihood estimation.
 #' Alternatives: TRUE (default), FALSE (ML), NULL (least squares).
 #' @param contrasts Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".
-#' @param ... Additional arguments to \code{\link{asca_fit}}.
+#' @param permute Number of permutations to perform (default = 1000).
+#' @param perm.type Type of permutation to perform, either "approximate" or "exact" (default = "approximate").
+#' @param ... Additional arguments to \code{\link{hdanova}}.
 #'
 #' @description
 #' This function mimics parts of the LiMM-PCA framework, combining ASCA+ and
@@ -23,7 +25,7 @@
 #' @return An object of class \code{limmpca}, inheriting from the general \code{asca} class.
 #' @export
 #' @seealso Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
-#' Workhorse function underpinning most methods: \code{\link{asca_fit}}.
+#' Workhorse function underpinning most methods: \code{\link{hdanova}}.
 #' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 #'
 #' @examples
@@ -47,7 +49,8 @@
 #' mod.comb <- limmpca(compounds ~ time + comb(r(light) + r(time:light)), data=caldana, pca.in=8)
 #' summary(mod.comb)
 limmpca <- function(formula, data, pca.in = 5, aug_error = 0.05,
-                    use_ED = FALSE, REML = TRUE, contrasts = "contr.sum", ...){
+                    use_ED = FALSE, REML = TRUE, contrasts = "contr.sum",
+                    permute = FALSE, perm.type=c("approximate","exact"), ...){
   # formula, data, subset, weights, na.action, family, permute=FALSE,
   # unrestricted = FALSE,
   # add_error = FALSE, # TRUE => APCA/LiMM-PCA
@@ -56,9 +59,19 @@ limmpca <- function(formula, data, pca.in = 5, aug_error = 0.05,
   # coding = c("sum","weighted","reference","treatment"),
   # SStype = "II",
   # REML = NULL
-  object <- asca_fit(formula=formula, data=data, pca.in=pca.in,
-                     aug_error=aug_error, use_ED=use_ED, REML=REML,
-                     contrasts = contrasts, ...)
+  object <- hdanova(formula=formula, data=data, pca.in=pca.in,
+                    aug_error=aug_error, use_ED=use_ED, REML=REML,
+                    contrasts = contrasts, ...)
+  if(!(is.logical(permute) && !permute)){
+    # Default to 1000 permutations             ------------- Flytt testing til ASCA og venner
+    if(is.logical(permute)){
+      permute <- 1000
+      if(interactive())
+        message("Defaulting to 1000 permutations\n")
+    }
+    object <- permutation(object, permute=permute, perm.type=perm.type)
+  }
+  object <- sca(object)
   object$call <- match.call()
   class(object) <- c("limmpca", class(object))
   object

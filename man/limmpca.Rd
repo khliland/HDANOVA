@@ -12,6 +12,8 @@ limmpca(
   use_ED = FALSE,
   REML = TRUE,
   contrasts = "contr.sum",
+  permute = FALSE,
+  perm.type = c("approximate", "exact"),
   ...
 )
 }
@@ -32,7 +34,11 @@ Alternatives: TRUE (default), FALSE (ML), NULL (least squares).}
 
 \item{contrasts}{Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".}
 
-\item{...}{Additional arguments to \code{\link{asca_fit}}.}
+\item{permute}{Number of permutations to perform (default = 1000).}
+
+\item{perm.type}{Type of permutation to perform, either "approximate" or "exact" (default = "approximate").}
+
+\item{...}{Additional arguments to \code{\link{hdanova}}.}
 }
 \value{
 An object of class \code{limmpca}, inheriting from the general \code{asca} class.
@@ -71,6 +77,6 @@ summary(mod.comb)
 }
 \seealso{
 Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
-Workhorse function underpinning most methods: \code{\link{asca_fit}}.
+Workhorse function underpinning most methods: \code{\link{hdanova}}.
 Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 }

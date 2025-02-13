@@ -6,7 +6,7 @@
 #' @param data The data set to analyse.
 #' @param ncomp The number of components to retain, proportion of variation or default = minimum cross-validation error.
 #' @param contrasts Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".
-#' @param ... Additional parameters for the asca_fit function.
+#' @param ... Additional parameters for the \code{hdanova} function.
 #'
 #' @return A \code{pcanova} object containing loadings, scores, explained variances, etc. The object has
 #' associated plotting (\code{\link{pcanova_plots}}) and result (\code{\link{pcanova_results}}) functions.
@@ -26,7 +26,7 @@
 #' @importFrom progress progress_bar
 #' @importFrom RSpectra svds
 #' @seealso Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
-#' Workhorse function underpinning most methods: \code{\link{asca_fit}}.
+#' Workhorse function underpinning most methods: \code{\link{hdanova}}.
 #' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 #' @examples
 #' # Load candies data
@@ -59,7 +59,7 @@
 #' @export
 pcanova <- function(formula, data, ncomp = 0.9, contrasts = "contr.sum", ...){
   # Run ASCA
-  object <- asca_fit(formula, data, pca.in = ncomp, contrasts = contrasts, ...)
+  object <- hdanova(formula, data, pca.in = ncomp, contrasts = contrasts, ...)
   # Extract relevant parts
   pc <- object$Ypca$pca
   pc$Ypca <- object$Ypca
@@ -71,7 +71,7 @@ pcanova <- function(formula, data, ncomp = 0.9, contrasts = "contr.sum", ...){
   pc$effects <- object$effects
   names(pc$anovas) <- paste0("Comp. ", 1:length(pc$anovas))
   pc$call <- match.call()
-  class(pc) <- c('pcanova', 'asca', 'list')
+  class(pc) <- c('pcanova', class(object))
   pc
 }
 

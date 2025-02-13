@@ -5,7 +5,9 @@
 #' @param formula Model formula accepting a single response (block) and predictors. See Details for more information.
 #' @param data The data set to analyse.
 #' @param contrasts Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".
-#' @param ... Additional arguments to \code{\link{asca_fit}}.
+#' @param permute Number of permutations to perform (default = 1000).
+#' @param perm.type Type of permutation to perform, either "approximate" or "exact" (default = "approximate").
+#' @param ... Additional arguments to \code{\link{hdanova}}.
 #'
 #' @return An \code{asca} object containing loadings, scores, explained variances, etc. The object has
 #' associated plotting (\code{\link{asca_plots}}) and result (\code{\link{asca_results}}) functions.
@@ -17,7 +19,7 @@
 #' * Liland, K.H., Smilde, A., Marini, F., and Næs,T. (2018). Confidence ellipsoids for ASCA models based on multivariate regression theory. Journal of Chemometrics, 32(e2990), 1–13.
 #'
 #' @seealso Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
-#' Workhorse function underpinning most methods: \code{\link{asca_fit}}.
+#' Workhorse function underpinning most methods: \code{\link{hdanova}}.
 #' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 #' @examples
 #' # Load candies data
@@ -48,7 +50,8 @@
 #' summary(mod.perm)
 #'
 #' @export
-msca <- function(formula, data, contrasts = "contr.sum", ...){
+msca <- function(formula, data, contrasts = "contr.sum",
+                 permute = FALSE, perm.type=c("approximate","exact"), ...){
   # formula, data, subset, weights, na.action, family, permute=FALSE,
   # unrestricted = FALSE,
   # add_error = FALSE, # TRUE => APCA/LiMM-PCA
@@ -57,7 +60,17 @@ msca <- function(formula, data, contrasts = "contr.sum", ...){
   # coding = c("sum","weighted","reference","treatment"),
   # SStype = "II",
   # REML = NULL
-  object <- asca_fit(formula=formula, data=data, contrasts = contrasts, ...)
+  object <- hdanova(formula=formula, data=data, contrasts = contrasts, ...)
+  if(!(is.logical(permute) && !permute)){
+    # Default to 1000 permutations             ------------- Flytt testing til ASCA og venner
+    if(is.logical(permute)){
+      permute <- 1000
+      if(interactive())
+        message("Defaulting to 1000 permutations\n")
+    }
+    object <- permutation(object, permute=permute, perm.type=perm.type)
+  }
+  object <- sca(object)
   object$call <- match.call()
 
   # Split within scores per factor level

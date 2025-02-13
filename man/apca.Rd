@@ -4,7 +4,15 @@
 \alias{apca}
 \title{ANOVA Principal Component Analysis - APCA}
 \usage{
-apca(formula, data, add_error = TRUE, contrasts = "contr.sum", ...)
+apca(
+  formula,
+  data,
+  add_error = TRUE,
+  contrasts = "contr.sum",
+  permute = FALSE,
+  perm.type = c("approximate", "exact"),
+  ...
+)
 }
 \arguments{
 \item{formula}{Model formula accepting a single response (block) and predictors.}
@@ -15,7 +23,11 @@ apca(formula, data, add_error = TRUE, contrasts = "contr.sum", ...)
 
 \item{contrasts}{Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".}
 
-\item{...}{Additional parameters for the asca_fit function.}
+\item{permute}{Number of permutations to perform (default = 1000).}
+
+\item{perm.type}{Type of permutation to perform, either "approximate" or "exact" (default = "approximate").}
+
+\item{...}{Additional parameters for the \code{hdanova} function.}
 }
 \value{
 An object of class \code{apca}, inheriting from the general \code{asca} class.
@@ -42,6 +54,6 @@ Analytica chimica acta, 544 (1-2), 118–127.
 }
 \seealso{
 Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
-Workhorse function underpinning most methods: \code{\link{asca_fit}}.
+Workhorse function underpinning most methods: \code{\link{hdanova}}.
 Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 }
