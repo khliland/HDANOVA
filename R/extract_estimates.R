@@ -2,7 +2,7 @@
 #'
 #' @description Extracts and sums the LS estimates for a given factor combination
 #' from an object of class \code{hdanova}. If \code{add_residuals} is \code{TRUE},
-#' the residuals are added to the LS estimates. If \code{remove_factors} is \code{TRUE},
+#' the residuals are added to the LS estimates. If \code{substract} is \code{TRUE},
 #' the returned matrix is the data with chosen estimates subtracted.
 #'
 #' @param object \code{asca} object.

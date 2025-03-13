@@ -283,6 +283,7 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
     formulaStr <- as.character(rw$rformula)
   else
     formulaStr <- as.character(formula)
+  warn_msgs <- character()
   for(i in 1:ncol(Y)){
     if(mixed){
       dat[[formula[[2]]]] <- Y[,i,drop=FALSE]
@@ -328,6 +329,8 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
     models[[i]] <- modi
     anovas[[i]] <- ano
   }
+  if(length(warn_msgs) > 0)
+    warning(paste("Warning(s) from lmer:", warn_msgs, collapse = "\n"))
   if(length(ssq) == length(c(effsAB, "Residuals")))
     names(ssq) <- c(effsAB, "Residuals")
   ssq_residual <- ssq[length(ssq)]
