@@ -1,0 +1,755 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={B. Analysis of Variance},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{B. Analysis of Variance}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Start the mixlm R package}
+\FunctionTok{library}\NormalTok{(mixlm, }\AttributeTok{warn.conflicts =} \ConstantTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Analysis of Variance (ANOVA)}\label{analysis-of-variance-anova}
+
+This vignette will focus on univariate ANOVA in various designs
+including fixed and mixed effects, and briefly introduce multivariate
+ANOVA. Models using random effects will be run through the mixlm
+package.
+
+The following models will be demonstrated: * Fixed effect models *
+One-way ANOVA * Two-way ANOVA * Covariates in ANOVA * Fixed effect
+nested ANOVA * Linear mixed models * Classical LMM * Repeated measures
+LMM
+
+\subsection{Simulated data}\label{simulated-data}
+
+We will start by simulating some data to use in the examples below. In
+this fictitious setup, milk yield is measured as a function of feed type
+(low/high protein content), cow breed, bull identity, daughter and age.
+The three first factors are crossed and balanced, while daughter is
+nested under bull.
+
+The yield is generated with a linear model with some noise.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+\NormalTok{dat }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{feed  =} \FunctionTok{factor}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"low"}\NormalTok{,}\StringTok{"high"}\NormalTok{), }\AttributeTok{each=}\DecValTok{6}\NormalTok{), }\DecValTok{4}\NormalTok{)),}
+  \AttributeTok{breed =} \FunctionTok{factor}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"NRF"}\NormalTok{,}\StringTok{"Hereford"}\NormalTok{,}\StringTok{"Angus"}\NormalTok{), }\DecValTok{16}\NormalTok{)),}
+  \AttributeTok{bull  =} \FunctionTok{factor}\NormalTok{(}\FunctionTok{rep}\NormalTok{(LETTERS[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{], }\AttributeTok{each =} \DecValTok{12}\NormalTok{)),}
+  \AttributeTok{daughter =} \FunctionTok{factor}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\FunctionTok{rep}\NormalTok{(letters[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{], }\DecValTok{3}\NormalTok{), }\FunctionTok{rep}\NormalTok{(letters[}\DecValTok{5}\SpecialCharTok{:}\DecValTok{8}\NormalTok{], }\DecValTok{3}\NormalTok{), }\FunctionTok{rep}\NormalTok{(letters[}\DecValTok{9}\SpecialCharTok{:}\DecValTok{12}\NormalTok{], }\DecValTok{3}\NormalTok{), }\FunctionTok{rep}\NormalTok{(letters[}\DecValTok{13}\SpecialCharTok{:}\DecValTok{16}\NormalTok{], }\DecValTok{3}\NormalTok{))),}
+  \AttributeTok{age   =} \FunctionTok{round}\NormalTok{(}\FunctionTok{rnorm}\NormalTok{(}\DecValTok{48}\NormalTok{, }\AttributeTok{mean =} \DecValTok{36}\NormalTok{, }\AttributeTok{sd =} \DecValTok{5}\NormalTok{))}
+\NormalTok{)}
+\NormalTok{dat}\SpecialCharTok{$}\NormalTok{yield }\OtherTok{\textless{}{-}} \DecValTok{150}\SpecialCharTok{*}\FunctionTok{with}\NormalTok{(dat, }\DecValTok{10} \SpecialCharTok{+} \DecValTok{3} \SpecialCharTok{*} \FunctionTok{as.numeric}\NormalTok{(feed) }\SpecialCharTok{+} \FunctionTok{as.numeric}\NormalTok{(breed) }\SpecialCharTok{+} 
+                        \DecValTok{2} \SpecialCharTok{*} \FunctionTok{as.numeric}\NormalTok{(bull) }\SpecialCharTok{+} \DecValTok{1} \SpecialCharTok{*} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{sample}\NormalTok{(dat}\SpecialCharTok{$}\NormalTok{daughter, }\DecValTok{48}\NormalTok{)) }\SpecialCharTok{+} 
+                        \FloatTok{0.5} \SpecialCharTok{*}\NormalTok{ age }\SpecialCharTok{+} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{48}\NormalTok{, }\AttributeTok{sd =} \DecValTok{2}\NormalTok{))}
+\FunctionTok{head}\NormalTok{(dat)}
+\CommentTok{\#\textgreater{}   feed    breed bull daughter age    yield}
+\CommentTok{\#\textgreater{} 1  low      NRF    A        a  33 5541.301}
+\CommentTok{\#\textgreater{} 2  low Hereford    A        b  35 6862.560}
+\CommentTok{\#\textgreater{} 3  low    Angus    A        c  44 6954.182}
+\CommentTok{\#\textgreater{} 4  low      NRF    A        d  36 8125.363}
+\CommentTok{\#\textgreater{} 5  low Hereford    A        a  37 7344.458}
+\CommentTok{\#\textgreater{} 6  low    Angus    A        b  45 7987.227}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Fixed effect models}\label{fixed-effect-models}
+
+The simplest form of ANOVA is the fixed effect model. This model assumes
+that the levels of the factor are fixed and that the only source of
+variation is the factor itself.
+
+\subsubsection{One-way ANOVA}\label{one-way-anova}
+
+Here we assess only the feed effect on yield, i.e., the following model:
+\[yield_{an} = \mu + feed_a + \epsilon_{an}\] where \(a\) is the feed
+level and \(n\) is the observation within the feed level.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(yield }\SpecialCharTok{\textasciitilde{}}\NormalTok{ feed, }\AttributeTok{data =}\NormalTok{ dat)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{anova}\NormalTok{(mod))}
+\CommentTok{\#\textgreater{} Analysis of Variance Table}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Response: yield}
+\CommentTok{\#\textgreater{}           Df   Sum Sq Mean Sq F value Pr(\textgreater{}F)}
+\CommentTok{\#\textgreater{} feed       1  1755955 1755955  2.3294 0.1338}
+\CommentTok{\#\textgreater{} Residuals 46 34675246  753810}
+\end{Highlighting}
+\end{Shaded}
+
+In the ANOVA table one can look at Pr(\textgreater F) to see if the feed
+factor has a significant effect on yield. The summary function can be
+used to get more information about the underlying regression model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(mod)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Call:}
+\CommentTok{\#\textgreater{} lm(formula = yield \textasciitilde{} feed, data = dat)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Residuals:}
+\CommentTok{\#\textgreater{}     Min      1Q  Median      3Q     Max }
+\CommentTok{\#\textgreater{} {-}1904.2  {-}552.8  {-}135.1   581.1  1898.4 }
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Coefficients:}
+\CommentTok{\#\textgreater{}             Estimate Std. Error t value Pr(\textgreater{}|t|)    }
+\CommentTok{\#\textgreater{} (Intercept)   7254.3      125.3  57.887   \textless{}2e{-}16 ***}
+\CommentTok{\#\textgreater{} feed(high)    {-}191.3      125.3  {-}1.526    0.134    }
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} s: 868.2 on 46 degrees of freedom}
+\CommentTok{\#\textgreater{} Multiple R{-}squared: 0.0482,}
+\CommentTok{\#\textgreater{} Adjusted R{-}squared: 0.02751 }
+\CommentTok{\#\textgreater{} F{-}statistic: 2.329 on 1 and 46 DF,  p{-}value: 0.1338}
+\end{Highlighting}
+\end{Shaded}
+
+Basic model assessment can be done using the plot function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{old.par }\OtherTok{\textless{}{-}} \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{), }\AttributeTok{mar=}\FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{2}\NormalTok{,}\FloatTok{0.5}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(mod, }\AttributeTok{which =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{2}\NormalTok{, }\AttributeTok{ask=}\ConstantTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{/Users/kristian/Documents/GitHub/HDANOVA/vignettes/vignette_B_ANOVA_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(old.par)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Two-way crossed effects
+ANOVA}\label{two-way-crossed-effects-anova}
+
+Here we assess the feed and breed effects and their interaction effect
+on yield, i.e., the following model:
+\[yield_{abn} = \mu + feed_a + breed_b + (feed:breed)_{ab} + \epsilon_{abn}\]
+where \(a\) is the feed level and \(n\) is the observation within the
+feed level.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(yield }\SpecialCharTok{\textasciitilde{}}\NormalTok{ feed}\SpecialCharTok{*}\NormalTok{breed, }\AttributeTok{data =}\NormalTok{ dat)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{anova}\NormalTok{(mod))}
+\CommentTok{\#\textgreater{} Analysis of Variance Table}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Response: yield}
+\CommentTok{\#\textgreater{}            Df   Sum Sq Mean Sq F value Pr(\textgreater{}F)}
+\CommentTok{\#\textgreater{} feed        1  1755955 1755955  2.1892 0.1464}
+\CommentTok{\#\textgreater{} breed       2   126874   63437  0.0791 0.9241}
+\CommentTok{\#\textgreater{} feed:breed  2   860065  430032  0.5361 0.5890}
+\CommentTok{\#\textgreater{} Residuals  42 33688307  802103}
+\end{Highlighting}
+\end{Shaded}
+
+If the interaction effect is not significant, we can simplify the model
+to: \[yield_{abn} = \mu + feed_a + breed_b + \epsilon_{abn}\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(yield }\SpecialCharTok{\textasciitilde{}}\NormalTok{ feed}\SpecialCharTok{+}\NormalTok{breed, }\AttributeTok{data =}\NormalTok{ dat)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{anova}\NormalTok{(mod))}
+\CommentTok{\#\textgreater{} Analysis of Variance Table}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Response: yield}
+\CommentTok{\#\textgreater{}           Df   Sum Sq Mean Sq F value Pr(\textgreater{}F)}
+\CommentTok{\#\textgreater{} feed       1  1755955 1755955  2.2363 0.1419}
+\CommentTok{\#\textgreater{} breed      2   126874   63437  0.0808 0.9225}
+\CommentTok{\#\textgreater{} Residuals 44 34548372  785190}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Types of sums of squares}\label{types-of-sums-of-squares}
+
+The classical way of defining sums of squares are Type I, Type II, and
+Type III, as described in the documentation of the Anova() function in
+the car package.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Type I {-} Sequential testing, including one and one effect}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{anova}\NormalTok{(mod))}
+\CommentTok{\#\textgreater{} Analysis of Variance Table}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Response: yield}
+\CommentTok{\#\textgreater{}           Df   Sum Sq Mean Sq F value Pr(\textgreater{}F)}
+\CommentTok{\#\textgreater{} feed       1  1755955 1755955  2.2363 0.1419}
+\CommentTok{\#\textgreater{} breed      2   126874   63437  0.0808 0.9225}
+\CommentTok{\#\textgreater{} Residuals 44 34548372  785190}
+
+\CommentTok{\# Type II {-} Testing each term after all others, }
+\CommentTok{\# except ignoring the term\textquotesingle{}s higher{-}order relatives}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{Anova}\NormalTok{(mod, }\AttributeTok{type=}\StringTok{"II"}\NormalTok{))}
+\CommentTok{\#\textgreater{} Anova Table (Type II tests)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Response: yield}
+\CommentTok{\#\textgreater{}             Sum Sq Df F value Pr(\textgreater{}F)}
+\CommentTok{\#\textgreater{} feed       1755955  1  2.2363 0.1419}
+\CommentTok{\#\textgreater{} breed       126874  2  0.0808 0.9225}
+\CommentTok{\#\textgreater{} Residuals 34548372 44}
+
+\CommentTok{\# Type III {-} Testing each term after all others,}
+\CommentTok{\# including the term\textquotesingle{}s higher{-}order relatives}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{Anova}\NormalTok{(mod, }\AttributeTok{type=}\StringTok{"III"}\NormalTok{))}
+\CommentTok{\#\textgreater{} Anova Table (Type III tests)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Response: yield}
+\CommentTok{\#\textgreater{}                 Sum Sq Df   F value Pr(\textgreater{}F)    }
+\CommentTok{\#\textgreater{} (Intercept) 2525982362  1 3217.0322 \textless{}2e{-}16 ***}
+\CommentTok{\#\textgreater{} feed           1755955  1    2.2363 0.1419    }
+\CommentTok{\#\textgreater{} breed           126874  2    0.0808 0.9225    }
+\CommentTok{\#\textgreater{} Residuals     34548372 44                     }
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\end{Highlighting}
+\end{Shaded}
+
+For the two-way ANOVA model, the Type I and Type II sums of squares are
+the same, while Type III differs. With balanced data, this only happens
+when the contrast coding is of the treatment/reference type.
+
+\subsubsection{Contrast codings}\label{contrast-codings}
+
+The contrast coding can be specified for each factor in the model. The
+default is reference coding, but other codings can be specified using
+the \texttt{contrasts} Since we are running lm() through the mixlm
+package, we can use the \texttt{contrasts} argument to specify the
+coding for all effects simultaneously.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Sum{-}coding, i.e., the sum of all levels is zero and all effects}
+\CommentTok{\# are orthogonal in the balanced case.}
+\NormalTok{mod }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(yield }\SpecialCharTok{\textasciitilde{}}\NormalTok{ feed}\SpecialCharTok{*}\NormalTok{breed, }\AttributeTok{data =}\NormalTok{ dat, }\AttributeTok{contrasts=}\StringTok{"contr.sum"}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{Anova}\NormalTok{(mod, }\AttributeTok{type=}\StringTok{"III"}\NormalTok{))}
+\CommentTok{\#\textgreater{} Anova Table (Type III tests)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Response: yield}
+\CommentTok{\#\textgreater{}                 Sum Sq Df   F value Pr(\textgreater{}F)    }
+\CommentTok{\#\textgreater{} (Intercept) 2525982362  1 3149.2013 \textless{}2e{-}16 ***}
+\CommentTok{\#\textgreater{} feed           1755955  1    2.1892 0.1464    }
+\CommentTok{\#\textgreater{} breed           126874  2    0.0791 0.9241    }
+\CommentTok{\#\textgreater{} feed:breed      860065  2    0.5361 0.5890    }
+\CommentTok{\#\textgreater{} Residuals     33688307 42                     }
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+
+\CommentTok{\# Weighted coding, i.e., the sum of all levels is zero and the effects}
+\CommentTok{\# are weighted by the number of levels, effect{-}wise.}
+\NormalTok{mod }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(yield }\SpecialCharTok{\textasciitilde{}}\NormalTok{ feed}\SpecialCharTok{*}\NormalTok{breed, }\AttributeTok{data =}\NormalTok{ dat, }\AttributeTok{contrasts=}\StringTok{"contr.weighted"}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{Anova}\NormalTok{(mod, }\AttributeTok{type=}\StringTok{"III"}\NormalTok{))}
+\CommentTok{\#\textgreater{} Anova Table (Type III tests)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Response: yield}
+\CommentTok{\#\textgreater{}                 Sum Sq Df   F value Pr(\textgreater{}F)    }
+\CommentTok{\#\textgreater{} (Intercept) 2525982362  1 3149.2013 \textless{}2e{-}16 ***}
+\CommentTok{\#\textgreater{} feed           1755955  1    2.1892 0.1464    }
+\CommentTok{\#\textgreater{} breed           126874  2    0.0791 0.9241    }
+\CommentTok{\#\textgreater{} feed:breed      860065  2    0.5361 0.5890    }
+\CommentTok{\#\textgreater{} Residuals     33688307 42                     }
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\end{Highlighting}
+\end{Shaded}
+
+Instead of specifying the contrasts in a specific model, it is also
+possible to set the contrasts globally for the session. This means that
+all subsequent models, unless specified otherwise, will use the
+specified contrasts.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{options}\NormalTok{(}\AttributeTok{contrasts =} \FunctionTok{c}\NormalTok{(}\StringTok{"contr.sum"}\NormalTok{, }\StringTok{"contr.poly"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Covariates in ANOVA}\label{covariates-in-anova}
+
+Adding covariates to an ANOVA model is straightforward. Here we add the
+age of the cow as a covariate to the two-way ANOVA model. The model
+becomes:
+\[yield_{abn} = \mu + feed_a + breed_b + (feed:breed)_{ab} + age\cdot x_{abn} + \epsilon_{abn},\]
+where \(x_{abn}\) is the age of the cow and \(age\) is its linear
+coefficient.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(yield }\SpecialCharTok{\textasciitilde{}}\NormalTok{ feed}\SpecialCharTok{*}\NormalTok{breed }\SpecialCharTok{+}\NormalTok{ age, }\AttributeTok{data =}\NormalTok{ dat)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{Anova}\NormalTok{(mod, }\AttributeTok{type=}\StringTok{"II"}\NormalTok{))}
+\CommentTok{\#\textgreater{} Anova Table (Type II tests)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Response: yield}
+\CommentTok{\#\textgreater{}              Sum Sq Df F value    Pr(\textgreater{}F)    }
+\CommentTok{\#\textgreater{} feed        1718601  1  2.9288 0.0945692 .  }
+\CommentTok{\#\textgreater{} breed         13015  2  0.0111 0.9889747    }
+\CommentTok{\#\textgreater{} age         9629682  1 16.4106 0.0002214 ***}
+\CommentTok{\#\textgreater{} feed:breed   793690  2  0.6763 0.5140804    }
+\CommentTok{\#\textgreater{} Residuals  24058625 41                      }
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Fixed effect nested
+ANOVA}\label{fixed-effect-nested-anova}
+
+In the case of nested factors, we can specify this in the model. In the
+current model, we assume that bulls are fixed effects that we are
+interested in and that daughters are nested under bulls. In this case,
+the daughters do not have any special attributes that would interfere
+with the estimation of the bull effect, so we do not have to assume that
+they are random effects. The model becomes:
+\[yield_{abn} = \mu + bull_a + daugter_{b(a)} + \epsilon_{abn},\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(yield }\SpecialCharTok{\textasciitilde{}}\NormalTok{ bull }\SpecialCharTok{+}\NormalTok{ daughter}\SpecialCharTok{\%in\%}\NormalTok{bull, }\AttributeTok{data =}\NormalTok{ dat)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{Anova}\NormalTok{(mod, }\AttributeTok{type=}\StringTok{"II"}\NormalTok{))}
+\CommentTok{\#\textgreater{} Note: model has aliased coefficients}
+\CommentTok{\#\textgreater{}       sums of squares computed by model comparison}
+\CommentTok{\#\textgreater{} Anova Table (Type II tests)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Response: yield}
+\CommentTok{\#\textgreater{}                 Sum Sq Df F value Pr(\textgreater{}F)}
+\CommentTok{\#\textgreater{} bull           2130879  3  0.8630 0.4703}
+\CommentTok{\#\textgreater{} bull:daughter  7961749 12  0.8061 0.6421}
+\CommentTok{\#\textgreater{} Residuals     26338573 32}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Linear mixed models}\label{linear-mixed-models}
+
+Adding random effects to a model can be done either using least squares
+modelling through the mixlm package or using ML/REML estimation through
+the lme4 package (or similar).
+
+\subsubsection{Classical - mixlm}\label{classical---mixlm}
+
+Using the mixlm package, we specify the random effects using the
+\texttt{r()} function. If we assume that the bull is a random selection
+from the population of bulls, we can specify this as a random effect
+when focusing on feed. The model looks like a fixed effect model, but
+the error structure is different:
+\[yield_{abn} = \mu + feed_a + bull_b + (feed:bull)_{ab} + \epsilon_{abn}\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(yield }\SpecialCharTok{\textasciitilde{}}\NormalTok{ feed}\SpecialCharTok{*}\FunctionTok{r}\NormalTok{(bull), }\AttributeTok{data =}\NormalTok{ dat)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{Anova}\NormalTok{(mod, }\AttributeTok{type=}\StringTok{"II"}\NormalTok{))}
+\CommentTok{\#\textgreater{} Analysis of variance (unrestricted model)}
+\CommentTok{\#\textgreater{} Response: yield}
+\CommentTok{\#\textgreater{}              Mean Sq      Sum Sq Df F value Pr(\textgreater{}F)}
+\CommentTok{\#\textgreater{} feed      1755954.98  1755954.98  1    8.20 0.0644}
+\CommentTok{\#\textgreater{} bull       710292.91  2130878.72  3    3.32 0.1755}
+\CommentTok{\#\textgreater{} feed:bull  214160.94   642482.83  3    0.27 0.8477}
+\CommentTok{\#\textgreater{} Residuals  797547.10 31901884.17 40       {-}      {-}}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{}             Err.term(s) Err.df VC(SS)}
+\CommentTok{\#\textgreater{} 1 feed              (3)      3  fixed}
+\CommentTok{\#\textgreater{} 2 bull              (3)      3  41344}
+\CommentTok{\#\textgreater{} 3 feed:bull         (4)     40 {-}97231}
+\CommentTok{\#\textgreater{} 4 Residuals           {-}      {-} 797547}
+\CommentTok{\#\textgreater{} (VC = variance component)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{}           Expected mean squares}
+\CommentTok{\#\textgreater{} feed      (4) + 6 (3) + 24 Q[1]}
+\CommentTok{\#\textgreater{} bull      (4) + 6 (3) + 12 (2) }
+\CommentTok{\#\textgreater{} feed:bull (4) + 6 (3)          }
+\CommentTok{\#\textgreater{} Residuals (4)}
+\end{Highlighting}
+\end{Shaded}
+
+In addition to the ordinary ANOVA table, an overview of variance
+components and expected mean squares are printed.
+
+\subsubsection{Restrictions}\label{restrictions}
+
+The mixlm package has unrestricted models as default, but it is possible
+to turn on restriction.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(yield }\SpecialCharTok{\textasciitilde{}}\NormalTok{ feed}\SpecialCharTok{*}\FunctionTok{r}\NormalTok{(bull), }\AttributeTok{data =}\NormalTok{ dat, }\AttributeTok{unrestricted =} \ConstantTok{FALSE}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{Anova}\NormalTok{(mod, }\AttributeTok{type=}\StringTok{"II"}\NormalTok{))}
+\CommentTok{\#\textgreater{} Analysis of variance (restricted model)}
+\CommentTok{\#\textgreater{} Response: yield}
+\CommentTok{\#\textgreater{}              Mean Sq      Sum Sq Df F value Pr(\textgreater{}F)}
+\CommentTok{\#\textgreater{} feed      1755954.98  1755954.98  1    8.20 0.0644}
+\CommentTok{\#\textgreater{} bull       710292.91  2130878.72  3    0.89 0.4543}
+\CommentTok{\#\textgreater{} feed:bull  214160.94   642482.83  3    0.27 0.8477}
+\CommentTok{\#\textgreater{} Residuals  797547.10 31901884.17 40       {-}      {-}}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{}             Err.term(s) Err.df VC(SS)}
+\CommentTok{\#\textgreater{} 1 feed              (3)      3  fixed}
+\CommentTok{\#\textgreater{} 2 bull              (4)     40  {-}7271}
+\CommentTok{\#\textgreater{} 3 feed:bull         (4)     40 {-}97231}
+\CommentTok{\#\textgreater{} 4 Residuals           {-}      {-} 797547}
+\CommentTok{\#\textgreater{} (VC = variance component)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{}           Expected mean squares}
+\CommentTok{\#\textgreater{} feed      (4) + 6 (3) + 24 Q[1]}
+\CommentTok{\#\textgreater{} bull      (4) + 12 (2)         }
+\CommentTok{\#\textgreater{} feed:bull (4) + 6 (3)          }
+\CommentTok{\#\textgreater{} Residuals (4)}
+\end{Highlighting}
+\end{Shaded}
+
+This effects which tests are performed and how the variance components
+are estimated.
+
+\subsubsection{Repeated Measures}\label{repeated-measures}
+
+A repeated measures model can be a mixed model with a random effect for
+the repeated measures, where the repeated measures are nested under the
+subjects. Longitudinal data is a common example of repeated measures
+data, where the replicates are repetitions over time within subject. If
+we subset the simulated data, we can add a longitudinal effect to the
+model, in this case a random variation over three time-points. The time
+effect does not necessarily need to be random.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+\NormalTok{long }\OtherTok{\textless{}{-}}\NormalTok{ dat[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{,}\DecValTok{9}\SpecialCharTok{:}\DecValTok{12}\NormalTok{), }\FunctionTok{c}\NormalTok{(}\StringTok{"feed"}\NormalTok{, }\StringTok{"daughter"}\NormalTok{, }\StringTok{"yield"}\NormalTok{)]}
+\NormalTok{long }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(long, long, long)}
+\NormalTok{long}\SpecialCharTok{$}\NormalTok{daughter }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(long}\SpecialCharTok{$}\NormalTok{daughter) }\CommentTok{\# Remove redundant daughter}
+\NormalTok{long}\SpecialCharTok{$}\NormalTok{time  }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{, }\AttributeTok{each=}\DecValTok{8}\NormalTok{))}
+\NormalTok{long}\SpecialCharTok{$}\NormalTok{yield }\OtherTok{\textless{}{-}}\NormalTok{ long}\SpecialCharTok{$}\NormalTok{yield }\SpecialCharTok{+} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{24}\NormalTok{, }\AttributeTok{sd =} \DecValTok{100}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{rep}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{200}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{200}\NormalTok{), }\AttributeTok{each=}\DecValTok{8}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(yield}\SpecialCharTok{\textasciitilde{}}\NormalTok{daughter, }\AttributeTok{data=}\NormalTok{long)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{/Users/kristian/Documents/GitHub/HDANOVA/vignettes/vignette_B_ANOVA_files/figure-latex/unnamed-chunk-15-1.pdf}
+
+Now we have a feed effect, individuals (daughters), and a time effect
+repeated inside daughters, with the model:
+\[yield_{ait} = \mu + daughter_i + feed_a + time_t + (feed:time)_{at} + \epsilon_{ait}\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(yield }\SpecialCharTok{\textasciitilde{}} \FunctionTok{r}\NormalTok{(daughter) }\SpecialCharTok{+}\NormalTok{ feed}\SpecialCharTok{*}\FunctionTok{r}\NormalTok{(time), }\AttributeTok{data =}\NormalTok{ long, }\AttributeTok{unrestricted=}\ConstantTok{FALSE}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{Anova}\NormalTok{(mod, }\AttributeTok{type=}\StringTok{"II"}\NormalTok{))}
+\CommentTok{\#\textgreater{} Analysis of variance (restricted model)}
+\CommentTok{\#\textgreater{} Response: yield}
+\CommentTok{\#\textgreater{}              Mean Sq     Sum Sq Df F value Pr(\textgreater{}F)}
+\CommentTok{\#\textgreater{} daughter  1085642.42 3256927.25  3   1.854 0.1808}
+\CommentTok{\#\textgreater{} feed        21759.92   21759.92  1   7.079 0.1170}
+\CommentTok{\#\textgreater{} time       213465.79  426931.58  2   0.365 0.7005}
+\CommentTok{\#\textgreater{} feed:time    3073.71    6147.41  2   0.005 0.9948}
+\CommentTok{\#\textgreater{} Residuals  585554.07 8783311.09 15       {-}      {-}}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{}             Err.term(s) Err.df  VC(SS)}
+\CommentTok{\#\textgreater{} 1 daughter          (5)     15   83348}
+\CommentTok{\#\textgreater{} 2 feed              (4)      2   fixed}
+\CommentTok{\#\textgreater{} 3 time              (5)     15  {-}46511}
+\CommentTok{\#\textgreater{} 4 feed:time         (5)     15 {-}145620}
+\CommentTok{\#\textgreater{} 5 Residuals           {-}      {-}  585554}
+\CommentTok{\#\textgreater{} (VC = variance component)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{}           Expected mean squares}
+\CommentTok{\#\textgreater{} daughter  (5) + 6 (1)          }
+\CommentTok{\#\textgreater{} feed      (5) + 4 (4) + 12 Q[2]}
+\CommentTok{\#\textgreater{} time      (5) + 8 (3)          }
+\CommentTok{\#\textgreater{} feed:time (5) + 4 (4)          }
+\CommentTok{\#\textgreater{} Residuals (5)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{REML}\label{reml}
+
+REML estimation can be done directly with the lme4 package, but we can
+also do this through the mixlm package, leveraging the r() function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(yield }\SpecialCharTok{\textasciitilde{}}\NormalTok{ feed}\SpecialCharTok{*}\FunctionTok{r}\NormalTok{(bull), }\AttributeTok{data =}\NormalTok{ dat, }\AttributeTok{REML =} \ConstantTok{TRUE}\NormalTok{)}
+\CommentTok{\#\textgreater{} boundary (singular) fit: see help(\textquotesingle{}isSingular\textquotesingle{})}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{Anova}\NormalTok{(mod, }\AttributeTok{type=}\StringTok{"III"}\NormalTok{))}
+\CommentTok{\#\textgreater{} Analysis of Deviance Table (Type III Wald chisquare tests)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Response: yield}
+\CommentTok{\#\textgreater{}                 Chisq Df Pr(\textgreater{}Chisq)    }
+\CommentTok{\#\textgreater{} (Intercept) 3350.9550  1     \textless{}2e{-}16 ***}
+\CommentTok{\#\textgreater{} feed           2.3294  1     0.1269    }
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\end{Highlighting}
+\end{Shaded}
+
+To see how mixlm transforms the model to lme4, we can print the model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(mod)}
+\CommentTok{\#\textgreater{} Linear mixed model fit by REML [\textquotesingle{}lmerMod\textquotesingle{}]}
+\CommentTok{\#\textgreater{} Formula: yield \textasciitilde{} feed + (1 | bull) + (1 | feed:bull)}
+\CommentTok{\#\textgreater{}    Data: dat}
+\CommentTok{\#\textgreater{} REML criterion at convergence: 760.7979}
+\CommentTok{\#\textgreater{} Random effects:}
+\CommentTok{\#\textgreater{}  Groups    Name        Std.Dev.}
+\CommentTok{\#\textgreater{}  feed:bull (Intercept)   0.0   }
+\CommentTok{\#\textgreater{}  bull      (Intercept)   0.0   }
+\CommentTok{\#\textgreater{}  Residual              868.2   }
+\CommentTok{\#\textgreater{} Number of obs: 48, groups:  feed:bull, 8; bull, 4}
+\CommentTok{\#\textgreater{} Fixed Effects:}
+\CommentTok{\#\textgreater{} (Intercept)        feed1  }
+\CommentTok{\#\textgreater{}      7254.3       {-}191.3  }
+\CommentTok{\#\textgreater{} optimizer (nloptwrap) convergence code: 0 (OK) ; 0 optimizer warnings; 1 lme4 warnings}
+\end{Highlighting}
+\end{Shaded}
+
+We observe that (1 \textbar{} bull) and (1 \textbar{} \url{feed:bull})
+are added to the model, which means that random intercepts are added for
+both bull and the interaction.
+
+\subsection{Multivariate ANOVA
+(MANOVA)}\label{multivariate-anova-manova}
+
+Basic multivariate ANOVA can be done using the lm() function, if we
+create a matrix of responses. In this case, we add a mastitis effect to
+the model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dat}\SpecialCharTok{$}\NormalTok{mastitis }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(dat}\SpecialCharTok{$}\NormalTok{breed) }\SpecialCharTok{+} \FunctionTok{as.numeric}\NormalTok{(dat}\SpecialCharTok{$}\NormalTok{feed) }\SpecialCharTok{+} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{48}\NormalTok{, }\AttributeTok{sd =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+The model becomes:
+\[[yield_{abn} | mastitis_{abn}] = \mu + feed_a + breed_b + (feed:breed)_{ab} + \epsilon_{abn},\]
+where each of the model terms now are vectors matching the number of
+responses.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\FunctionTok{cbind}\NormalTok{(yield,mastitis) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ feed}\SpecialCharTok{*}\NormalTok{breed, }\AttributeTok{data =}\NormalTok{ dat)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{Anova}\NormalTok{(mod, }\AttributeTok{type=}\StringTok{"II"}\NormalTok{))}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Type II MANOVA Tests: Pillai test statistic}
+\CommentTok{\#\textgreater{}            Df test stat approx F num Df den Df   Pr(\textgreater{}F)    }
+\CommentTok{\#\textgreater{} feed        1   0.16426   4.0292      2     41 0.025260 *  }
+\CommentTok{\#\textgreater{} breed       2   0.47415   6.5256      4     84 0.000127 ***}
+\CommentTok{\#\textgreater{} feed:breed  2   0.14929   1.6939      4     84 0.159025    }
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\end{Highlighting}
+\end{Shaded}
+
+The test statistics are joint for all responses, here in the form of the
+default Pillai's test statistics. Other statistics can be produced as
+follows:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\FunctionTok{Anova}\NormalTok{(mod, }\AttributeTok{type=}\StringTok{"II"}\NormalTok{, }\AttributeTok{test=}\StringTok{"Wilks"}\NormalTok{))}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Type II MANOVA Tests: Wilks test statistic}
+\CommentTok{\#\textgreater{}            Df test stat approx F num Df den Df   Pr(\textgreater{}F)    }
+\CommentTok{\#\textgreater{} feed        1   0.83574   4.0292      2     41  0.02526 *  }
+\CommentTok{\#\textgreater{} breed       2   0.52761   7.7226      4     82 2.48e{-}05 ***}
+\CommentTok{\#\textgreater{} feed:breed  2   0.85375   1.6865      4     82  0.16100    }
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{Anova}\NormalTok{(mod, }\AttributeTok{type=}\StringTok{"II"}\NormalTok{, }\AttributeTok{test=}\StringTok{"Hotelling{-}Lawley"}\NormalTok{))}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Type II MANOVA Tests: Hotelling{-}Lawley test statistic}
+\CommentTok{\#\textgreater{}            Df test stat approx F num Df den Df    Pr(\textgreater{}F)    }
+\CommentTok{\#\textgreater{} feed        1   0.19655   4.0292      2     41   0.02526 *  }
+\CommentTok{\#\textgreater{} breed       2   0.89201   8.9201      4     80 5.227e{-}06 ***}
+\CommentTok{\#\textgreater{} feed:breed  2   0.16775   1.6775      4     80   0.16336    }
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{Anova}\NormalTok{(mod, }\AttributeTok{type=}\StringTok{"II"}\NormalTok{, }\AttributeTok{test=}\StringTok{"Roy"}\NormalTok{))}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Type II MANOVA Tests: Roy test statistic}
+\CommentTok{\#\textgreater{}            Df test stat approx F num Df den Df    Pr(\textgreater{}F)    }
+\CommentTok{\#\textgreater{} feed        1   0.19655   4.0292      2     41   0.02526 *  }
+\CommentTok{\#\textgreater{} breed       2   0.88826  18.6535      2     42 1.595e{-}06 ***}
+\CommentTok{\#\textgreater{} feed:breed  2   0.14285   2.9999      2     42   0.06056 .  }
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\end{Highlighting}
+\end{Shaded}
+
+The summary function can be used to get more information about the
+underlying regression model, here revealing the regressions are
+performed separately for each response.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(mod)}
+\CommentTok{\#\textgreater{} Response yield :}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Call:}
+\CommentTok{\#\textgreater{} lm(formula = yield \textasciitilde{} feed * breed, data = dat)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Residuals:}
+\CommentTok{\#\textgreater{}     Min      1Q  Median      3Q     Max }
+\CommentTok{\#\textgreater{} {-}2123.5  {-}506.2  {-}109.0   625.8  1762.0 }
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Coefficients:}
+\CommentTok{\#\textgreater{}                            Estimate Std. Error t value Pr(\textgreater{}|t|)    }
+\CommentTok{\#\textgreater{} (Intercept)                 7254.28     129.27  56.118   \textless{}2e{-}16 ***}
+\CommentTok{\#\textgreater{} feed(high)                  {-}191.27     129.27  {-}1.480    0.146    }
+\CommentTok{\#\textgreater{} breed(Angus)                  40.78     182.81   0.223    0.825    }
+\CommentTok{\#\textgreater{} breed(Hereford)              {-}72.52     182.81  {-}0.397    0.694    }
+\CommentTok{\#\textgreater{} feed(high):breed(Angus)      116.25     182.81   0.636    0.528    }
+\CommentTok{\#\textgreater{} feed(high):breed(Hereford)    71.26     182.81   0.390    0.699    }
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Residual standard error: 895.6 on 42 degrees of freedom}
+\CommentTok{\#\textgreater{} Multiple R{-}squared:  0.07529,    Adjusted R{-}squared:  {-}0.03479 }
+\CommentTok{\#\textgreater{} F{-}statistic: 0.6839 on 5 and 42 DF,  p{-}value: 0.6382}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Response mastitis :}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Call:}
+\CommentTok{\#\textgreater{} lm(formula = mastitis \textasciitilde{} feed * breed, data = dat)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Residuals:}
+\CommentTok{\#\textgreater{}      Min       1Q   Median       3Q      Max }
+\CommentTok{\#\textgreater{} {-}2.25984 {-}0.60241  0.07629  0.60307  1.82843 }
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Coefficients:}
+\CommentTok{\#\textgreater{}                            Estimate Std. Error t value Pr(\textgreater{}|t|)    }
+\CommentTok{\#\textgreater{} (Intercept)                  3.5537     0.1316  26.994  \textless{} 2e{-}16 ***}
+\CommentTok{\#\textgreater{} feed(high)                  {-}0.3506     0.1316  {-}2.663   0.0109 *  }
+\CommentTok{\#\textgreater{} breed(Angus)                {-}0.8802     0.1862  {-}4.728 2.56e{-}05 ***}
+\CommentTok{\#\textgreater{} breed(Hereford)             {-}0.1653     0.1862  {-}0.888   0.3795    }
+\CommentTok{\#\textgreater{} feed(high):breed(Angus)     {-}0.3722     0.1862  {-}1.999   0.0521 .  }
+\CommentTok{\#\textgreater{} feed(high):breed(Hereford)   0.3991     0.1862   2.144   0.0379 *  }
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Residual standard error: 0.9121 on 42 degrees of freedom}
+\CommentTok{\#\textgreater{} Multiple R{-}squared:  0.5399, Adjusted R{-}squared:  0.4852 }
+\CommentTok{\#\textgreater{} F{-}statistic: 9.858 on 5 and 42 DF,  p{-}value: 2.755e{-}06}
+\end{Highlighting}
+\end{Shaded}
+
+
+\end{document}
