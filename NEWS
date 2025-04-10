@@ -4,6 +4,10 @@ Functions and datasets to support Smilde, Marini, Westerhuis and Liland (2025, I
 This implements and imports a  collection of methods for HD-ANOVA data analysis with common interfaces, result- and plotting
 functions, multiple real data sets and four vignettes covering a range different applications.
 
+##### Version 0.8.3.1
+Date:  10 April 2025
+>> Bugfix in permutationplot regarding placement of overall SSQ vertical line.
+
 ##### Version 0.8.3
 Date:  1 April 2025
 >> asca_fit() has been split into hdanova(), permutation() and sca() for more

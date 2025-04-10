@@ -1,8 +1,8 @@
 Package: HDANOVA
 Type: Package
 Title: High-Dimensional Analysis of Variance
-Version: 0.8.3
-Date: 2025-04-01
+Version: 0.8.3.1
+Date: 2025-04-10
 Authors@R: 
     c(person(given = "Kristian Hovde",
              family = "Liland",

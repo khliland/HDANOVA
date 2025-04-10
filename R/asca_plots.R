@@ -325,7 +325,7 @@ permutationplot <- function(object, factor = 1, xlim, xlab = "SSQ", main, ...){
       main <- paste0("Permutation of ", factor, " effect")
   }
   hist(object$permute$ssqaperm[[factor]], xlim=xlim, xlab=xlab, main=main, ...)
-  abline(v = object$ssq[factor], col=2, lwd=2, ...)
+  abline(v = object$permute$ssqa[factor], col=2, lwd=2, ...)
 }
 
 #' @title Timeplot for Combined Effects
