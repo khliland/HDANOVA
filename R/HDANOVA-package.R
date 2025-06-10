@@ -1,4 +1,4 @@
-#' @aliases HDANOVA HDANOVA-package
+#' @aliases HDANOVA
 #' @title High-Dimensional Analysis of Variance
 #'
 #' @description Included methods:

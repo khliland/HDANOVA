@@ -78,7 +78,20 @@ summary.hdanova <- function(object, extended=TRUE, df=FALSE, ...){
     if(!inherits(object$models[[1]],"lm"))
       LS_REML <- ifelse(getME(object$models[[1]],"is_REML"), "REML", "ML")
     ss <- c("I","II","III")
-    x$info <- paste0("SS type ", ss[object$SStype], ", ", object$coding, " coding, ",
+    if(length(object$contrasts)>1)
+      contrasts <- "mixed"
+    else {
+      contrasts <- ""
+      if(object$contrasts[[1]] == "contr.treatment")
+        contrasts <- "treatment"
+      if(object$contrasts[[1]] == "contr.sum")
+        contrasts <- "sum"
+      if(object$contrasts[[1]] == "contr.weighted")
+        contrasts <- "weighted"
+      if(object$contrasts[[1]] == "contr.reference")
+        contrasts <- "reference"
+    }
+    x$info <- paste0("SS type ", ss[object$SStype], ", ", contrasts, " coding, ",
                      ifelse(object$unrestricted, "unrestricted","restricted"), " model",
                      ", ", LS_REML, " estimation")
     if(!is.null(object$permute))

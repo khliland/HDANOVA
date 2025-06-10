@@ -25,6 +25,13 @@
 #' @param SStype Type of sum-of-squares: "I" = sequential, "II" (default) = last term, obeying marginality,
 #' "III" = last term, not obeying marginality.
 #' @param REML Parameter to mixlm: NULL (default) = sum-of-squares, TRUE = REML, FALSE = ML.
+#' @param scale Scaling of the response matrix. Defaults to \code{FALSE} (no scaling). For alternatives, see Details.
+#'
+#' @details Scaling of the response matrix can be done by setting the \code{scale} parameter. If \code{scale=TRUE},
+#' each column is scaled by its standard deviation (autoscaling). A numeric value can be provided to scale
+#' the columns by specific quantities. If \code{scale} is a character string, the first element
+#' is interpreted as a factor name and the second element is interpreted as a factor level, whose samples
+#' the standard deviations are calculated from (reference group scaling).
 #'
 #' @return An \code{hdanova} object containing loadings, scores, explained variances, etc. The object has
 #' associated plotting (\code{\link{asca_plots}}) and result (\code{\link{asca_results}}) functions.
@@ -45,16 +52,17 @@
 #' @importFrom pracma Rank
 #' @export
 hdanova <- function(formula, data, subset, weights, na.action, family,
-                     unrestricted = FALSE,
-                     add_error = FALSE, # TRUE => APCA
-                     aug_error = "denominator", # "residual" => Mixed, alpha-value => LiMM-PCA
-                     use_ED = FALSE,
-                     pca.in = FALSE, # n>1 => LiMM-PCA and PC-ANOVA
-                     contrasts = "contr.sum",
-                     coding, #c("sum","weighted","reference","treatment"),
-                     equal_baseline = FALSE,
-                     SStype = "II",
-                     REML = NULL){
+                    unrestricted = FALSE,
+                    add_error = FALSE, # TRUE => APCA
+                    aug_error = "denominator", # "residual" => Mixed, alpha-value => LiMM-PCA
+                    use_ED = FALSE,
+                    pca.in = FALSE, # n>1 => LiMM-PCA and PC-ANOVA
+                    contrasts = "contr.sum",
+                    coding, #c("sum","weighted","reference","treatment"),
+                    equal_baseline = FALSE,
+                    SStype = "II",
+                    REML = NULL,
+                    scale = FALSE){
 
   # Simplify SStype
   if(is.character(SStype))
@@ -74,6 +82,27 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
     stop("Response must be a matrix.")
   #  if(center && (!missing(family) && family!="binomial"))
   #    Y <- Y - rep(colMeans(Y), each=N) # Centre Y by default, but not if family is binomial
+
+  ########################### Scale response matrix ##########################
+  if(is.logical(scale) && scale){
+    # Autoscaling
+    Y <- scale(Y, center = TRUE, scale = TRUE)
+  } else if(is.numeric(scale)){
+    # Scale by numeric value
+    if(length(scale) != p)
+      stop("Numeric 'scale' must have the same length as the number of variables in Y")
+    Y <- scale(Y, center = FALSE, scale = scale)
+  } else if(is.character(scale)){
+    # Scale by factor and level
+    if(length(scale) != 2)
+      stop("Character 'scale' must have two elements: factor name and level")
+    if(!scale[1] %in% names(data))
+      stop(paste0("Factor '", scale[1], "' not found in data"))
+    if(!scale[2] %in% levels(data[[scale[1]]]))
+      stop(paste0("Level '", scale[2], "' not found in factor '", scale[1], "'"))
+    sd <- apply(Y[data[[scale[1]]] == scale[2],,drop=FALSE],2,sd)
+    Y <- scale(Y, center = FALSE, scale = sd)
+  }
 
   ########################## PCA of response matrix ##########################
   if(pca.in != 0){ # Pre-decomposition, e.g., LiMM-PCA, PC-ANOVA

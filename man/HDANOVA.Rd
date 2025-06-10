@@ -20,7 +20,8 @@ hdanova(
   coding,
   equal_baseline = FALSE,
   SStype = "II",
-  REML = NULL
+  REML = NULL,
+  scale = FALSE
 )
 }
 \arguments{
@@ -59,6 +60,8 @@ interactions will be put in quotation marks and included in the \code{model.fram
 "III" = last term, not obeying marginality.}
 
 \item{REML}{Parameter to mixlm: NULL (default) = sum-of-squares, TRUE = REML, FALSE = ML.}
+
+\item{scale}{Scaling of the response matrix. Defaults to \code{FALSE} (no scaling). For alternatives, see Details.}
 }
 \value{
 An \code{hdanova} object containing loadings, scores, explained variances, etc. The object has
@@ -69,6 +72,13 @@ This function provides a high-dimensional analysis of variance (HDANOVA) method
 which can be used alone or as part of a larger analysis, e.g., ASCA, APCA, LiMM-PCA, MSCA or PC-ANOVA. It
 can be called directly or through the convenince functions \code{\link{asca}}, \code{\link{apca}},
 \code{\link{limmpca}}, \code{\link{msca}} and \code{\link{pcanova}}.
+}
+\details{
+Scaling of the response matrix can be done by setting the \code{scale} parameter. If \code{scale=TRUE},
+each column is scaled by its standard deviation (autoscaling). A numeric value can be provided to scale
+the columns by specific quantities. If \code{scale} is a character string, the first element
+is interpreted as a factor name and the second element is interpreted as a factor level, whose samples
+the standard deviations are calculated from (reference group scaling).
 }
 \examples{
 # Load candies data
