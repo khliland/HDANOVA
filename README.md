@@ -23,7 +23,7 @@ This package contains the main methods described in Age K. Smilde, Federico Mari
 _Analysis of Variance for High-Dimensional Data_  
  _- Applications in Life, Food and Chemical Sciences_  
 
-To be published by Wiley in 2025.
+To be published by Wiley in Autumn 2025.
 
 ## Contents
 - Main methods:

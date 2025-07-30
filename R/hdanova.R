@@ -256,49 +256,6 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
   approvedAB <- approved
   names(approvedAB) <- effsAB[approvedAB]
 
-  ########################## Effect coding ##########################
-  # Apply coding to all included factors
-  #if(length(coding)>1)
-  #  coding <- coding[1]
-  #if(!coding %in% c("sum","weighted","reference","treatment"))
-  #  stop("Invalid coding")
-  # ms <- missing(subset)
-  # contrast.list <- lapply(dat, function(dat_a){
-  #   if(inherits(dat_a, "factor")){
-  #     if(!ms)
-  #       dat_a <- subset(dat_a, subset)
-  #     if(coding == "sum")
-  #       return(contr.sum(levels(dat_a)))
-  #     if(coding == "weighted")
-  #       return(contr.weighted(dat_a))
-  #     if(coding == "reference" || coding == "treatment")
-  #       return(contr.treatment(levels(dat_a)))
-  #   }
-  # })
-  # contrast.list <- contrast.list[!sapply(contrast.list, is.null)]
-
-  # for(i in 1:length(approvedMain)){
-  #   a <- which(effs==names(approvedMain[i]))
-  #   dat_a <- dat[[effs[a]]]
-  #   if(!missing(subset))
-  #     dat_a <- subset(dat_a, subset)
-  #   if(coding == "sum" && is.factor(dat_a))
-  #     contrasts(dat[[effs[a]]]) <- contr.sum(levels(dat_a))
-  #   if(coding == "weighted" && is.factor(dat_a)){
-  #     contrasts(dat[[effs[a]]]) <- contr.weighted(dat_a)
-  #   }
-  #   if((coding == "reference" || coding == "treatment")  && is.factor(dat_a))
-  #     contrasts(dat[[effs[a]]]) <- contr.treatment(levels(dat_a))
-  # }
-  # if(fit.func == "lm" && !is.logical(REML)){
-  #   if(coding == "sum")
-  #     mf$contrasts <- mfPre$contrasts <- "contr.sum"
-  #   if(coding == "treatment" || coding == "reference")
-  #     mf$contrasts <- mfPre$contrasts <- "contr.treatment"
-  #   if(coding == "weighted")
-  #     mf$contrasts <- mfPre$contrasts <- "contr.weighted"
-  # }
-
   ########################## ANOVA ##########################
   # Main ANOVA loop over all responses
   mf[[1]] <- as.name(fit.func)
