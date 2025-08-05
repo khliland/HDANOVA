@@ -14,6 +14,7 @@ limmpca(
   contrasts = "contr.sum",
   permute = FALSE,
   perm.type = c("approximate", "exact"),
+  SStype = "III",
   ...
 )
 }
@@ -38,6 +39,9 @@ Alternatives: TRUE (default), FALSE (ML), NULL (least squares).}
 
 \item{perm.type}{Type of permutation to perform, either "approximate" or "exact" (default = "approximate").}
 
+\item{SStype}{Type of sum-of-squares: "I" = sequential, "II" = last term, obeying marginality,
+"III" (default) = last term, not obeying marginality.}
+
 \item{...}{Additional arguments to \code{\link{hdanova}}.}
 }
 \value{
@@ -48,6 +52,12 @@ This function mimics parts of the LiMM-PCA framework, combining ASCA+ and
 linear mixed models to analyse high-dimensional designed data. The default
 is to use REML estimation and scaling of the backprojected errors. See examples
 for alternatives.
+}
+\details{
+The Sum of Squares for the model is dependent on the SStype of the model.
+For SStype = "I" and SStype = "II" the SSQ is based on LLR (possibly inflating large contributions), while it is directly
+estimated from the model for SStype = "III". SStype = "III" is the default for LiMM-PCA and should be combined with sum coding.
+Sum of Squares for the random effects are based on the variance components.
 }
 \examples{
 # Load candies data

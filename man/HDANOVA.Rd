@@ -48,7 +48,7 @@ hdanova(
 
 \item{pca.in}{Compress response before ASCA (number of components).}
 
-\item{contrasts}{Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".}
+\item{contrasts}{Effect coding: "contr.sum" (default = sum-coding), "contr.weighted" (not for lme4 models), "contr.reference", "contr.treatment".}
 
 \item{coding}{Defunct. Use 'contrasts' instead.}
 

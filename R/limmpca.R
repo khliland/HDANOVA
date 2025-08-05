@@ -11,6 +11,8 @@
 #' @param contrasts Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".
 #' @param permute Number of permutations to perform (default = 1000).
 #' @param perm.type Type of permutation to perform, either "approximate" or "exact" (default = "approximate").
+#' @param SStype Type of sum-of-squares: "I" = sequential, "II" = last term, obeying marginality,
+#' "III" (default) = last term, not obeying marginality.
 #' @param ... Additional arguments to \code{\link{hdanova}}.
 #'
 #' @description
@@ -27,6 +29,12 @@
 #' @seealso Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
 #' Workhorse function underpinning most methods: \code{\link{hdanova}}.
 #' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
+#'
+#' @details
+#' The Sum of Squares for the model is dependent on the SStype of the model.
+#' For SStype = "I" and SStype = "II" the SSQ is based on LLR (possibly inflating large contributions), while it is directly
+#' estimated from the model for SStype = "III". SStype = "III" is the default for LiMM-PCA and should be combined with sum coding.
+#' Sum of Squares for the random effects are based on the variance components.
 #'
 #' @examples
 #' # Load candies data
@@ -50,7 +58,8 @@
 #' summary(mod.comb)
 limmpca <- function(formula, data, pca.in = 5, aug_error = 0.05,
                     use_ED = FALSE, REML = TRUE, contrasts = "contr.sum",
-                    permute = FALSE, perm.type=c("approximate","exact"), ...){
+                    permute = FALSE, perm.type=c("approximate","exact"),
+                    SStype = "III", ...){
   # formula, data, subset, weights, na.action, family, permute=FALSE,
   # unrestricted = FALSE,
   # add_error = FALSE, # TRUE => APCA/LiMM-PCA
@@ -61,9 +70,9 @@ limmpca <- function(formula, data, pca.in = 5, aug_error = 0.05,
   # REML = NULL
   object <- hdanova(formula=formula, data=data, pca.in=pca.in,
                     aug_error=aug_error, use_ED=use_ED, REML=REML,
-                    contrasts = contrasts, ...)
+                    contrasts = contrasts, SStype = SStype, ...)
   if(!(is.logical(permute) && !permute)){
-    # Default to 1000 permutations             ------------- Flytt testing til ASCA og venner
+    # Default to 1000 permutations
     if(is.logical(permute)){
       permute <- 1000
       if(interactive())

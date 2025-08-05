@@ -17,7 +17,7 @@
 #' (of F test), "residual" (force error term), nueric value (alpha-value in LiMM-PCA).
 #' @param use_ED Use "effective dimensions" for score rescaling in LiMM-PCA.
 #' @param pca.in Compress response before ASCA (number of components).
-#' @param contrasts Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".
+#' @param contrasts Effect coding: "contr.sum" (default = sum-coding), "contr.weighted" (not for lme4 models), "contr.reference", "contr.treatment".
 #' @param coding Defunct. Use 'contrasts' instead.
 #' @param equal_baseline Experimental: Set to \code{TRUE} to let interactions, where a main effect is missing,
 #' e.g., a nested model, be handled with the same baseline as a cross effect model. If \code{TRUE} the corresponding
@@ -48,8 +48,9 @@
 #' @importFrom progress progress_bar
 #' @importFrom grDevices adjustcolor palette
 #' @importFrom graphics abline axis box hist legend lines points
-#' @importFrom stats anova coefficients contr.sum contr.treatment contrasts<- formula getCall model.frame model.matrix model.response qf rnorm sigma terms update
+#' @importFrom stats anova coefficients contr.sum contr.treatment contrasts<- fitted formula getCall logLik model.frame model.matrix model.response qf reformulate rnorm setNames sigma terms update var
 #' @importFrom pracma Rank
+#' @importFrom MASS ginv
 #' @export
 hdanova <- function(formula, data, subset, weights, na.action, family,
                     unrestricted = FALSE,
@@ -106,8 +107,6 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
 
   ########################## PCA of response matrix ##########################
   if(pca.in != 0){ # Pre-decomposition, e.g., LiMM-PCA, PC-ANOVA
-#    if(is.numeric(pca.in) && pca.in == 1)
-#      stop('pca.in = 1 is not supported (single response)')
     # Automatic determination of dimension
     if(is.logical(pca.in) && pca.in)
       pca.in <- which.min(.PCAcv(Y))
@@ -273,7 +272,11 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
   for(i in 1:ncol(Y)){
     if(mixed){
       dat[[formula[[2]]]] <- Y[,i,drop=FALSE]
-      modi <- eval(mfPre, envir = environment())
+      if(is.logical(REML)){
+        suppressMessages(suppressWarnings(modi <- eval(mfPre, envir = environment())))
+      } else {
+        modi <- eval(mfPre, envir = environment())
+      }
       if(lme4 || is.logical(REML)){
         u <- unlist(lme4::ranef(modi))
         if(i == 1)
@@ -294,22 +297,28 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
       coefs[,i] <- coefficients(modi)
     }
 
-    if(SStype == 1)
-      ano <- anova(modi)
+    if(SStype == 1){
+        ano <- anova(modi)
+    }
     if(SStype == 2){
-      if(missing(family))
-        ano <- Anova(modi, type="II", singular.ok=TRUE)
-      else
+      if(missing(family)){
+          ano <- Anova(modi, type="II", singular.ok=TRUE)
+      } else
         ano <- Anova(modi, type="II", test.statistic = "F", singular.ok=TRUE)
     }
     if(SStype == 3){
-      if(missing(family))
-        ano <- Anova(modi, type="III", singular.ok=TRUE)
-      else
+      if(missing(family)){
+          ano <- Anova(modi, type="III", singular.ok=TRUE)
+      } else
         ano <- Anova(modi, type="III", test.statistic = "F", singular.ok=TRUE)
     }
-    if(mixed)
-      ssq <- ssq + ano$anova[sel,"Sum Sq"]
+    if(mixed){
+      if(is.logical(REML)){
+        vp <- .ML_variance_partition_single(modi, SStype)
+        ssq <- ssq + vp$Variance * N
+      } else
+        ssq <- ssq + ano$anova[sel,"Sum Sq"]
+    }
     else
       ssq <- ssq + ano[sel,"Sum Sq"]
     models[[i]] <- modi

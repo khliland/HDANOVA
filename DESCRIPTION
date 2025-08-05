@@ -16,7 +16,8 @@ Description: Functions and datasets to support Smilde, Marini, Westerhuis and Li
 Depends: R (>= 3.5.0)
 Imports: car,
     lme4,
-    mixlm (>= 1.4.2),
+    MASS,
+    mixlm (>= 1.4.2.2),
     pls,
     pracma,
     progress,
