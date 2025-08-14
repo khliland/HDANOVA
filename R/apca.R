@@ -35,7 +35,7 @@ apca <- function(formula, data, add_error = TRUE, contrasts = "contr.sum",
                  permute = FALSE, perm.type=c("approximate","exact"), ...){
   object <- hdanova(formula=formula, data=data, contrasts = contrasts, ...)
   if(!(is.logical(permute) && !permute)){
-    # Default to 1000 permutations             ------------- Flytt testing til ASCA og venner
+    # Default to 1000 permutations
     if(is.logical(permute)){
       permute <- 1000
       if(interactive())

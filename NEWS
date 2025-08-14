@@ -7,6 +7,10 @@ functions, multiple real data sets and four vignettes covering a range different
 ##### Version 0.8.3.2
 Date:  10 June 2025
 >> Added various scaling types to hdanova.
+>> Fixed permutation for combined effects.
+>> Corrected SSQ and explained variance for REML models.
+>> Added pls() and apls() for ANOVA PLS.
+>> Removed sorting of interaction names.
 
 ##### Version 0.8.3.1
 Date:  10 April 2025

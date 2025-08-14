@@ -360,7 +360,7 @@ permutationplot <- function(object, factor = 1, xlim, xlab = "SSQ", main, ...){
 #'
 #' @examples
 #' data("caldana")
-#' mod.comb <- asca(compounds ~ time + comb(light + light:time), data=caldana)
+#' mod.comb <- asca(compounds ~ time + comb(light + time:light), data=caldana)
 #'
 #' # Default time axis
 #' timeplot(mod.comb, factor="light", time="time", comb=2)

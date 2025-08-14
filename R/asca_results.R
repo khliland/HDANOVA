@@ -43,6 +43,8 @@ print.hdanova <- function(x, ...){
     mod <- "LiMM-PCA"
   if(inherits(x, "msca"))
     mod <- "Multilevel Simultaneous Component Analysis"
+  if(inherits(x, "apls"))
+    mod <- "Anova Partial Least Squares"
   cat(paste0(mod, " fitted using"), x$fit.type)
   cat("\nCall:\n", deparse(x$call), "\n", sep = "")
   invisible(x)
@@ -72,6 +74,8 @@ summary.hdanova <- function(object, extended=TRUE, df=FALSE, ...){
     mod <- "Multilevel Simultaneous Component Analysis"
     rownames(dat) <- c("Between", "Within")
   }
+  if(inherits(object, "apls"))
+    mod <- "Anova Partial Least Squares"
   x <- list(dat=dat, model=mod, fit.type=object$fit.type)
   if(extended){
     LS_REML <- "least squares"

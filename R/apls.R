@@ -1,9 +1,10 @@
-#' @name asca
-#' @aliases asca
-#' @title Analysis of Variance Simultaneous Component Analysis - ASCA
+#' @name apls
+#' @aliases apls
+#' @title Analysis of Variance Partial Least Squares - APLS
 #'
 #' @param formula Model formula accepting a single response (block) and predictors. See Details for more information.
 #' @param data The data set to analyse.
+#' @param add_error Add error to LS means (default = TRUE).
 #' @param contrasts Effect coding: "sum" (default = sum-coding), "weighted", "reference", "treatment".
 #' @param permute Number of permutations to perform (default = 1000).
 #' @param perm.type Type of permutation to perform, either "approximate" or "exact" (default = "approximate").
@@ -12,19 +13,19 @@
 # #' @param na.action How to handle NAs (no action implemented).
 # #' @param family Error distributions and link function for Generalized Linear Models.
 # #' @param permute Perform approximate permutation testing, default = FALSE (numeric or TRUE = 1000).
-# #' @param pca.in Compress response before ASCA (number of components).
+# #' @param pca.in Compress response before APLS (number of components).
 #' @param ... Additional arguments to \code{\link{hdanova}}.
 #'
-#' @return An \code{asca} object containing loadings, scores, explained variances, etc. The object has
+#' @return An \code{apls} object containing loadings, scores, explained variances, etc. The object has
 #' associated plotting (\code{\link{asca_plots}}) and result (\code{\link{asca_results}}) functions.
 #'
-#' @description This is a quite general and flexible implementation of ASCA.
+#' @description This is a quite general and flexible implementation of APLS.
 #'
-#' @details ASCA is a method which decomposes a multivariate response according to one or more design
-#' variables. ANOVA is used to split variation into contributions from factors, and PCA is performed
+#' @details APLS is a method which decomposes a multivariate response according to one or more design
+#' variables. ANOVA is used to split variation into contributions from factors, and PLS is performed
 #' on the corresponding least squares estimates, i.e., \code{Y = X1 B1 + X2 B2 + ... + E = T1 P1' + T2 P2' + ... + E}.
-#' This version of ASCA encompasses variants of LiMM-PCA, generalized ASCA and covariates ASCA. It includes
-#' confidence ellipsoids for the balanced crossed-effect ASCA.
+#' For balanced designs, the PLS components are equivalent to PCA components, i.e., APLS and APCA are equivalent.
+#' This version of APLS encompasses variants of LiMM-PLS, generalized APLS and covariates APLS.
 #'
 #' The formula interface is extended with the function r() to indicate random
 #' effects and comb() to indicate effects that should be combined. See Examples
@@ -35,8 +36,6 @@
 #' * Liland, K.H., Smilde, A., Marini, F., and Næs,T. (2018). Confidence ellipsoids for ASCA models based on multivariate regression theory. Journal of Chemometrics, 32(e2990), 1–13.
 #' * Martin, M. and Govaerts, B. (2020). LiMM-PCA: Combining ASCA+ and linear mixed models to analyse high-dimensional designed data. Journal of Chemometrics, 34(6), e3232.
 #'
-#' @importFrom lme4 lmer
-#' @importFrom car ellipse dataEllipse
 #' @seealso Main methods: \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}}, \code{\link{msca}}, \code{\link{pcanova}}, \code{\link{prc}} and \code{\link{permanova}}.
 #' Workhorse function underpinning most methods: \code{\link{hdanova}}.
 #' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
@@ -44,12 +43,12 @@
 #' # Load candies data
 #' data(candies)
 #'
-#' # Basic ASCA model with two factors
-#' mod <- asca(assessment ~ candy + assessor, data=candies)
+#' # Basic APLS model with two factors
+#' mod <- apls(assessment ~ candy + assessor, data=candies)
 #' print(mod)
 #'
-#' # ASCA model with interaction
-#' mod <- asca(assessment ~ candy * assessor, data=candies)
+#' # APLS model with interaction
+#' mod <- apls(assessment ~ candy * assessor, data=candies)
 #' print(mod)
 #'
 #' # Result plotting for first factor
@@ -60,31 +59,31 @@
 #' # Spider plot
 #' scoreplot(mod, spider=TRUE)
 #'
-#' # ASCA model with compressed response using 5 principal components
-#' mod.pca <- asca(assessment ~ candy + assessor, data=candies, pca.in=5)
+#' # APLS model with compressed response using 5 principal components
+#' mod.pca <- apls(assessment ~ candy + assessor, data=candies, pca.in=5)
 #'
-#' # Mixed Model ASCA, random assessor
-#' mod.mix <- asca(assessment ~ candy + r(assessor), data=candies)
+#' # Mixed Model APLS, random assessor
+#' mod.mix <- apls(assessment ~ candy + r(assessor), data=candies)
 #' scoreplot(mod.mix)
 #'
-#' # Mixed Model ASCA, REML estimation
-#' mod.mix <- asca(assessment ~ candy + r(assessor), data=candies, REML=TRUE)
+#' # Mixed Model APLS, REML estimation
+#' mod.mix <- apls(assessment ~ candy + r(assessor), data=candies, REML=TRUE)
 #' scoreplot(mod.mix)
 #'
 #' # Load Caldana data
 #' data(caldana)
 #'
-#' # Combining effects in ASCA
-#' mod.comb <- asca(compounds ~ time + comb(light + time:light), data=caldana)
+#' # Combining effects in APLS
+#' mod.comb <- apls(compounds ~ time + comb(light + time:light), data=caldana)
 #' summary(mod.comb)
 #' timeplot(mod.comb, factor="light", time="time", comb=2)
 #'
 #' # Permutation testing
-#' mod.perm <- asca(assessment ~ candy * assessor, data=candies, permute=TRUE)
+#' mod.perm <- apls(assessment ~ candy * assessor, data=candies, permute=TRUE)
 #' summary(mod.perm)
 #'
 #' @export
-asca <- function(formula, data, contrasts = "contr.sum",
+apls <- function(formula, data, add_error = TRUE, contrasts = "contr.sum",
                  permute = FALSE, perm.type=c("approximate","exact"),...){
   # formula, data, subset, weights, na.action, family, permute=FALSE,
   # unrestricted = FALSE,
@@ -104,7 +103,7 @@ asca <- function(formula, data, contrasts = "contr.sum",
     }
     object <- permutation(object, permute=permute, perm.type=perm.type)
   }
-  object <- sca(object)
+  object <- pls(object)
   object$call <- match.call()
   object
 }

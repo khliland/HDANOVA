@@ -1,4 +1,4 @@
-#' Simultaenous Component Analysis
+#' Simultaneous Component Analysis
 #'
 #' @description This function performs Simultaneous Component Analysis (SCA) on a \code{hdanova} object.
 #'

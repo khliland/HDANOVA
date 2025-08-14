@@ -4,6 +4,7 @@
 #' @description Included methods:
 #' * ASCA+ - Analysis of Variance Simultaneous Component Analysis
 #' * APCA+ - ANOVA Principal Component Analysis
+#' * APLS+ - ANOVA Partial Least Squares
 #' * LiMM-PCA - Linear Mixed Model PCA
 #' * MSCA - Multilevel Simultaneous Component Analysis
 #' * PC-ANOVA - Principal Component Analysis of Variance
@@ -15,6 +16,7 @@
 #' Workhorse function underpinning most methods: \code{\link{hdanova}}.
 #' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 #' @docType package
-#' @name HDANOVA
+#' @name HDANOVA-package
 #' @keywords internal
 "_PACKAGE"
+NULL

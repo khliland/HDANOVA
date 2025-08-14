@@ -1,3 +1,5 @@
+#' @name hdanova
+#' @aliases hdanova
 #' @title High-Dimensional Analysis of Variance
 #'
 #' @description This function provides a high-dimensional analysis of variance (HDANOVA) method
@@ -191,7 +193,8 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
     j <- 1
     for(i in 1:length(tl)){
       if(grepl("comb(", tl[i], fixed=TRUE)){
-        combined[[j]] <- attr(terms(cparse(formula(paste0(".~", tl[i])))), "term.labels")
+#        combined[[j]] <- attr(terms(cparse(formula(paste0(".~", tl[i])))), "term.labels")
+        combined[[j]] <- attr(cparse(formula(paste0(".~", tl[i]))), "terms")[[1]]
         j <- j+1
       }
     }
@@ -232,11 +235,11 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
 
   # Alphabetically sorted interactions
   effsAB <- effs
-  for(i in 1:length(effs)){
-    if(grepl(":", effs[i], fixed=TRUE)){
-      effsAB[i] <- paste(sort(strsplit(effs[i],":")[[1]]), collapse=":")
-    }
-  }
+  # for(i in 1:length(effs)){
+  #   if(grepl(":", effs[i], fixed=TRUE)){
+  #     effsAB[i] <- paste(sort(strsplit(effs[i],":")[[1]]), collapse=":")
+  #   }
+  # }
 
   # Exclude numeric effects and their interactions unless fit.func is lm
   nums <- names(unlist(lapply(modFra, class)))[which(unlist(lapply(modFra, class)) %in% c("numeric","integer"))]
@@ -348,18 +351,18 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
     }
   }
 
-  # Sort interaction names alphabetically
-  for(i in 1:length(colnames(modFra))){
-    if(grepl(":", colnames(modFra)[i], fixed=TRUE)){
-      colnames(modFra)[i] <- paste(sort(strsplit(colnames(modFra)[i],":")[[1]]), collapse=":")
-    }
-  }
-  # Sort interaction names alphabetically
-  for(i in 1:length(effs)){
-    if(grepl(":", effs[i], fixed=TRUE)){
-      effs[i] <- paste(sort(strsplit(effs[i],":")[[1]]), collapse=":")
-    }
-  }
+  # # Sort interaction names alphabetically
+  # for(i in 1:length(colnames(modFra))){
+  #   if(grepl(":", colnames(modFra)[i], fixed=TRUE)){
+  #     colnames(modFra)[i] <- paste(sort(strsplit(colnames(modFra)[i],":")[[1]]), collapse=":")
+  #   }
+  # }
+  # # Sort interaction names alphabetically
+  # for(i in 1:length(effs)){
+  #   if(grepl(":", effs[i], fixed=TRUE)){
+  #     effs[i] <- paste(sort(strsplit(effs[i],":")[[1]]), collapse=":")
+  #   }
+  # }
 
   ########################## LS estimates ##########################
   # Effect loop
@@ -402,12 +405,12 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
       error[[effs[a]]] <- LS[[effs[a]]] + residuals
     }
     anonam <- rownames(ano)
-    # Alphabetically sorted interaction names
-    for(i in 1:length(anonam)){
-      if(grepl(":", anonam[i], fixed=TRUE)){
-        anonam[i] <- paste(sort(strsplit(anonam[i],":")[[1]]), collapse=":")
-      }
-    }
+    # # Alphabetically sorted interaction names
+    # for(i in 1:length(anonam)){
+    #   if(grepl(":", anonam[i], fixed=TRUE)){
+    #     anonam[i] <- paste(sort(strsplit(anonam[i],":")[[1]]), collapse=":")
+    #   }
+    # }
     dfNum   <- ano[["Df"]]
     dfDenom <- c(rep(ano["Residuals","Df"], length(dfNum)-1),0)
     names(dfNum) <- names(dfDenom) <- anonam # May need to limit to approved?
@@ -416,12 +419,12 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
     if(!lme4 && !is.logical(REML)){
       ets <- ano$err.terms
       anonam <- rownames(ano$anova)
-      # Alphabetically sorted interaction names
-      for(i in 1:length(anonam)){
-        if(grepl(":", anonam[i], fixed=TRUE)){
-          anonam[i] <- paste(sort(strsplit(anonam[i],":")[[1]]), collapse=":")
-        }
-      }
+      # # Alphabetically sorted interaction names
+      # for(i in 1:length(anonam)){
+      #   if(grepl(":", anonam[i], fixed=TRUE)){
+      #     anonam[i] <- paste(sort(strsplit(anonam[i],":")[[1]]), collapse=":")
+      #   }
+      # }
       names(ets) <- anonam
       dfDenom <- ano$denom.df
       dfNum   <- ano$anova[["Df"]]
@@ -439,12 +442,12 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
       formula <- formulaOld
       ets <- ano_no_lme4$err.terms
       no_eff <- rownames(ano_no_lme4$anova)
-      # Alphabetically sorted interaction names
-      for(i in 1:length(no_eff)){
-        if(grepl(":", no_eff[i], fixed=TRUE)){
-          no_eff[i] <- paste(sort(strsplit(no_eff[i],":")[[1]]), collapse=":")
-        }
-      }
+      # # Alphabetically sorted interaction names
+      # for(i in 1:length(no_eff)){
+      #   if(grepl(":", no_eff[i], fixed=TRUE)){
+      #     no_eff[i] <- paste(sort(strsplit(no_eff[i],":")[[1]]), collapse=":")
+      #   }
+      # }
       names(ets) <- no_eff
       dfDenom <- ano_no_lme4$denom.df
       dfNum <- ano_no_lme4$anova[["Df"]]
@@ -507,12 +510,12 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
         EDm <- matrix(unlist(ED), nrow = length(randEffList))
         EDm <- pmax(EDm, 1)
         sortedRandEffList <- names(randEffList)
-        # Alphabetically sorted interaction names
-        for(i in 1:length(sortedRandEffList)){
-          if(grepl(":", sortedRandEffList[i], fixed=TRUE)){
-            sortedRandEffList[i] <- paste(sort(strsplit(sortedRandEffList[i],":")[[1]]), collapse=":")
-          }
-        }
+        # # Alphabetically sorted interaction names
+        # for(i in 1:length(sortedRandEffList)){
+        #   if(grepl(":", sortedRandEffList[i], fixed=TRUE)){
+        #     sortedRandEffList[i] <- paste(sort(strsplit(sortedRandEffList[i],":")[[1]]), collapse=":")
+        #   }
+        # }
         rownames(EDm) <- sortedRandEffList
         EDall <- matrix(dfNum, nrow = length(dfNum), ncol = ncol(EDm))
         rownames(EDall) <- names(dfNum)
@@ -595,8 +598,8 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
       names(ssq)[approved[length(approved)]] <- combName
       maxDir[approved[length(approved)]] <- 0
       for(dis in combined[[i]]){
-        if(grepl(":", dis, fixed=TRUE)) # Reorder interactions to alphabetical order
-          dis <- paste(sort(strsplit(dis,":")[[1]]), collapse=":")
+        # if(grepl(":", dis, fixed=TRUE)) # Reorder interactions to alphabetical order
+        #   dis <- paste(sort(strsplit(dis,":")[[1]]), collapse=":")
         if(any(!(dis %in% names(approvedAB))))
           stop("Cannot combine a continuous effect with a categorical factor.")
         remove <- c(remove, which(effsAB==dis))
@@ -614,6 +617,7 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
       #      error[[approved[length(approved)]]] <- error[[approved[length(approved)]]] + error[[effs[approvedAB[names(approvedAB)==dis]]]]
       LS_aug[[approved[length(approved)]]] <- error[[approved[length(approved)]]]
       names(LS_aug)[approved[length(approved)]] <- combName
+      names(approvedComb)[approved[length(approved)]] <- combName
     }
   } else {
     names(approvedComb) <- names(approvedAB)
@@ -671,7 +675,8 @@ formula_comb <- function(formula, data, REML = NULL){
   formula <- formula(formula)
   terms <- terms(formula)
   effsr <- attr(terms,"term.labels")
-  effs  <- attr(terms(cparse(formula)),"term.labels")
+#  effs  <- attr(terms(cparse(formula)),"term.labels")
+  effs  <- attr(cparse(formula),"terms")[[1]]
   if(length(effs)==0){
     return( list(0) )
   }
@@ -742,6 +747,7 @@ cparse <- function (f, REML = NULL) {
   n <- length(right)
   result      <- character(n)
   result.REML <- character(n)
+  terms       <- list()
 
   # Main recursive loop extracting effects without comb()
   for(i in 1:n){
@@ -759,6 +765,7 @@ cparse <- function (f, REML = NULL) {
       return(x)
     }
     result[[i]] <- as.character(parsecall(formula(paste("~",paste(right[i],sep="+")))[2]))
+    terms[[i]]  <- trimws(strsplit(result[[i]], "\\+")[[1]])
   }
   f[3] <- formula(paste("~", paste(result, sep="", collapse="+")))[2]
 
@@ -782,9 +789,11 @@ cparse <- function (f, REML = NULL) {
       }
       ran <- parsecall(formula(paste("~",paste(right[i],sep="+")))[2])
       result.REML[i] <- ifelse(ran,as.character(formula(paste("~(1 | ",result[[i]],")",sep=""))[2]), result[[i]])
+      terms[[i]]  <- trimws(strsplit(result.REML[[i]], "\\+")[[1]])
     }
     f[3] <- formula(paste("~", paste(result.REML, sep="", collapse="+")))[2]
   }
+  attr(f, "terms") <- terms
   f
 }
 

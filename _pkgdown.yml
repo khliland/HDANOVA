@@ -9,6 +9,7 @@ reference:
   - asca_plots
   - biplot.asca
   - apca
+  - apls
   - hdanova
   - msca
   - limmpca

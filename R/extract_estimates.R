@@ -19,7 +19,7 @@
 #' mod <- hdanova(assessment ~ candy * assessor, data=candies)
 #'
 #' # Extract estimates for the interaction
-#' inter <- extract_estimates(mod, c("assessor:candy"))
+#' inter <- extract_estimates(mod, c("candy:assessor"))
 #'
 #' # Visualize the interaction effect
 #' image(t(inter), main="Interaction effect", xlab="Attribute", ylab="Sample")

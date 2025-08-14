@@ -2,7 +2,7 @@
 % Please edit documentation in R/sca.R
 \name{sca}
 \alias{sca}
-\title{Simultaenous Component Analysis}
+\title{Simultaneous Component Analysis}
 \usage{
 sca(object)
 }

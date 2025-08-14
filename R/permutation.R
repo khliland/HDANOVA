@@ -42,12 +42,13 @@ permutation <- function(object,
         # Subset of design matrix for effect a
         D <- object$X[, object$more$assign%in%object$more$approvedComb[[names(a)]], drop=FALSE]
         DD <- D %*% pracma::pinv(D)
+        DR <- object$more$LS_aug[[object$more$effs[a]]]
         # Base ssq
-        ssqa[object$more$effs[a]] <- norm(DD %*% object$more$LS_aug[[object$more$effs[a]]], "F")^2
+        ssqa[object$more$effs[a]] <- norm(DD %*% DR, "F")^2
         pb <- progress_bar$new(total = permute, format = paste0("  Permuting ", object$more$effs[a], " (", i,"/",length(object$more$approved),") [:bar] :percent (:eta)"))
         # Permuted ssqs
         for(perm in 1:permute){
-          perms[perm] <- norm(DD %*% object$more$LS_aug[[object$more$effs[a]]][sample(object$more$N),], "F")^2
+          perms[perm] <- norm(DD %*% DR[sample(object$more$N),], "F")^2
           pb$tick()
         }
         ssqaperm[[object$more$effs[a]]] <- perms
