@@ -4,8 +4,8 @@ Functions and datasets to support Smilde, Marini, Westerhuis and Liland (2025, I
 This implements and imports a  collection of methods for HD-ANOVA data analysis with common interfaces, result- and plotting
 functions, multiple real data sets and four vignettes covering a range different applications.
 
-##### Version 0.8.3.2
-Date:  10 June 2025
+##### Version 0.8.4
+Date:  30 August 2025
 >> Added various scaling types to hdanova.
 >> Fixed permutation for combined effects.
 >> Corrected SSQ and explained variance for REML models.

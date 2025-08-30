@@ -14,6 +14,7 @@ reference:
   - msca
   - limmpca
   - permutation
+  - pls
   - sca
 - title: "Additional methods"
 - contents:

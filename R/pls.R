@@ -1,8 +1,10 @@
-#' Partial Least Squares (PLS) for HDANOVA
+#' @name pls
+#' @title Partial Least Squares (PLS) for HDANOVA
 #'
 #' @description This function performs Partial Least Squares (PLS) on a \code{hdanova}.
 #'
 #' @param object A \code{hdanova} object.
+#' @param ... Additional arguments (not used).
 #'
 #' @returns An updated \code{hdanova} object with PLS results.
 #' @details For residuals, PCA is performed instead of PLS as there is no natural response.
@@ -16,7 +18,13 @@
 #' scoreplot(mod)
 #'
 #' @export
-pls <- function(object){
+pls <- function(object, ...) UseMethod("pls")
+
+#' @rdname pls
+#' @export
+pls.default <- function(object, ...){
+  if(!inherits(object,"hdanova"))
+    stop("Object must be of class 'hdanova'")
   scores <- loadings <- projected <- list()
   for(i in object$more$approved){
     maxDiri <- min(Rank(object$LS[[object$more$effs[i]]]),object$more$maxDir[i])

@@ -8,9 +8,9 @@
 <url><loc>https://khliland.github.io/HDANOVA/authors.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/index.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/HDANOVA-package.html</loc></url>
-<url><loc>https://khliland.github.io/HDANOVA/reference/HDANOVA.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/SCA.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/apca.html</loc></url>
+<url><loc>https://khliland.github.io/HDANOVA/reference/apls.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/asca.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/asca_fit.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/asca_plots.html</loc></url>
@@ -32,6 +32,7 @@
 <url><loc>https://khliland.github.io/HDANOVA/reference/pcanova_results.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/permanova.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/permutation.html</loc></url>
+<url><loc>https://khliland.github.io/HDANOVA/reference/pls.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/prc.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/reexports.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/scores.pcanova.html</loc></url>

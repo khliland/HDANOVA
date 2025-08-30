@@ -11,7 +11,7 @@ hdanova object."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">HDANOVA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,11 +81,11 @@ permutation testing for the effects in the HDANOVA model and adds them to the
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">candies</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Basic HDANOVA model with two factors</span></span></span>
-<span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="HDANOVA.html">hdanova</a></span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span> <span class="op">+</span> <span class="va">assessor</span>, data<span class="op">=</span><span class="va">candies</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="hdanova.html">hdanova</a></span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span> <span class="op">+</span> <span class="va">assessor</span>, data<span class="op">=</span><span class="va">candies</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">permutation</span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> High-Dimensional Analysis of Variance fitted using 'lm' (Linear Model) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II,  coding, restricted model, least squares estimation, 1000 permutations </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II, sum coding, restricted model, least squares estimation, 1000 permutations </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            Sum.Sq. Expl.var.(%) p-value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> candy     33416.66        74.48       0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> assessor   1961.37         4.37       0</span>
@@ -102,7 +102,7 @@ permutation testing for the effects in the HDANOVA model and adds them to the
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

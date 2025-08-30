@@ -2,12 +2,17 @@
 % Please edit documentation in R/pls.R
 \name{pls}
 \alias{pls}
+\alias{pls.default}
 \title{Partial Least Squares (PLS) for HDANOVA}
 \usage{
-pls(object)
+pls(object, ...)
+
+\method{pls}{default}(object, ...)
 }
 \arguments{
 \item{object}{A \code{hdanova} object.}
+
+\item{...}{Additional arguments (not used).}
 }
 \value{
 An updated \code{hdanova} object with PLS results.
