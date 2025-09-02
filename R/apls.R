@@ -93,7 +93,7 @@ apls <- function(formula, data, add_error = TRUE, contrasts = "contr.sum",
   # coding = c("sum","weighted","reference","treatment"),
   # SStype = "II",
   # REML = NULL
-  object <- hdanova(formula=formula, data=data, contrasts = contrasts, ...)
+  object <- hdanova(formula=formula, data=data, add_error = add_error, contrasts = contrasts, ...)
   if(!(is.logical(permute) && !permute)){
     # Default to 1000 permutations
     if(is.logical(permute)){

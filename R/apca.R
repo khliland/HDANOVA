@@ -33,7 +33,7 @@
 #' scoreplot(mod, factor=3, gr.col=rgb(eff/max(eff), 1-eff/max(eff),0), pch.scores="x")
 apca <- function(formula, data, add_error = TRUE, contrasts = "contr.sum",
                  permute = FALSE, perm.type=c("approximate","exact"), ...){
-  object <- hdanova(formula=formula, data=data, contrasts = contrasts, ...)
+  object <- hdanova(formula=formula, data=data, add_error = add_error, contrasts = contrasts, ...)
   if(!(is.logical(permute) && !permute)){
     # Default to 1000 permutations
     if(is.logical(permute)){

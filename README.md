@@ -29,6 +29,7 @@ Published by Wiley in August 2025.
 - Main methods:
   - ASCA+ - Analysis of Variance Simultaneous Component Analysis
   - APCA+ - ANOVA Principal Component Analysis
+  - APLS+ - ANOVA Partial Least Squares
   - LiMM-PCA - Linear Mixed Model PCA
   - MSCA - Multilevel Simultaneous Component Analysis
   - PC-ANOVA - Principal Component Analysis of Variance
