@@ -24,11 +24,11 @@
     data <- model@frame
     response_var <- all.vars(formula(model))[1]
     full_formula <- formula(model)
-    fixed_formula <- lme4::nobars(full_formula)
+    fixed_formula <- reformulas::nobars(full_formula)
     fixed_terms <- attr(terms(fixed_formula), "term.labels")
 
     # Random parts
-    random_terms <- lme4::findbars(full_formula)
+    random_terms <- reformulas::findbars(full_formula)
     random_strs <- vapply(random_terms, function(x) paste0("(", deparse(x), ")"), character(1))
     random_rhs <- paste(random_strs, collapse = " + ")
 
@@ -179,11 +179,11 @@
   data <- model@frame
   response_var <- all.vars(formula(model))[1]
   full_formula <- formula(model)
-  fixed_formula <- lme4::nobars(full_formula)
+  fixed_formula <- reformulas::nobars(full_formula)
   fixed_terms <- attr(terms(fixed_formula), "term.labels")
 
   # Random parts
-  random_terms <- lme4::findbars(full_formula)
+  random_terms <- reformulas::findbars(full_formula)
   random_strs <- vapply(random_terms, function(x) paste0("(", deparse(x), ")"), character(1))
   random_rhs <- paste(random_strs, collapse = " + ")
 

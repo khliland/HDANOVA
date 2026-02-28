@@ -1,8 +1,8 @@
 Package: HDANOVA
 Type: Package
 Title: High-Dimensional Analysis of Variance
-Version: 0.8.4
-Date: 2025-08-30
+Version: 0.8.4.1
+Date: 2026-02-28
 Authors@R: 
     c(person(given = "Kristian Hovde",
              family = "Liland",
@@ -21,6 +21,7 @@ Imports: car,
     pls,
     pracma,
     progress,
+    reformulas,
     RSpectra
 Suggests: knitr, vegan
 License: GPL (>= 2)
@@ -29,5 +30,5 @@ BugReports: https://github.com/khliland/HDANOVA/issues/
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr

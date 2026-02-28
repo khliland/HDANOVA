@@ -31,7 +31,7 @@ pls.default <- function(object, ...){
     if(object$more$pca.in != 0)
       maxDiri <- min(maxDiri, object$more$pca.in)
     if(object$add_error)
-      maxDiri <- min(object$more$N-1, object$more$p)
+      maxDiri <- min(object$more$N-1, object$more$p, maxDiri)
     if(maxDiri == 0)
       stop(paste0("Effect '", object$more$effs[i], "' has no estimable levels"))
     # Check for combined effect

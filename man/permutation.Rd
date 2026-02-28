@@ -4,7 +4,14 @@
 \alias{permutation}
 \title{Permutation for HDANOVA}
 \usage{
-permutation(object, permute = 1000, perm.type = c("approximate", "exact"))
+permutation(
+  object,
+  permute = 1000,
+  perm.type = c("approximate", "exact"),
+  unique.digits = 12,
+  unique.frac = 0.95,
+  exhaustive.warn = TRUE
+)
 }
 \arguments{
 \item{object}{A \code{hdanova} object.}
@@ -12,6 +19,15 @@ permutation(object, permute = 1000, perm.type = c("approximate", "exact"))
 \item{permute}{Number of permutations to perform (default = 1000).}
 
 \item{perm.type}{Type of permutation to perform, either "approximate" or "exact" (default = "approximate").}
+
+\item{unique.digits}{Number of digits used when rounding permutation SSQ values before
+checking uniqueness (default = 12). Set to \code{NULL} to disable this warning.}
+
+\item{unique.frac}{Minimum fraction of unique rounded SSQ values required to avoid
+warning (default = 0.95). Set to \code{NULL} to disable this warning.}
+
+\item{exhaustive.warn}{Logical; if \code{TRUE} (default), warn when exact permutation
+uses exhaustive enumeration with fewer permutations than requested.}
 }
 \value{
 An updated \code{hdanova} object with permutation results.
@@ -25,9 +41,38 @@ permutation testing for the effects in the HDANOVA model and adds them to the
 # Load candies data
 data(candies)
 
-# Basic HDANOVA model with two factors
+## Basic HDANOVA model with two factors
 mod <- hdanova(assessment ~ candy + assessor, data=candies)
-mod <- permutation(mod)
-summary(mod)
+
+## Approximate permutation
+modApprox <- permutation(mod)
+summary(modApprox)
+
+# Plot permutation distribution for "candy" effect
+permutationplot(modApprox, factor="candy")
+
+## Exact permutation (warning if too few exchangeable units)
+modExact  <- permutation(mod, perm.type="exact")
+summary(modExact)
+
+# Reduced candy data (first two levels of each effect, two replicates)
+reduced_candies <- candies[candies$candy \%in\% levels(candies$candy)[1:2] &
+     candies$assessor \%in\% levels(candies$assessor)[1:2], ][-seq(1,12,by=3),]
+mod_reduced <- hdanova(assessment ~ candy + assessor, data=reduced_candies)
+mod_reducedApprox <- permutation(mod_reduced)
+mod_reducedExact  <- permutation(mod_reduced, perm.type="exact")
+par.old <- par(mfrow=c(2,1))
+permutationplot(mod_reducedApprox, factor="assessor", main="Approximate permutation")
+permutationplot(mod_reducedExact, factor="assessor", main="Exact permutation")
+par(par.old)
+
+# Check how many exchangeable units were available (minimum per effect)
+lapply(modExact$permute$exchangeable, function(x)min(x$block_sizes))
+
+# Caldana data (combined effects and exact permutation)
+data(caldana)
+mod.comb <- asca(compounds ~ time + comb(light + time:light), data=caldana)
+mod.comb <- permutation(mod.comb, perm.type="exact")
+summary(mod.comb)
 
 }

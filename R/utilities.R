@@ -128,7 +128,7 @@ extended.model.frame <- function(formula, data, ..., sep = "."){
 #' @param model \code{model} object to update.
 #' @param fac \code{character} factor to remove.
 #' @param hierarchical \code{logical} obey hierarchy when removing factor (default = TRUE).
-#' @importFrom lme4 findbars
+#' @importFrom reformulas findbars
 #' @export
 update_without_factor <- function(model, fac, hierarchical = TRUE){
   # Extract formula from model
