@@ -16,7 +16,7 @@ permutation(
 \arguments{
 \item{object}{A \code{hdanova} object.}
 
-\item{permute}{Number of permutations to perform (default = 1000).}
+\item{permute}{Number of permutations to perform (default = 10000).}
 
 \item{perm.type}{Type of permutation to perform, either "approximate" or "exact" (default = "approximate").}
 

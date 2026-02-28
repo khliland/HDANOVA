@@ -5,6 +5,7 @@
 \alias{loadingplot.asca}
 \alias{scoreplot.asca}
 \alias{permutationplot}
+\alias{rotationplot}
 \title{ASCA Plot Methods}
 \usage{
 \method{loadingplot}{asca}(object, factor = 1, comps = 1:2, ...)
@@ -30,6 +31,8 @@
 )
 
 permutationplot(object, factor = 1, xlim, xlab = "SSQ", main, ...)
+
+rotationplot(object, factor = 1, xlim, xlab = "SSQ", main, ...)
 }
 \arguments{
 \item{object}{\code{asca} object.}

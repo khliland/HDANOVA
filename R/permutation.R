@@ -5,7 +5,7 @@
 #' \code{hdanova} object.
 #'
 #' @param object A \code{hdanova} object.
-#' @param permute Number of permutations to perform (default = 1000).
+#' @param permute Number of permutations to perform (default = 10000).
 #' @param perm.type Type of permutation to perform, either "approximate" or "exact" (default = "approximate").
 #' @param unique.digits Number of digits used when rounding permutation SSQ values before
 #' checking uniqueness (default = 12). Set to \code{NULL} to disable this warning.
@@ -92,21 +92,48 @@ permutation <- function(object,
     ssqaperm <- vector("list", length(approved))
     permutation_orders <- vector("list", length(approved))
     names(ssqa) <- names(pvals) <- names(ssqaperm) <- names(permutation_orders) <- eff_names
+    cpp_available <- exists(".permutation_ssq_kernel_cpp", mode = "function")
+    cpp_failed <- FALSE
 
     if(perm.type == "approximate"){
       for(i in seq_along(approved)){
         a <- object$more$approvedAB[i]
         eff_name <- object$more$effs[a]
-        perms <- numeric(permute)
+        perms <- NULL
         D <- object$X[, object$more$assign %in% object$more$approvedComb[[names(a)]], drop=FALSE]
         DD <- D %*% pracma::pinv(D)
         DR <- object$more$LS_aug[[eff_name]]
         ssqa[eff_name] <- norm(DD %*% DR, "F")^2
-        pb <- progress_bar$new(total = permute,
-                               format = paste0("  Permuting ", eff_name, " (", i, "/", length(approved), ") [:bar] :percent (:eta)"))
-        for(perm in seq_len(permute)){
-          perms[perm] <- norm(DD %*% DR[sample(object$more$N),], "F")^2
-          pb$tick()
+        if(cpp_available && !cpp_failed){
+          cpp_res <- tryCatch(
+            list(values = .run_cpp_permutation_with_progress(
+              DD = DD,
+              DR = DR,
+              groups = list(seq_len(object$more$N)),
+              n_perm = permute,
+              format = paste0("  Permuting ", eff_name, " (", i, "/", length(approved), ") [:bar] :percent (:eta)")
+            ),
+                 error = NULL),
+            error = function(e)
+              list(values = NULL, error = e)
+          )
+          if(!is.null(cpp_res$error)){
+            cpp_failed <- TRUE
+            perm_warnings <- c(perm_warnings,
+                               paste0("C++ permutation kernel failed for effect '", eff_name,
+                                      "'; falling back to R implementation. ", cpp_res$error$message))
+          } else {
+            perms <- cpp_res$values
+          }
+        }
+        if(is.null(perms) || length(perms) != permute){
+          perms <- numeric(permute)
+          pb <- progress_bar$new(total = permute,
+                                 format = paste0("  Permuting ", eff_name, " (", i, "/", length(approved), ") [:bar] :percent (:eta)"))
+          for(perm in seq_len(permute)){
+            perms[perm] <- norm(DD %*% DR[sample(object$more$N),], "F")^2
+            pb$tick()
+          }
         }
         ssqaperm[[eff_name]] <- perms
         permutation_orders[[eff_name]] <- matrix(integer(0), nrow = 0, ncol = object$more$N)
@@ -170,13 +197,38 @@ permutation <- function(object,
           })
           permutation_orders[[eff_name]] <- order_matrix
         } else {
-          perms <- numeric(permute)
-          pb <- progress_bar$new(total = permute,
-                                 format = paste0("  Permuting ", eff_name, " (", i, "/", length(approved), ") [:bar] :percent (:eta)"))
-          for(perm in seq_len(permute)){
-            idx <- .permute_within_blocks(block_info$groups)
-            perms[perm] <- norm(DD %*% DR[idx,], "F")^2
-            pb$tick()
+          perms <- NULL
+          if(cpp_available && !cpp_failed){
+            cpp_res <- tryCatch(
+              list(values = .run_cpp_permutation_with_progress(
+                DD = DD,
+                DR = DR,
+                groups = block_info$groups,
+                n_perm = permute,
+                format = paste0("  Permuting ", eff_name, " (", i, "/", length(approved), ") [:bar] :percent (:eta)")
+              ),
+                   error = NULL),
+              error = function(e)
+                list(values = NULL, error = e)
+            )
+            if(!is.null(cpp_res$error)){
+              cpp_failed <- TRUE
+              perm_warnings <- c(perm_warnings,
+                                 paste0("C++ permutation kernel failed for effect '", eff_name,
+                                        "'; falling back to R implementation. ", cpp_res$error$message))
+            } else {
+              perms <- cpp_res$values
+            }
+          }
+          if(is.null(perms) || length(perms) != permute){
+            perms <- numeric(permute)
+            pb <- progress_bar$new(total = permute,
+                                   format = paste0("  Permuting ", eff_name, " (", i, "/", length(approved), ") [:bar] :percent (:eta)"))
+            for(perm in seq_len(permute)){
+              idx <- .permute_within_blocks(block_info$groups)
+              perms[perm] <- norm(DD %*% DR[idx,], "F")^2
+              pb$tick()
+            }
           }
           permutation_orders[[eff_name]] <- matrix(integer(0), nrow = 0, ncol = object$more$N)
         }
@@ -209,8 +261,14 @@ permutation <- function(object,
     warning(paste(unique(perm_warnings), collapse = "\n"))
 
   ########################## Return ##########################
-  object$permute <- list(ssqa=ssqa, ssqaperm=ssqaperm, pvalues=pvals, permutations=permute,
-                          exchangeable=exchangeable_units, orders=permutation_orders)
+  object$permute <- list(ssqa=ssqa,
+                         ssqaperm=ssqaperm,
+                         pvalues=pvals,
+                         permutations=permute,
+                         exchangeable=exchangeable_units,
+                         orders=permutation_orders,
+                         method="permutation",
+                         perm.type=perm.type)
   return(object)
 }
 
@@ -335,4 +393,19 @@ permutation <- function(object,
   if(!is.finite(x))
     return("a very large number")
   prettyNum(x, big.mark = ",", scientific = FALSE)
+}
+
+.run_cpp_permutation_with_progress <- function(DD, DR, groups, n_perm, format){
+  vals <- numeric(n_perm)
+  pb <- progress_bar$new(total = n_perm, format = format)
+  chunk_size <- min(250L, n_perm)
+  from <- 1L
+  while(from <= n_perm){
+    n_chunk <- min(chunk_size, n_perm - from + 1L)
+    to <- from + n_chunk - 1L
+    vals[from:to] <- .permutation_ssq_kernel_cpp(DD, DR, groups, n_chunk)
+    pb$tick(n_chunk)
+    from <- to + 1L
+  }
+  vals
 }
