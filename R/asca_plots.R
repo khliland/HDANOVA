@@ -272,7 +272,7 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, within_level = "all"
   } else { # Line plot
     if(nlev >0){
       plot(scors[,comps], as.numeric(object$effects[[factor]]), xlim=xlim,
-           ylim=ylim, xlab=xlab, ylab=ylab, axes = FALSE)
+           ylim=ylim, xlab=xlab, ylab=ylab, axes = FALSE, ...)
       axis(1)
       axis(2, at=1:nlev, labels = levels(object$effects[[factor]]))
       box()
@@ -327,17 +327,34 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, within_level = "all"
 #' @export
 permutationplot <- function(object, factor = 1, xlim, xlab = "SSQ", main, ...){
   if(is.null(object$permute))
-    stop("Run permutation() function on object before plotting.")
+    stop("Run permutation() or rotation() on object before plotting.")
   if(missing(xlim))
-    xlim <- range(c(object$permute$ssqaperm[[factor]], object$ssq[factor]))
+    xlim <- range(c(object$permute$ssqaperm[[factor]], object$permute$ssqa[factor]))
   if(missing(main)){
+    label <- "Approximate permutation"
+    method <- object$permute$method
+    if(is.null(method) || identical(method, "permutation")){
+      perm_type <- object$permute$perm.type
+      if(identical(perm_type, "exact"))
+        label <- "Exact permutation"
+      else
+        label <- "Approximate permutation"
+    } else if(identical(method, "rotation")){
+      label <- "Rotation testing"
+    }
     if(is.numeric(factor))
-      main <- paste0("Permutation of ", names(object$ssq)[factor], " effect")
+      main <- paste0(label, " of ", names(object$ssq)[factor], " effect")
     else
-      main <- paste0("Permutation of ", factor, " effect")
+      main <- paste0(label, " of ", factor, " effect")
   }
   hist(object$permute$ssqaperm[[factor]], xlim=xlim, xlab=xlab, main=main, ...)
   abline(v = object$permute$ssqa[factor], col=2, lwd=2, ...)
+}
+
+#' @rdname asca_plots
+#' @export
+rotationplot <- function(object, factor = 1, xlim, xlab = "SSQ", main, ...){
+  permutationplot(object=object, factor=factor, xlim=xlim, xlab=xlab, main=main, ...)
 }
 
 #' @title Timeplot for Combined Effects

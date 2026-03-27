@@ -98,8 +98,12 @@ summary.hdanova <- function(object, extended=TRUE, df=FALSE, ...){
     x$info <- paste0("SS type ", ss[object$SStype], ", ", contrasts, " coding, ",
                      ifelse(object$unrestricted, "unrestricted","restricted"), " model",
                      ", ", LS_REML, " estimation")
-    if(!is.null(object$permute))
-      x$info <- paste0(x$info, ", ", object$permute$permutations, " permutations")
+    if(!is.null(object$permute)){
+      unit <- "permutations"
+      if(identical(object$permute$method, "rotation"))
+        unit <- "rotations"
+      x$info <- paste0(x$info, ", ", object$permute$permutations, " ", unit)
+    }
   }
   if(df){
     x$dat <- cbind(x$dat, "df"=object$dfNum, "df.denom"=object$dfDenom, "err.term"=object$denom)
