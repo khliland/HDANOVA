@@ -37,6 +37,14 @@ Permutation testing for HDANOVA. This function performes
 permutation testing for the effects in the HDANOVA model and adds them to the
 \code{hdanova} object.
 }
+\details{
+The function supports both approximate and exact permutation testing. Approximate
+testing randomly permutes the data and calculates the SSQ for each permutation, while exact
+testing permutes the data according to the exchangeable units defined by the model structure,
+ensuring that the permutations respect the dependencies in the data. The current implementation
+uses the regression model for estimation, meaning that unbalanced data will affect the SSQ values
+and thus the permutation distribution.
+}
 \examples{
 # Load candies data
 data(candies)
