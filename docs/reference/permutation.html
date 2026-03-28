@@ -11,7 +11,7 @@ hdanova object."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">HDANOVA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,14 @@ permutation testing for the effects in the HDANOVA model and adds them to the
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">permutation</span><span class="op">(</span><span class="va">object</span>, permute <span class="op">=</span> <span class="fl">1000</span>, perm.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"approximate"</span>, <span class="st">"exact"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">permutation</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  permute <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  perm.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"approximate"</span>, <span class="st">"exact"</span><span class="op">)</span>,</span>
+<span>  unique.digits <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>  unique.frac <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  exhaustive.warn <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -63,16 +70,40 @@ permutation testing for the effects in the HDANOVA model and adds them to the
 
 
 <dt id="arg-permute">permute<a class="anchor" aria-label="anchor" href="#arg-permute"></a></dt>
-<dd><p>Number of permutations to perform (default = 1000).</p></dd>
+<dd><p>Number of permutations to perform (default = 10000).</p></dd>
 
 
 <dt id="arg-perm-type">perm.type<a class="anchor" aria-label="anchor" href="#arg-perm-type"></a></dt>
 <dd><p>Type of permutation to perform, either "approximate" or "exact" (default = "approximate").</p></dd>
 
+
+<dt id="arg-unique-digits">unique.digits<a class="anchor" aria-label="anchor" href="#arg-unique-digits"></a></dt>
+<dd><p>Number of digits used when rounding permutation SSQ values before
+checking uniqueness (default = 12). Set to <code>NULL</code> to disable this warning.</p></dd>
+
+
+<dt id="arg-unique-frac">unique.frac<a class="anchor" aria-label="anchor" href="#arg-unique-frac"></a></dt>
+<dd><p>Minimum fraction of unique rounded SSQ values required to avoid
+warning (default = 0.95). Set to <code>NULL</code> to disable this warning.</p></dd>
+
+
+<dt id="arg-exhaustive-warn">exhaustive.warn<a class="anchor" aria-label="anchor" href="#arg-exhaustive-warn"></a></dt>
+<dd><p>Logical; if <code>TRUE</code> (default), warn when exact permutation
+uses exhaustive enumeration with fewer permutations than requested.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An updated <code>hdanova</code> object with permutation results.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The function supports both approximate and exact permutation testing. Approximate
+testing randomly permutes the data and calculates the SSQ for each permutation, while exact
+testing permutes the data according to the exchangeable units defined by the model structure,
+ensuring that the permutations respect the dependencies in the data. The current implementation
+uses the regression model for estimation, meaning that unbalanced data will affect the SSQ values
+and thus the permutation distribution.</p>
     </div>
 
     <div class="section level2">
@@ -80,16 +111,71 @@ permutation testing for the effects in the HDANOVA model and adds them to the
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Load candies data</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">candies</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Basic HDANOVA model with two factors</span></span></span>
+<span class="r-in"><span><span class="co">## Basic HDANOVA model with two factors</span></span></span>
 <span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="hdanova.html">hdanova</a></span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span> <span class="op">+</span> <span class="va">assessor</span>, data<span class="op">=</span><span class="va">candies</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">permutation</span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Approximate permutation</span></span></span>
+<span class="r-in"><span><span class="va">modApprox</span> <span class="op">&lt;-</span> <span class="fu">permutation</span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">modApprox</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> High-Dimensional Analysis of Variance fitted using 'lm' (Linear Model) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II, sum coding, restricted model, least squares estimation, 1000 permutations </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            Sum.Sq. Expl.var.(%) p-value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> candy     33416.66        74.48       0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> assessor   1961.37         4.37       0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Residuals  9489.25        21.15      NA</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot permutation distribution for "candy" effect</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="asca_plots.html">permutationplot</a></span><span class="op">(</span><span class="va">modApprox</span>, factor<span class="op">=</span><span class="st">"candy"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="permutation-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Exact permutation (warning if too few exchangeable units)</span></span></span>
+<span class="r-in"><span><span class="va">modExact</span>  <span class="op">&lt;-</span> <span class="fu">permutation</span><span class="op">(</span><span class="va">mod</span>, perm.type<span class="op">=</span><span class="st">"exact"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">modExact</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> High-Dimensional Analysis of Variance fitted using 'lm' (Linear Model) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II, sum coding, restricted model, least squares estimation, 1000 permutations </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            Sum.Sq. Expl.var.(%) p-value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> candy     33416.66        74.48       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> assessor   1961.37         4.37       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Residuals  9489.25        21.15      NA</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Reduced candy data (first two levels of each effect, two replicates)</span></span></span>
+<span class="r-in"><span><span class="va">reduced_candies</span> <span class="op">&lt;-</span> <span class="va">candies</span><span class="op">[</span><span class="va">candies</span><span class="op">$</span><span class="va">candy</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">candies</span><span class="op">$</span><span class="va">candy</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span> <span class="op">&amp;</span></span></span>
+<span class="r-in"><span>     <span class="va">candies</span><span class="op">$</span><span class="va">assessor</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">candies</span><span class="op">$</span><span class="va">assessor</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>, <span class="op">]</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">12</span>,by<span class="op">=</span><span class="fl">3</span><span class="op">)</span>,<span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">mod_reduced</span> <span class="op">&lt;-</span> <span class="fu"><a href="hdanova.html">hdanova</a></span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span> <span class="op">+</span> <span class="va">assessor</span>, data<span class="op">=</span><span class="va">reduced_candies</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mod_reducedApprox</span> <span class="op">&lt;-</span> <span class="fu">permutation</span><span class="op">(</span><span class="va">mod_reduced</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Effect 'candy' produced only 36 unique SSQ values (rounded to 12 decimals) out of 1,000 evaluated permutations.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Effect 'assessor' produced only 35 unique SSQ values (rounded to 12 decimals) out of 1,000 evaluated permutations.</span>
+<span class="r-in"><span><span class="va">mod_reducedExact</span>  <span class="op">&lt;-</span> <span class="fu">permutation</span><span class="op">(</span><span class="va">mod_reduced</span>, perm.type<span class="op">=</span><span class="st">"exact"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Effect 'candy' uses exhaustive permutation with 576 unique orders (requested 1,000).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Effect 'candy' produced only 19 unique SSQ values (rounded to 12 decimals) in exhaustive permutation.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Effect 'assessor' uses exhaustive permutation with 576 unique orders (requested 1,000).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Effect 'assessor' produced only 18 unique SSQ values (rounded to 12 decimals) in exhaustive permutation.</span>
+<span class="r-in"><span><span class="va">par.old</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="asca_plots.html">permutationplot</a></span><span class="op">(</span><span class="va">mod_reducedApprox</span>, factor<span class="op">=</span><span class="st">"assessor"</span>, main<span class="op">=</span><span class="st">"Approximate permutation"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="asca_plots.html">permutationplot</a></span><span class="op">(</span><span class="va">mod_reducedExact</span>, factor<span class="op">=</span><span class="st">"assessor"</span>, main<span class="op">=</span><span class="st">"Exact permutation"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="permutation-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">par.old</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Check how many exchangeable units were available (minimum per effect)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">modExact</span><span class="op">$</span><span class="va">permute</span><span class="op">$</span><span class="va">exchangeable</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">block_sizes</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $candy</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $assessor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Caldana data (combined effects and exact permutation)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">caldana</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mod.comb</span> <span class="op">&lt;-</span> <span class="fu"><a href="asca.html">asca</a></span><span class="op">(</span><span class="va">compounds</span> <span class="op">~</span> <span class="va">time</span> <span class="op">+</span> <span class="fu">comb</span><span class="op">(</span><span class="va">light</span> <span class="op">+</span> <span class="va">time</span><span class="op">:</span><span class="va">light</span><span class="op">)</span>, data<span class="op">=</span><span class="va">caldana</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mod.comb</span> <span class="op">&lt;-</span> <span class="fu">permutation</span><span class="op">(</span><span class="va">mod.comb</span>, perm.type<span class="op">=</span><span class="st">"exact"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod.comb</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II, sum coding, restricted model, least squares estimation, 1000 permutations </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  Sum.Sq. Expl.var.(%) p-value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> time              154.58         9.69       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> light+time:light  349.64        21.92       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Residuals        1091.14        68.39      NA</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -102,7 +188,7 @@ permutation testing for the effects in the HDANOVA model and adds them to the
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

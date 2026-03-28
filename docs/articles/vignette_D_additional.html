@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">HDANOVA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,6 +70,9 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Start the HDANOVA R package</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://khliland.github.io/HDANOVA/">HDANOVA</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Registered S3 method overwritten by 'lme4':</span></span>
+<span><span class="co">#&gt;   method           from</span></span>
+<span><span class="co">#&gt;   na.action.merMod car</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'HDANOVA'</span></span>
 <span><span class="co">#&gt; The following object is masked from 'package:stats':</span></span>
@@ -104,87 +107,87 @@ responses are compounds from the Caldana data.</p>
 <span><span class="co">#&gt; prc(formula = compounds ~ light * time, data = caldana) </span></span>
 <span><span class="co">#&gt; Species scores:</span></span>
 <span><span class="co">#&gt;                    Alanine                     Valine </span></span>
-<span><span class="co">#&gt;                   0.900828                   0.175768 </span></span>
+<span><span class="co">#&gt;                  -0.900828                  -0.175768 </span></span>
 <span><span class="co">#&gt;                    Leucine                 Isoleucine </span></span>
-<span><span class="co">#&gt;                  -0.657559                  -0.264687 </span></span>
+<span><span class="co">#&gt;                   0.657559                   0.264687 </span></span>
 <span><span class="co">#&gt;                    Proline                     Serine </span></span>
-<span><span class="co">#&gt;                   1.141926                  -0.051640 </span></span>
+<span><span class="co">#&gt;                  -1.141926                   0.051640 </span></span>
 <span><span class="co">#&gt;                  Threonine               beta-alanine </span></span>
-<span><span class="co">#&gt;                   0.075174                  -0.726471 </span></span>
+<span><span class="co">#&gt;                  -0.075174                   0.726471 </span></span>
 <span><span class="co">#&gt;             Hydroxyproline                       GABA </span></span>
-<span><span class="co">#&gt;                  -0.007045                  -1.087892 </span></span>
+<span><span class="co">#&gt;                   0.007045                   1.087892 </span></span>
 <span><span class="co">#&gt;                  Aspartate                 Asparagine </span></span>
-<span><span class="co">#&gt;                  -0.696076                  -0.338664 </span></span>
+<span><span class="co">#&gt;                   0.696076                   0.338664 </span></span>
 <span><span class="co">#&gt;                 Methionine            O-acetyl-serine </span></span>
-<span><span class="co">#&gt;                   0.863337                   0.205739 </span></span>
+<span><span class="co">#&gt;                  -0.863337                  -0.205739 </span></span>
 <span><span class="co">#&gt;                  Glutamate              Phenylalanine </span></span>
-<span><span class="co">#&gt;                  -0.337782                   1.245032 </span></span>
+<span><span class="co">#&gt;                   0.337782                  -1.245032 </span></span>
 <span><span class="co">#&gt;                  Ornithine                  Glutamine </span></span>
-<span><span class="co">#&gt;                   0.041141                   1.302687 </span></span>
+<span><span class="co">#&gt;                  -0.041141                  -1.302687 </span></span>
 <span><span class="co">#&gt;                     Lysine                   Tyrosine </span></span>
-<span><span class="co">#&gt;                  -1.175389                  -0.606966 </span></span>
+<span><span class="co">#&gt;                   1.175389                   0.606966 </span></span>
 <span><span class="co">#&gt;              Threonic-acid        Citrulline-Arginine </span></span>
-<span><span class="co">#&gt;                  -0.323093                   0.526770 </span></span>
+<span><span class="co">#&gt;                   0.323093                  -0.526770 </span></span>
 <span><span class="co">#&gt;               Pyruvic-acid                Citric-acid </span></span>
-<span><span class="co">#&gt;                   0.473488                  -0.414141 </span></span>
+<span><span class="co">#&gt;                  -0.473488                   0.414141 </span></span>
 <span><span class="co">#&gt;              Succinic-acid               Fumaric-acid </span></span>
-<span><span class="co">#&gt;                  -0.690860                   0.005060 </span></span>
+<span><span class="co">#&gt;                   0.690860                  -0.005060 </span></span>
 <span><span class="co">#&gt;                 Malic-acid                Lactic-acid </span></span>
-<span><span class="co">#&gt;                   0.006521                  -0.497413 </span></span>
+<span><span class="co">#&gt;                  -0.006521                   0.497413 </span></span>
 <span><span class="co">#&gt;              Glycolic-acid               Benzoic-acid </span></span>
-<span><span class="co">#&gt;                   1.624649                  -0.141741 </span></span>
+<span><span class="co">#&gt;                  -1.624649                   0.141741 </span></span>
 <span><span class="co">#&gt;                Maleic-acid             Nicotinic-acid </span></span>
-<span><span class="co">#&gt;                   0.767982                  -0.060987 </span></span>
+<span><span class="co">#&gt;                  -0.767982                   0.060987 </span></span>
 <span><span class="co">#&gt;              Itaconic-acid                Citramalate </span></span>
-<span><span class="co">#&gt;                  -0.169012                   0.050705 </span></span>
+<span><span class="co">#&gt;                   0.169012                  -0.050705 </span></span>
 <span><span class="co">#&gt;     4-hydroxy-benzoic-acid Dehydroascorbic-acid-dimer </span></span>
-<span><span class="co">#&gt;                  -0.191369                   0.062572 </span></span>
+<span><span class="co">#&gt;                   0.191369                  -0.062572 </span></span>
 <span><span class="co">#&gt;              Gluconic-acid       Dehydroascorbic-acid </span></span>
-<span><span class="co">#&gt;                  -0.159411                  -0.108530 </span></span>
+<span><span class="co">#&gt;                   0.159411                   0.108530 </span></span>
 <span><span class="co">#&gt;              Ascorbic-acid     4-Hydroxycinnamic-acid </span></span>
-<span><span class="co">#&gt;                  -0.232603                  -0.133527 </span></span>
+<span><span class="co">#&gt;                   0.232603                   0.133527 </span></span>
 <span><span class="co">#&gt;         Similar-to-Adenine                  Shikimate </span></span>
-<span><span class="co">#&gt;                   0.010357                   0.878436 </span></span>
+<span><span class="co">#&gt;                  -0.010357                  -0.878436 </span></span>
 <span><span class="co">#&gt;                 Erythritol                  Arabinose </span></span>
-<span><span class="co">#&gt;                  -0.068112                  -0.110114 </span></span>
+<span><span class="co">#&gt;                   0.068112                   0.110114 </span></span>
 <span><span class="co">#&gt;                   Arabitol                     Fucose </span></span>
-<span><span class="co">#&gt;                  -0.337455                  -0.051972 </span></span>
+<span><span class="co">#&gt;                   0.337455                   0.051972 </span></span>
 <span><span class="co">#&gt;                   Fructose                   Mannitol </span></span>
-<span><span class="co">#&gt;                   3.606930                   0.215745 </span></span>
+<span><span class="co">#&gt;                  -3.606930                  -0.215745 </span></span>
 <span><span class="co">#&gt;                  Galactose                    Glucose </span></span>
-<span><span class="co">#&gt;                   0.097331                   2.777645 </span></span>
+<span><span class="co">#&gt;                  -0.097331                  -2.777645 </span></span>
 <span><span class="co">#&gt;                    Sucrose                    Maltose </span></span>
-<span><span class="co">#&gt;                   0.615215                  -0.263945 </span></span>
+<span><span class="co">#&gt;                  -0.615215                   0.263945 </span></span>
 <span><span class="co">#&gt;                  Trehalose                 Galactinol </span></span>
-<span><span class="co">#&gt;                  -0.195746                   0.211351 </span></span>
+<span><span class="co">#&gt;                   0.195746                  -0.211351 </span></span>
 <span><span class="co">#&gt;               myo-inositol                     Uracil </span></span>
-<span><span class="co">#&gt;                  -0.070161                  -1.067653 </span></span>
+<span><span class="co">#&gt;                   0.070161                   1.067653 </span></span>
 <span><span class="co">#&gt;                 Putrescine               Ethanolamine </span></span>
-<span><span class="co">#&gt;                  -0.210320                  -0.546516 </span></span>
+<span><span class="co">#&gt;                   0.210320                   0.546516 </span></span>
 <span><span class="co">#&gt;                   Glycerol      Indole-3-acetonitrile </span></span>
-<span><span class="co">#&gt;                  -0.146868                   0.185760 </span></span>
+<span><span class="co">#&gt;                   0.146868                  -0.185760 </span></span>
 <span><span class="co">#&gt;               Sinapic-acid              Palmitic-acid </span></span>
-<span><span class="co">#&gt;                   0.131682                  -0.267378 </span></span>
+<span><span class="co">#&gt;                  -0.131682                   0.267378 </span></span>
 <span><span class="co">#&gt;          Octadecanoic-acid            Docosanoic-acid </span></span>
-<span><span class="co">#&gt;                  -0.361142                  -0.299480 </span></span>
+<span><span class="co">#&gt;                   0.361142                   0.299480 </span></span>
 <span><span class="co">#&gt;         Tetracosanoic-acid          Hexacosanoic-acid </span></span>
-<span><span class="co">#&gt;                   0.060571                   0.188997 </span></span>
+<span><span class="co">#&gt;                  -0.060571                  -0.188997 </span></span>
 <span><span class="co">#&gt;          Octacosanoic-acid </span></span>
-<span><span class="co">#&gt;                   0.167153 </span></span>
+<span><span class="co">#&gt;                  -0.167153 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients for treatment + time:treatment interaction</span></span>
 <span><span class="co">#&gt; which are contrasts to treatment Dark </span></span>
 <span><span class="co">#&gt; rows are treatment, columns are time</span></span>
-<span><span class="co">#&gt;                    0         5       10        20        40     80    160</span></span>
-<span><span class="co">#&gt; Low Light  1.597e-15 -0.003685 -0.05458 -0.121789 -0.006526 0.1098 0.1833</span></span>
-<span><span class="co">#&gt; Light      3.007e-15 -0.038250  0.10345 -0.084547  0.098440 0.2416 0.3368</span></span>
-<span><span class="co">#&gt; High Light 1.620e-15 -0.010944 -0.01016  0.009301  0.312173 0.6746 0.7716</span></span></code></pre></div>
+<span><span class="co">#&gt;                     0        5       10        20        40      80     160</span></span>
+<span><span class="co">#&gt; Low Light   2.465e-16 0.003685  0.05458  0.121789  0.006526 -0.1098 -0.1833</span></span>
+<span><span class="co">#&gt; Light      -3.826e-17 0.038250 -0.10345  0.084547 -0.098440 -0.2416 -0.3368</span></span>
+<span><span class="co">#&gt; High Light  2.047e-16 0.010944  0.01016 -0.009301 -0.312173 -0.6746 -0.7716</span></span></code></pre></div>
 <p>The default plot for PRC is a plot of treatment + time:treatment. As
 we can see in the plot, the “Dark” level is the reference level from
 which the other levels are contrasted.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">prc.cal</span>, species <span class="op">=</span> <span class="cn">FALSE</span>, axis <span class="op">=</span> <span class="fl">2</span>, lwd <span class="op">=</span> <span class="fl">4</span>, legpos <span class="op">=</span> <span class="st">"bottomright"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_D_additional_files/figure-html/unnamed-chunk-3-1.png" width="576"></p>
+<p><img src="vignette_D_additional_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="576"></p>
 </div>
 <div class="section level3">
 <h3 id="permutation-based-manova-permanova">Permutation Based MANOVA (PERMANOVA)<a class="anchor" aria-label="anchor" href="#permutation-based-manova-permanova"></a>
@@ -221,7 +224,7 @@ p-values.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
