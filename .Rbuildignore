@@ -8,3 +8,5 @@ development
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^.github$
+^\.github$
