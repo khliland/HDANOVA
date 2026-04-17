@@ -4,9 +4,6 @@
 
 # Start the HDANOVA R package
 library(HDANOVA)
-#> Registered S3 method overwritten by 'lme4':
-#>   method           from
-#>   na.action.merMod car
 #> 
 #> Attaching package: 'HDANOVA'
 #> The following object is masked from 'package:stats':

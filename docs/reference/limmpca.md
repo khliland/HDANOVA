@@ -122,14 +122,15 @@ data(candies)
 
 # Default LiMM-PCA model with two factors and interaction, 5 PCA components
 mod <- limmpca(assessment ~ candy*r(assessor), data=candies)
+#> boundary (singular) fit: see help('isSingular')
 summary(mod)
 #> LiMM-PCA fitted using 'lmm' (Linear Mixed Model) 
-#> - SS type III, sum coding, restricted model, REML estimation 
+#> - SS type III, sum coding, restricted model, REML estimation, SSQ method: exact_refit 
 #>                 Sum.Sq. Expl.var.(%)
 #> candy          33394.40        78.00
-#> candy:assessor  1192.09         2.78
-#> assessor         968.07         2.26
-#> Residuals       7257.45        16.95
+#> candy:assessor   621.64         1.45
+#> assessor         793.50         1.85
+#> Residuals       6162.61        14.39
 scoreplot(mod, factor = "candy")
 
 
@@ -137,7 +138,7 @@ scoreplot(mod, factor = "candy")
 modLS <- limmpca(assessment ~ candy*r(assessor), data=candies, REML=NULL, pca.in=8)
 summary(modLS)
 #> LiMM-PCA fitted using 'lmm' (Linear Mixed Model) 
-#> - SS type III, sum coding, restricted model, least squares estimation 
+#> - SS type III, sum coding, restricted model, least squares estimation, SSQ method: qr_regression 
 #>                 Sum.Sq. Expl.var.(%)
 #> candy          33415.98        74.73
 #> assessor        1948.75         4.36
@@ -151,11 +152,15 @@ data(caldana)
 
 # Combining effects in LiMM-PCA (assuming light is a random factor)
 mod.comb <- limmpca(compounds ~ time + comb(r(light) + r(time:light)), data=caldana, pca.in=8)
+#> boundary (singular) fit: see help('isSingular')
+#> boundary (singular) fit: see help('isSingular')
+#> boundary (singular) fit: see help('isSingular')
+#> boundary (singular) fit: see help('isSingular')
 summary(mod.comb)
 #> LiMM-PCA fitted using 'lmm' (Linear Mixed Model) 
-#> - SS type III, sum coding, restricted model, REML estimation 
+#> - SS type III, sum coding, restricted model, REML estimation, SSQ method: exact_refit 
 #>                  Sum.Sq. Expl.var.(%)
 #> time              129.51        11.20
-#> light+time:light  104.85         9.07
-#> Residuals         922.11        79.74
+#> light+time:light   83.89         7.25
+#> Residuals         833.20        72.05
 ```

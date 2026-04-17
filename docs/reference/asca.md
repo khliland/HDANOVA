@@ -137,6 +137,10 @@ scoreplot(mod, spider=TRUE)
 # ASCA model with compressed response using 5 principal components
 mod.pca <- asca(assessment ~ candy + assessor, data=candies, pca.in=5)
 
+# ASCA model with design-relevant compressed response
+# using 5 partial least squares components
+mod.pca <- asca(assessment ~ candy + assessor, data=candies, pls.in=5)
+
 # Mixed Model ASCA, random assessor
 mod.mix <- asca(assessment ~ candy + r(assessor), data=candies)
 scoreplot(mod.mix)
@@ -154,7 +158,7 @@ data(caldana)
 mod.comb <- asca(compounds ~ time + comb(light + time:light), data=caldana)
 summary(mod.comb)
 #> Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) 
-#> - SS type II, sum coding, restricted model, least squares estimation 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression 
 #>                  Sum.Sq. Expl.var.(%)
 #> time              154.58         9.69
 #> light+time:light  349.64        21.92
@@ -166,10 +170,46 @@ timeplot(mod.comb, factor="light", time="time", comb=2)
 mod.perm <- asca(assessment ~ candy * assessor, data=candies, permute=TRUE)
 summary(mod.perm)
 #> Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) 
-#> - SS type II, sum coding, restricted model, least squares estimation, 1000 permutations 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression, 1000 permutations 
 #>                 Sum.Sq. Expl.var.(%) p-value
 #> candy          33416.66        74.48       0
 #> assessor        1961.37         4.37       0
 #> candy:assessor  3445.73         7.68       0
-#> Residuals       6043.51        13.47      NA
+#> Residuals       6043.52        13.47      NA
+
+# Unbalanced data: compare native vs SS-type-aligned effects
+drop_idx <- which(candies$candy == levels(candies$candy)[1] &
+                  candies$assessor == levels(candies$assessor)[1])
+candies.unbal <- candies[-drop_idx[seq_len(min(2, length(drop_idx)))], ]
+
+mod.native <- asca(assessment ~ candy * assessor, data = candies.unbal)
+mod.sstype <- asca(assessment ~ candy * assessor, data = candies.unbal,
+                   respect_SStype = TRUE)
+
+par.old <- par(mfrow = c(2,1), mar = c(4,4,2,1))
+scoreplot(mod.native,
+          main = "Top: native (regression-based LS)")
+scoreplot(mod.sstype,
+          main = "Bottom: respect_SStype = TRUE")
+
+par(par.old)
+
+perm.native <- permutation(mod.native, permute = 1000, respect_SStype = FALSE)
+perm.sstype <- permutation(mod.sstype, permute = 1000, respect_SStype = TRUE)
+summary(perm.native)
+#> Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression, 1000 permutations 
+#>                 Sum.Sq. Expl.var.(%) p-value
+#> candy          32780.17        74.02       0
+#> assessor        1951.08         4.41       0
+#> candy:assessor  3493.49         7.89       0
+#> Residuals       5930.45        13.39      NA
+summary(perm.sstype)
+#> Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_sstype, 1000 permutations 
+#>                 Sum.Sq. Expl.var.(%) p-value
+#> candy          32780.17        74.02       0
+#> assessor        1951.08         4.41       0
+#> candy:assessor  3493.49         7.89       0
+#> Residuals       5930.45        13.39      NA
 ```

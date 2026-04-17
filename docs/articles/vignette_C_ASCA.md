@@ -4,9 +4,6 @@
 
 # Start the HDANOVA R package
 library(HDANOVA)
-#> Registered S3 method overwritten by 'lme4':
-#>   method           from
-#>   na.action.merMod car
 #> 
 #> Attaching package: 'HDANOVA'
 #> The following object is masked from 'package:stats':
@@ -48,12 +45,12 @@ data(candies)
 mod <- hdanova(assessment ~ candy*assessor, data=candies)
 summary(mod)
 #> High-Dimensional Analysis of Variance fitted using 'lm' (Linear Model) 
-#> - SS type II, sum coding, restricted model, least squares estimation 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression 
 #>                 Sum.Sq. Expl.var.(%)
 #> candy          33416.66        74.48
 #> assessor        1961.37         4.37
 #> candy:assessor  3445.73         7.68
-#> Residuals       6043.51        13.47
+#> Residuals       6043.52        13.47
 ```
 
 The summary shows that the candy effect is the largest by far.
@@ -69,12 +66,12 @@ HDANOVA, but in addition PCAs on the effect matrices are computed.
 mod <- asca(assessment ~ candy*assessor, data=candies)
 summary(mod)
 #> Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) 
-#> - SS type II, sum coding, restricted model, least squares estimation 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression 
 #>                 Sum.Sq. Expl.var.(%)
 #> candy          33416.66        74.48
 #> assessor        1961.37         4.37
 #> candy:assessor  3445.73         7.68
-#> Residuals       6043.51        13.47
+#> Residuals       6043.52        13.47
 ```
 
 This can also be done sequentially, expanding the model step by step.
@@ -97,12 +94,12 @@ Here we use approximate permutation.
 mod <- asca(assessment ~ candy*assessor, data=candies, permute=TRUE)
 summary(mod)
 #> Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) 
-#> - SS type II, sum coding, restricted model, least squares estimation, 1000 permutations 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression, 1000 permutations 
 #>                 Sum.Sq. Expl.var.(%) p-value
 #> candy          33416.66        74.48       0
 #> assessor        1961.37         4.37       0
 #> candy:assessor  3445.73         7.68       0
-#> Residuals       6043.51        13.47      NA
+#> Residuals       6043.52        13.47      NA
 ```
 
 Here we see that all effects are significant, where the Candy effect is
@@ -138,12 +135,12 @@ assessor term. See also LiMM-PCA below for the REML estimation version.
 mod.mixed <- asca(assessment ~ candy*r(assessor), data=candies, permute=TRUE)
 summary(mod.mixed)
 #> Anova Simultaneous Component Analysis fitted using 'lmm' (Linear Mixed Model) 
-#> - SS type II, sum coding, restricted model, least squares estimation, 1000 permutations 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression, 1000 permutations 
 #>                 Sum.Sq. Expl.var.(%) p-value
 #> candy          33416.66        74.48       0
 #> assessor        1961.37         4.37       0
 #> candy:assessor  3445.73         7.68       0
-#> Residuals       6043.51        13.47      NA
+#> Residuals       6043.52        13.47      NA
 ```
 
 #### Scores and loadings
@@ -307,7 +304,7 @@ data(caldana)
 mod.comb <- asca(compounds ~ time + comb(light + time:light), data=caldana)
 summary(mod.comb)
 #> Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) 
-#> - SS type II, sum coding, restricted model, least squares estimation 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression 
 #>                  Sum.Sq. Expl.var.(%)
 #> time              154.58         9.69
 #> light+time:light  349.64        21.92
@@ -348,7 +345,7 @@ caldanaNum$time <- as.numeric(as.character(caldanaNum$time))
 mod.num <- asca(compounds ~ time*light, data = caldanaNum)
 summary(mod.num)
 #> Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) 
-#> - SS type II, sum coding, restricted model, least squares estimation 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression 
 #>            Sum.Sq. Expl.var.(%)
 #> time         55.42         3.47
 #> light       102.49         6.42
@@ -367,12 +364,12 @@ performing PCA instead of backprojecting errors afterwards.
 modp <- apca(assessment ~ candy*assessor, data=candies)
 summary(modp)
 #> Anova Principal Component Analysis fitted using 'lm' (Linear Model) 
-#> - SS type II, sum coding, restricted model, least squares estimation 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression 
 #>                 Sum.Sq. Expl.var.(%)
 #> candy          33416.66        74.48
 #> assessor        1961.37         4.37
 #> candy:assessor  3445.73         7.68
-#> Residuals       6043.51        13.47
+#> Residuals       6043.52        13.47
 ```
 
 Plot scores and loadings.
@@ -413,40 +410,25 @@ summary(mod.pc)
 #> Call:
 #> pcanova(formula = assessment ~ candy * assessor, data = candies,     ncomp = 0.9)
 #> $`Comp. 1`
-#> Anova Table (Type II tests)
-#> 
-#> Response: assessment
-#>                 Sum Sq  Df  F value  Pr(>F)    
-#> candy          31470.6   4 780.1762 < 2e-16 ***
-#> assessor         224.9  10   2.2304 0.02089 *  
-#> candy:assessor   707.7  40   1.7545 0.01158 *  
-#> Residuals       1109.3 110                     
-#> ---
-#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#>                 Df     Sum Sq    Mean Sq    F value       Pr(>F) Error Term
+#> candy            4 31470.6052 7867.65131 780.176157 9.969318e-80  Residuals
+#> assessor        10   224.9208   22.49208   2.230371 2.089353e-02  Residuals
+#> candy:assessor  40   707.7098   17.69275   1.754457 1.158415e-02  Residuals
+#> Residuals      110  1109.2900   10.08445         NA           NA       <NA>
 #> 
 #> $`Comp. 2`
-#> Anova Table (Type II tests)
-#> 
-#> Response: assessment
-#>                Sum Sq  Df F value    Pr(>F)    
-#> candy          1573.8   4 33.1604 < 2.2e-16 ***
-#> assessor        278.3  10  2.3455 0.0150274 *  
-#> candy:assessor 1053.3  40  2.2193 0.0005888 ***
-#> Residuals      1305.2 110                      
-#> ---
-#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#>                 Df   Sum Sq   Mean Sq   F value       Pr(>F) Error Term
+#> candy            4 1573.830 393.45749 33.160399 3.942715e-18  Residuals
+#> assessor        10  278.301  27.83010  2.345507 1.502735e-02  Residuals
+#> candy:assessor  40 1053.295  26.33238  2.219280 5.888081e-04  Residuals
+#> Residuals      110 1305.181  11.86528        NA           NA       <NA>
 #> 
 #> $`Comp. 3`
-#> Anova Table (Type II tests)
-#> 
-#> Response: assessment
-#>                 Sum Sq  Df F value    Pr(>F)    
-#> candy           307.12   4   7.646 1.790e-05 ***
-#> assessor       1006.62  10  10.024 8.574e-12 ***
-#> candy:assessor  484.02  40   1.205    0.2229    
-#> Residuals      1104.61 110                      
-#> ---
-#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#>                 Df    Sum Sq   Mean Sq   F value       Pr(>F) Error Term
+#> candy            4  307.1203  76.78008  7.645952 1.790336e-05  Residuals
+#> assessor        10 1006.6196 100.66196 10.024169 8.573804e-12  Residuals
+#> candy:assessor  40  484.0250  12.10062  1.205010 2.229486e-01  Residuals
+#> Residuals      110 1104.6118  10.04193        NA           NA       <NA>
 ```
 
 When creating score and loading plots for PC-ANOVA, the ‘global’ scores
@@ -479,7 +461,7 @@ while the the within-individuals is assumed implicitly.
 mod.msca <- msca(assessment ~ candy, data=candies)
 summary(mod.msca)
 #> Multilevel Simultaneous Component Analysis fitted using 'lm' (Linear Model) 
-#> - SS type II, sum coding, restricted model, least squares estimation 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression 
 #>          Sum.Sq. Expl.var.(%)
 #> Between 33416.66        74.48
 #> Within  11450.62        25.52
@@ -531,14 +513,16 @@ choice).
 
 # Default LiMM-PCA model with two factors and interaction, 8 PCA components
 mod.reml <- limmpca(assessment ~ candy*r(assessor), data=candies, pca.in=8)
+#> boundary (singular) fit: see help('isSingular')
+#> boundary (singular) fit: see help('isSingular')
 summary(mod.reml)
 #> LiMM-PCA fitted using 'lmm' (Linear Mixed Model) 
-#> - SS type III, sum coding, restricted model, REML estimation 
+#> - SS type III, sum coding, restricted model, REML estimation, SSQ method: exact_refit 
 #>                 Sum.Sq. Expl.var.(%)
 #> candy          33415.98        74.73
-#> candy:assessor  1335.70         2.99
-#> assessor        1101.43         2.46
-#> Residuals       8865.22        19.82
+#> candy:assessor   697.41         1.56
+#> assessor         874.25         1.96
+#> Residuals       7619.78        17.04
 scoreplot(mod.reml, factor="candy")
 ```
 
@@ -553,7 +537,7 @@ random effects and scaling of backprojections.
 mod.ls <- limmpca(assessment ~ candy*r(assessor), data=candies, REML=NULL, pca.in=8)
 summary(mod.ls)
 #> LiMM-PCA fitted using 'lmm' (Linear Mixed Model) 
-#> - SS type III, sum coding, restricted model, least squares estimation 
+#> - SS type III, sum coding, restricted model, least squares estimation, SSQ method: qr_regression 
 #>                 Sum.Sq. Expl.var.(%)
 #> candy          33415.98        74.73
 #> assessor        1948.75         4.36
@@ -602,7 +586,7 @@ Analysing the data with ASCA using the least squares approach.
 mod.rm.asca <- asca(yield ~ r(daughter) + feed*r(time), data = long)
 summary(mod.rm.asca)
 #> Anova Simultaneous Component Analysis fitted using 'lmm' (Linear Mixed Model) 
-#> - SS type II, sum coding, restricted model, least squares estimation 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression 
 #>                Sum.Sq. Expl.var.(%)
 #> daughter   31997318.91        23.01
 #> feed         306570.25         0.22
@@ -619,15 +603,23 @@ Corresponding analysis using the LiMM-PCA approach with REML estimation.
 mod.rm.limmpca <- limmpca(yield ~ r(daughter) + feed*r(time), data = long, pca.in=10)
 #> boundary (singular) fit: see help('isSingular')
 #> boundary (singular) fit: see help('isSingular')
-#> Warning in Rank(object$LS[[object$more$effs[i]]]): Rank calculation may be
-#> problematic.
+#> boundary (singular) fit: see help('isSingular')
+#> boundary (singular) fit: see help('isSingular')
+#> boundary (singular) fit: see help('isSingular')
+#> boundary (singular) fit: see help('isSingular')
+#> boundary (singular) fit: see help('isSingular')
+#> boundary (singular) fit: see help('isSingular')
+#> boundary (singular) fit: see help('isSingular')
+#> boundary (singular) fit: see help('isSingular')
+#> Warning in pracma::Rank(object$LS[[object$more$effs[i]]]): Rank calculation may
+#> be problematic.
 summary(mod.rm.limmpca)
 #> LiMM-PCA fitted using 'lmm' (Linear Mixed Model) 
-#> - SS type III, sum coding, restricted model, REML estimation 
+#> - SS type III, sum coding, restricted model, REML estimation, SSQ method: exact_refit 
 #>                Sum.Sq. Expl.var.(%)
 #> feed         306570.25         0.22
-#> feed:time         0.51         0.00
-#> daughter   10645038.75         7.65
-#> time              0.09         0.00
-#> Residuals 128113854.85        92.12
+#> feed:time         0.86         0.00
+#> daughter    7163945.08         5.15
+#> time              0.15         0.00
+#> Residuals 115642343.08        83.16
 ```

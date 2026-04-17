@@ -4,6 +4,12 @@ Functions and datasets to support Smilde, Marini, Westerhuis and Liland (2025, I
 This implements and imports a  collection of methods for HD-ANOVA data analysis with common interfaces, result- and plotting
 functions, multiple real data sets and four vignettes covering a range different applications.
 
+##### Version 0.8.5.1
+Date:  13 April 2026
+>> Reworked the engine in HDANOVA for non-REML methods for speed.
+>> Added pls.in parameter to hdanova() enabling pre-compression by Partial Least Squares.
+>> Corrected scaling bug for ED.
+
 ##### Version 0.8.5
 Date:  28 March 2026
 >> Added exact permutation testing.

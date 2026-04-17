@@ -67,6 +67,10 @@ scoreplot(mod, spider=TRUE)
 # ASCA model with compressed response using 5 principal components
 mod.pca <- asca(assessment ~ candy + assessor, data=candies, pca.in=5)
 
+# ASCA model with design-relevant compressed response
+# using 5 partial least squares components
+mod.pca <- asca(assessment ~ candy + assessor, data=candies, pls.in=5)
+
 # Mixed Model ASCA, random assessor
 mod.mix <- asca(assessment ~ candy + r(assessor), data=candies)
 scoreplot(mod.mix)
@@ -86,6 +90,27 @@ timeplot(mod.comb, factor="light", time="time", comb=2)
 # Permutation testing
 mod.perm <- asca(assessment ~ candy * assessor, data=candies, permute=TRUE)
 summary(mod.perm)
+
+# Unbalanced data: compare native vs SS-type-aligned effects
+drop_idx <- which(candies$candy == levels(candies$candy)[1] &
+                  candies$assessor == levels(candies$assessor)[1])
+candies.unbal <- candies[-drop_idx[seq_len(min(2, length(drop_idx)))], ]
+
+mod.native <- asca(assessment ~ candy * assessor, data = candies.unbal)
+mod.sstype <- asca(assessment ~ candy * assessor, data = candies.unbal,
+                   respect_SStype = TRUE)
+
+par.old <- par(mfrow = c(2,1), mar = c(4,4,2,1))
+scoreplot(mod.native,
+          main = "Top: native (regression-based LS)")
+scoreplot(mod.sstype,
+          main = "Bottom: respect_SStype = TRUE")
+par(par.old)
+
+perm.native <- permutation(mod.native, permute = 1000, respect_SStype = FALSE)
+perm.sstype <- permutation(mod.sstype, permute = 1000, respect_SStype = TRUE)
+summary(perm.native)
+summary(perm.sstype)
 
 }
 \references{

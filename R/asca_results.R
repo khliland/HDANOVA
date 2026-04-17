@@ -80,7 +80,7 @@ summary.hdanova <- function(object, extended=TRUE, df=FALSE, ...){
   if(extended){
     LS_REML <- "least squares"
     if(!inherits(object$models[[1]],"lm"))
-      LS_REML <- ifelse(getME(object$models[[1]],"is_REML"), "REML", "ML")
+      LS_REML <- ifelse(lme4::getME(object$models[[1]],"is_REML"), "REML", "ML")
     ss <- c("I","II","III")
     if(length(object$contrasts)>1)
       contrasts <- "mixed"
@@ -98,6 +98,9 @@ summary.hdanova <- function(object, extended=TRUE, df=FALSE, ...){
     x$info <- paste0("SS type ", ss[object$SStype], ", ", contrasts, " coding, ",
                      ifelse(object$unrestricted, "unrestricted","restricted"), " model",
                      ", ", LS_REML, " estimation")
+    if(!is.null(object$more$ssq_method)){
+      x$info <- paste0(x$info, ", SSQ method: ", object$more$ssq_method)
+    }
     if(!is.null(object$permute)){
       unit <- "permutations"
       if(identical(object$permute$method, "rotation"))

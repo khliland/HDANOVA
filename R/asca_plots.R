@@ -146,6 +146,14 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, within_level = "all"
       if(factor != "Residuals" && factor != length(object$scores))
         projs <- projections(object=object, factor=factor) #+ scors
     }
+
+    # For SS-type-aligned fits, collapse only effect scores to level means
+    # without modifying stored LS matrices or subject-level projections.
+    if(isTRUE(object$more$respect_SStype) &&
+       !(factor == "Residuals" || factor == length(object$scores))){
+      grp <- object$effects[[factor]]
+      scors <- .hda_plot_level_means(scors, grp)
+    }
   }
 
   # Extract scores for within factor if MSCA with single level within factor
@@ -321,6 +329,21 @@ scoreplot.asca <- function(object, factor = 1, comps = 1:2, within_level = "all"
       plot(scors[,comps], ylab=xlab, xlab="index", pch = pch.projections, col=gr.col, ...)
     }
   }
+}
+
+.hda_plot_level_means <- function(mat, groups){
+  if(is.null(mat) || is.null(groups) || !is.factor(groups) || nrow(mat) != length(groups))
+    return(mat)
+  out <- mat
+  grp_chr <- as.character(groups)
+  for(lev in unique(grp_chr)){
+    idx <- which(grp_chr == lev)
+    out[idx, ] <- matrix(colMeans(out[idx, , drop = FALSE]),
+                         nrow = length(idx),
+                         ncol = ncol(out),
+                         byrow = TRUE)
+  }
+  out
 }
 
 #' @rdname asca_plots

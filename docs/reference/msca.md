@@ -99,7 +99,7 @@ print(mod)
 #> msca(formula = assessment ~ candy, data = candies)
 summary(mod)
 #> Multilevel Simultaneous Component Analysis fitted using 'lm' (Linear Model) 
-#> - SS type II, sum coding, restricted model, least squares estimation 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression 
 #>          Sum.Sq. Expl.var.(%)
 #> Between 33416.66        74.48
 #> Within  11450.62        25.52
@@ -127,10 +127,10 @@ par(par.old)
 mod.perm <- asca(assessment ~ candy * assessor, data=candies, permute=TRUE)
 summary(mod.perm)
 #> Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) 
-#> - SS type II, sum coding, restricted model, least squares estimation, 1000 permutations 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression, 1000 permutations 
 #>                 Sum.Sq. Expl.var.(%) p-value
 #> candy          33416.66        74.48       0
 #> assessor        1961.37         4.37       0
 #> candy:assessor  3445.73         7.68       0
-#> Residuals       6043.51        13.47      NA
+#> Residuals       6043.52        13.47      NA
 ```

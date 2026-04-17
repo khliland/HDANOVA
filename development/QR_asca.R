@@ -92,9 +92,11 @@ fast_asca <- function(formula, data, type = 3) {
               Y_residuals = Y - Y_hat_full))
 }
 
+candies2 <- candies[-c(1,7,23),]
+
 # 9 variabler
 SStype <- 3
-reps <- 100
+reps <- 10
 cat("------------\n")
 T <- system.time(for(i in 1:reps)mod <- hdanova(assessment ~ candy * assessor, data=candies2, SStype = SStype))
 summary(mod)
@@ -125,7 +127,7 @@ modqm$Summary
 
 
 # -----------------------------------------------------------
-scoreplot_asca(modqm, "candy", candies, "candy")
+scoreplot_asca(modqm, "candy", candies2, "candy")
 # Corrected scoreplot function with accurate axes and dropped residuals
 scoreplot_asca <- function(res, term = "candy", data, factor_name = "candy", comps = c(1, 2)) {
   # 1. Base PCA on the Effect Matrix

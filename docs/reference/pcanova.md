@@ -101,40 +101,25 @@ summary(mod)
 #> Call:
 #> pcanova(formula = assessment ~ candy * assessor, data = candies,     ncomp = 0.9)
 #> $`Comp. 1`
-#> Anova Table (Type II tests)
-#> 
-#> Response: assessment
-#>                 Sum Sq  Df  F value  Pr(>F)    
-#> candy          31470.6   4 780.1762 < 2e-16 ***
-#> assessor         224.9  10   2.2304 0.02089 *  
-#> candy:assessor   707.7  40   1.7545 0.01158 *  
-#> Residuals       1109.3 110                     
-#> ---
-#> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#>                 Df     Sum Sq    Mean Sq    F value       Pr(>F) Error Term
+#> candy            4 31470.6052 7867.65131 780.176157 9.969318e-80  Residuals
+#> assessor        10   224.9208   22.49208   2.230371 2.089353e-02  Residuals
+#> candy:assessor  40   707.7098   17.69275   1.754457 1.158415e-02  Residuals
+#> Residuals      110  1109.2900   10.08445         NA           NA       <NA>
 #> 
 #> $`Comp. 2`
-#> Anova Table (Type II tests)
-#> 
-#> Response: assessment
-#>                Sum Sq  Df F value    Pr(>F)    
-#> candy          1573.8   4 33.1604 < 2.2e-16 ***
-#> assessor        278.3  10  2.3455 0.0150274 *  
-#> candy:assessor 1053.3  40  2.2193 0.0005888 ***
-#> Residuals      1305.2 110                      
-#> ---
-#> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#>                 Df   Sum Sq   Mean Sq   F value       Pr(>F) Error Term
+#> candy            4 1573.830 393.45749 33.160399 3.942715e-18  Residuals
+#> assessor        10  278.301  27.83010  2.345507 1.502735e-02  Residuals
+#> candy:assessor  40 1053.295  26.33238  2.219280 5.888081e-04  Residuals
+#> Residuals      110 1305.181  11.86528        NA           NA       <NA>
 #> 
 #> $`Comp. 3`
-#> Anova Table (Type II tests)
-#> 
-#> Response: assessment
-#>                 Sum Sq  Df F value    Pr(>F)    
-#> candy           307.12   4   7.646 1.790e-05 ***
-#> assessor       1006.62  10  10.024 8.574e-12 ***
-#> candy:assessor  484.02  40   1.205    0.2229    
-#> Residuals      1104.61 110                      
-#> ---
-#> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#>                 Df    Sum Sq   Mean Sq   F value       Pr(>F) Error Term
+#> candy            4  307.1203  76.78008  7.645952 1.790336e-05  Residuals
+#> assessor        10 1006.6196 100.66196 10.024169 8.573804e-12  Residuals
+#> candy:assessor  40  484.0250  12.10062  1.205010 2.229486e-01  Residuals
+#> Residuals      110 1104.6118  10.04193        NA           NA       <NA>
 #> 
 
 # Tukey group letters for 'candy' per component
@@ -191,60 +176,21 @@ summary(mod.mix)
 #> Call:
 #> pcanova(formula = assessment ~ candy + r(assessor), data = candies,     ncomp = 0.9)
 #> $`Comp. 1`
-#> Analysis of variance (restricted model)
-#> Response: assessment
-#>           Mean Sq   Sum Sq  Df F value Pr(>F)
-#> candy     7867.65 31470.61   4  649.50 0.0000
-#> assessor    22.49   224.92  10    1.86 0.0556
-#> Residuals   12.11  1817.00 150       -      -
-#> 
-#>             Err.term(s) Err.df VC(SS)
-#> 1 candy             (3)    150  fixed
-#> 2 assessor          (3)    150  0.692
-#> 3 Residuals           -      - 12.113
-#> (VC = variance component)
-#> 
-#>           Expected mean squares
-#> candy             (3) + 33 Q[1]
-#> assessor          (3) + 15 (2) 
-#> Residuals         (3)          
+#>            Df     Sum Sq    Mean Sq    F value       Pr(>F) Error Term
+#> candy       4 31470.6052 7867.65131 649.503449 1.371489e-93  Residuals
+#> assessor   10   224.9208   22.49208   1.856803 5.555920e-02  Residuals
+#> Residuals 150  1816.9999   12.11333         NA           NA       <NA>
 #> 
 #> $`Comp. 2`
-#> Analysis of variance (restricted model)
-#> Response: assessment
-#>           Mean Sq  Sum Sq  Df F value Pr(>F)
-#> candy      393.46 1573.83   4   25.02 0.0000
-#> assessor    27.83  278.30  10    1.77 0.0707
-#> Residuals   15.72 2358.48 150       -      -
-#> 
-#>             Err.term(s) Err.df VC(SS)
-#> 1 candy             (3)    150  fixed
-#> 2 assessor          (3)    150  0.807
-#> 3 Residuals           -      - 15.723
-#> (VC = variance component)
-#> 
-#>           Expected mean squares
-#> candy             (3) + 33 Q[1]
-#> assessor          (3) + 15 (2) 
-#> Residuals         (3)          
+#>            Df   Sum Sq   Mean Sq   F value       Pr(>F) Error Term
+#> candy       4 1573.830 393.45749 25.024047 6.924974e-16  Residuals
+#> assessor   10  278.301  27.83010  1.770005 7.067805e-02  Residuals
+#> Residuals 150 2358.476  15.72318        NA           NA       <NA>
 #> 
 #> $`Comp. 3`
-#> Analysis of variance (restricted model)
-#> Response: assessment
-#>           Mean Sq  Sum Sq  Df F value Pr(>F)
-#> candy       76.78  307.12   4    7.25 0.0000
-#> assessor   100.66 1006.62  10    9.50 0.0000
-#> Residuals   10.59 1588.64 150       -      -
-#> 
-#>             Err.term(s) Err.df VC(SS)
-#> 1 candy             (3)    150  fixed
-#> 2 assessor          (3)    150    6.0
-#> 3 Residuals           -      -   10.6
-#> (VC = variance component)
-#> 
-#>           Expected mean squares
-#> candy             (3) + 33 Q[1]
-#> assessor          (3) + 15 (2) 
-#> Residuals         (3)          
+#>            Df    Sum Sq   Mean Sq  F value       Pr(>F) Error Term
+#> candy       4  307.1203  76.78008 7.249619 2.301866e-05  Residuals
+#> assessor   10 1006.6196 100.66196 9.504560 3.816476e-12  Residuals
+#> Residuals 150 1588.6368  10.59091       NA           NA       <NA>
 #> 
 ```

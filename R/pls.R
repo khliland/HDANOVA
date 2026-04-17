@@ -27,9 +27,11 @@ pls.default <- function(object, ...){
     stop("Object must be of class 'hdanova'")
   scores <- loadings <- projected <- list()
   for(i in object$more$approved){
-    maxDiri <- min(Rank(object$LS[[object$more$effs[i]]]),object$more$maxDir[i])
+    maxDiri <- min(pracma::Rank(object$LS[[object$more$effs[i]]]),object$more$maxDir[i])
     if(object$more$pca.in != 0)
       maxDiri <- min(maxDiri, object$more$pca.in)
+    if(!is.null(object$more$pls.in) && object$more$pls.in != 0)
+      maxDiri <- min(maxDiri, object$more$pls.in)
     if(object$add_error)
       maxDiri <- min(object$more$N-1, object$more$p, maxDiri)
     if(maxDiri == 0)
@@ -74,6 +76,8 @@ pls.default <- function(object, ...){
   maxDirRes <- min(object$more$N-1,object$more$p)
   if(object$more$pca.in != 0)
     maxDirRes <- min(maxDirRes, object$more$pca.in)
+  if(!is.null(object$more$pls.in) && object$more$pls.in != 0)
+    maxDirRes <- min(maxDirRes, object$more$pls.in)
   pcaRes <- .pca(object$residuals, ncomp=maxDirRes)
   scores[["Residuals"]] <- pcaRes$scores
   loadings[["Residuals"]] <- pcaRes$loadings

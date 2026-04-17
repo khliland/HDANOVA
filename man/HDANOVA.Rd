@@ -11,17 +11,19 @@ hdanova(
   weights,
   na.action,
   family,
-  unrestricted = FALSE,
+  scale = FALSE,
   add_error = FALSE,
   aug_error = "denominator",
-  use_ED = FALSE,
   pca.in = FALSE,
+  pls.in = FALSE,
   contrasts = "contr.sum",
-  coding,
-  equal_baseline = FALSE,
+  unrestricted = FALSE,
   SStype = "II",
+  respect_SStype = FALSE,
   REML = NULL,
-  scale = FALSE
+  REML_ssq_method = c("exact_refit", "wald", "ls"),
+  equal_baseline = FALSE,
+  use_ED = FALSE
 )
 }
 \arguments{
@@ -37,31 +39,42 @@ hdanova(
 
 \item{family}{Error distributions and link function for Generalized Linear Models.}
 
-\item{unrestricted}{Use unrestricted ANOVA decomposition (default = FALSE).}
+\item{scale}{Scaling of the response matrix. Defaults to \code{FALSE} (no scaling). For alternatives, see Details.}
 
 \item{add_error}{Add error to LS means, e.g., for APCA.}
 
 \item{aug_error}{Augment score matrices in backprojection. Default = "denominator"
-(of F test), "residual" (force error term), nueric value (alpha-value in LiMM-PCA).}
-
-\item{use_ED}{Use "effective dimensions" for score rescaling in LiMM-PCA.}
+(of F test), "residual" (force error term), numeric value (alpha-value in LiMM-PCA).}
 
 \item{pca.in}{Compress response before ASCA (number of components).}
 
+\item{pls.in}{Compress response before ASCA using PLS (number of components).}
+
 \item{contrasts}{Effect coding: "contr.sum" (default = sum-coding), "contr.weighted" (not for lme4 models), "contr.reference", "contr.treatment".}
 
-\item{coding}{Defunct. Use 'contrasts' instead.}
+\item{unrestricted}{Use unrestricted ANOVA decomposition (default = FALSE).}
+
+\item{SStype}{Type of sum-of-squares: "I" = sequential, "II" (default) = last term, obeying marginality,
+"III" = last term, not obeying marginality.}
+
+\item{respect_SStype}{Logical; if \code{FALSE} (default), keep regression-based
+effect matrices in \code{LS}. If \code{TRUE}, expose SS-type-aligned
+effect matrices in \code{LS} while retaining regression matrices in
+\code{LS_regression}. This setting also propagates to
+\code{permutation()} when \code{respect_SStype = NULL} is used there.}
+
+\item{REML}{Parameter to mixlm: NULL (default) = sum-of-squares, TRUE = REML, FALSE = ML.}
+
+\item{REML_ssq_method}{Method for REML mixed-model SSQ decomposition:
+\code{"exact_refit"} (default), \code{"wald"}, or \code{"ls"}. This is
+only used when \code{REML} is \code{TRUE} or \code{FALSE} for mixed models
+with \code{r()} terms.}
 
 \item{equal_baseline}{Experimental: Set to \code{TRUE} to let interactions, where a main effect is missing,
 e.g., a nested model, be handled with the same baseline as a cross effect model. If \code{TRUE} the corresponding
 interactions will be put in quotation marks and included in the \code{model.frame}.}
 
-\item{SStype}{Type of sum-of-squares: "I" = sequential, "II" (default) = last term, obeying marginality,
-"III" = last term, not obeying marginality.}
-
-\item{REML}{Parameter to mixlm: NULL (default) = sum-of-squares, TRUE = REML, FALSE = ML.}
-
-\item{scale}{Scaling of the response matrix. Defaults to \code{FALSE} (no scaling). For alternatives, see Details.}
+\item{use_ED}{Use "effective dimensions" for score rescaling in LiMM-PCA.}
 }
 \value{
 An \code{hdanova} object containing loadings, scores, explained variances, etc. The object has
@@ -70,7 +83,7 @@ associated plotting (\code{\link{asca_plots}}) and result (\code{\link{asca_resu
 \description{
 This function provides a high-dimensional analysis of variance (HDANOVA) method
 which can be used alone or as part of a larger analysis, e.g., ASCA, APCA, LiMM-PCA, MSCA or PC-ANOVA. It
-can be called directly or through the convenince functions \code{\link{asca}}, \code{\link{apca}},
+can be called directly or through the convenience functions \code{\link{asca}}, \code{\link{apca}},
 \code{\link{limmpca}}, \code{\link{msca}} and \code{\link{pcanova}}.
 }
 \details{
@@ -79,6 +92,62 @@ each column is scaled by its standard deviation (autoscaling). A numeric value c
 the columns by specific quantities. If \code{scale} is a character string, the first element
 is interpreted as a factor name and the second element is interpreted as a factor level, whose samples
 the standard deviations are calculated from (reference group scaling).
+
+\strong{SStype and respect_SStype (fixed and MoM mixed models):}
+\code{SStype} controls how each effect's contribution is isolated from the others.
+Type I (sequential) assigns variance in the order terms appear in the formula;
+Type II (default) tests each term against all others that do not contain it, respecting
+marginality; Type III tests each term against the full model, ignoring marginality.
+For balanced designs the three types give identical results; differences arise in
+unbalanced or non-orthogonal designs.
+
+By default (\code{respect_SStype = FALSE}) the effect matrices in \code{LS} are regression
+projections — each effect's columns are projected independently from the full model
+coefficient matrix. This is consistent with the legacy ASCA workflow. When
+\code{respect_SStype = TRUE} the \code{LS} matrices are re-derived from QR contrasts
+that match the chosen \code{SStype}, so the Frobenius norm of \code{LS[[eff]]} equals
+the corresponding ANOVA sum of squares. The regression matrices are still available in
+\code{LS_regression}. For balanced, fully-crossed designs the two sets are numerically
+identical; for unbalanced designs they will differ, particularly for Type II and III.
+
+\strong{REML SSQ strategies (mixed models with \code{r()} terms):}
+When \code{REML = TRUE} or \code{REML = FALSE}, the model is fitted with lme4 and the
+classical ANOVA table is replaced by one of three decomposition strategies controlled by
+\code{REML_ssq_method}:
+\itemize{
+\item \code{"exact_refit"} (default): For each effect a reduced model is re-fitted
+(REML or ML as specified) and the SSQ is the difference in log-likelihoods scaled
+to the sum-of-squares metric. Concretely, if \eqn{\ell_f} and \eqn{\ell_r} are the
+log-likelihoods of the full and reduced models, the statistic is
+\deqn{\mathrm{SSQ} = 2(\ell_f - \ell_r).}
+This is the most principled approach but requires
+one additional model fit per effect, making it slower for large models.
+\item \code{"wald"}: Uses the Wald chi-square statistic from the full model divided
+by the residual variance to obtain an approximate SSQ. For a fixed effect with
+coefficient vector \eqn{\hat{\boldsymbol{\beta}}_j} and covariance
+\eqn{\mathbf{V}_j = \mathrm{Var}(\hat{\boldsymbol{\beta}}_j)},
+\deqn{\mathrm{SSQ} \approx \hat{\boldsymbol{\beta}}_j^\top \mathbf{V}_j^{-1} \hat{\boldsymbol{\beta}}_j \cdot \hat{\sigma}^2.}
+No additional model fits are
+required; fast but less accurate for small samples or near-singular random effects.
+\item \code{"ls"}: Projects the REML/ML coefficient estimates through the fixed-effect
+design matrix to recover a least-squares-style SSQ,
+\deqn{\mathrm{SSQ} = \| \mathbf{X}_j \hat{\boldsymbol{\beta}}_j \|_F^2,}
+where \eqn{\mathbf{X}_j} contains the columns of the design matrix for effect \eqn{j}.
+Computationally cheap and
+numerically stable but ignores the mixed-model covariance structure; best treated
+as an approximation.
+}
+
+\strong{Permutation statistics vs. fitted-model SSQ:}
+Permutation testing (\code{\link{permutation}}) always uses QR-based projection
+statistics computed on the fixed-effect design matrix, regardless of \code{REML_ssq_method}.
+When \code{respect_SStype = FALSE} (default) the permutation statistic is a
+regression-projection norm; when \code{respect_SStype = TRUE} it is an SS-type-aligned
+QR contrast norm. Neither is identical to the fitted-model REML SSQ values reported in
+\code{object$ssq}, because REML/ML decompositions account for the random-effect
+covariance structure whereas permutation statistics do not. The p-values are still
+valid under their respective null hypotheses; the SSQ values should not be compared
+across the two sources.
 }
 \examples{
 # Load candies data

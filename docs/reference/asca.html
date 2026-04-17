@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">HDANOVA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.5.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -147,6 +147,10 @@ Extraction of results and plotting: <code><a href="asca_results.html">asca_resul
 <span class="r-in"><span><span class="co"># ASCA model with compressed response using 5 principal components</span></span></span>
 <span class="r-in"><span><span class="va">mod.pca</span> <span class="op">&lt;-</span> <span class="fu">asca</span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span> <span class="op">+</span> <span class="va">assessor</span>, data<span class="op">=</span><span class="va">candies</span>, pca.in<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># ASCA model with design-relevant compressed response</span></span></span>
+<span class="r-in"><span><span class="co"># using 5 partial least squares components</span></span></span>
+<span class="r-in"><span><span class="va">mod.pca</span> <span class="op">&lt;-</span> <span class="fu">asca</span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span> <span class="op">+</span> <span class="va">assessor</span>, data<span class="op">=</span><span class="va">candies</span>, pls.in<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Mixed Model ASCA, random assessor</span></span></span>
 <span class="r-in"><span><span class="va">mod.mix</span> <span class="op">&lt;-</span> <span class="fu">asca</span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span> <span class="op">+</span> <span class="fu">r</span><span class="op">(</span><span class="va">assessor</span><span class="op">)</span>, data<span class="op">=</span><span class="va">candies</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://khliland.github.io/pls/reference/scoreplot.html" class="external-link">scoreplot</a></span><span class="op">(</span><span class="va">mod.mix</span><span class="op">)</span></span></span>
@@ -164,7 +168,7 @@ Extraction of results and plotting: <code><a href="asca_results.html">asca_resul
 <span class="r-in"><span><span class="va">mod.comb</span> <span class="op">&lt;-</span> <span class="fu">asca</span><span class="op">(</span><span class="va">compounds</span> <span class="op">~</span> <span class="va">time</span> <span class="op">+</span> <span class="fu">comb</span><span class="op">(</span><span class="va">light</span> <span class="op">+</span> <span class="va">time</span><span class="op">:</span><span class="va">light</span><span class="op">)</span>, data<span class="op">=</span><span class="va">caldana</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod.comb</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II, sum coding, restricted model, least squares estimation </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                  Sum.Sq. Expl.var.(%)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> time              154.58         9.69</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> light+time:light  349.64        21.92</span>
@@ -176,12 +180,48 @@ Extraction of results and plotting: <code><a href="asca_results.html">asca_resul
 <span class="r-in"><span><span class="va">mod.perm</span> <span class="op">&lt;-</span> <span class="fu">asca</span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span> <span class="op">*</span> <span class="va">assessor</span>, data<span class="op">=</span><span class="va">candies</span>, permute<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod.perm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II, sum coding, restricted model, least squares estimation, 1000 permutations </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression, 1000 permutations </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                 Sum.Sq. Expl.var.(%) p-value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> candy          33416.66        74.48       0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> assessor        1961.37         4.37       0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> candy:assessor  3445.73         7.68       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Residuals       6043.51        13.47      NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Residuals       6043.52        13.47      NA</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Unbalanced data: compare native vs SS-type-aligned effects</span></span></span>
+<span class="r-in"><span><span class="va">drop_idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">candies</span><span class="op">$</span><span class="va">candy</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">candies</span><span class="op">$</span><span class="va">candy</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&amp;</span></span></span>
+<span class="r-in"><span>                  <span class="va">candies</span><span class="op">$</span><span class="va">assessor</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">candies</span><span class="op">$</span><span class="va">assessor</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">candies.unbal</span> <span class="op">&lt;-</span> <span class="va">candies</span><span class="op">[</span><span class="op">-</span><span class="va">drop_idx</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">drop_idx</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">mod.native</span> <span class="op">&lt;-</span> <span class="fu">asca</span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span> <span class="op">*</span> <span class="va">assessor</span>, data <span class="op">=</span> <span class="va">candies.unbal</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mod.sstype</span> <span class="op">&lt;-</span> <span class="fu">asca</span><span class="op">(</span><span class="va">assessment</span> <span class="op">~</span> <span class="va">candy</span> <span class="op">*</span> <span class="va">assessor</span>, data <span class="op">=</span> <span class="va">candies.unbal</span>,</span></span>
+<span class="r-in"><span>                   respect_SStype <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">par.old</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://khliland.github.io/pls/reference/scoreplot.html" class="external-link">scoreplot</a></span><span class="op">(</span><span class="va">mod.native</span>,</span></span>
+<span class="r-in"><span>          main <span class="op">=</span> <span class="st">"Top: native (regression-based LS)"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://khliland.github.io/pls/reference/scoreplot.html" class="external-link">scoreplot</a></span><span class="op">(</span><span class="va">mod.sstype</span>,</span></span>
+<span class="r-in"><span>          main <span class="op">=</span> <span class="st">"Bottom: respect_SStype = TRUE"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="asca-8.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">par.old</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">perm.native</span> <span class="op">&lt;-</span> <span class="fu"><a href="permutation.html">permutation</a></span><span class="op">(</span><span class="va">mod.native</span>, permute <span class="op">=</span> <span class="fl">1000</span>, respect_SStype <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">perm.sstype</span> <span class="op">&lt;-</span> <span class="fu"><a href="permutation.html">permutation</a></span><span class="op">(</span><span class="va">mod.sstype</span>, permute <span class="op">=</span> <span class="fl">1000</span>, respect_SStype <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">perm.native</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression, 1000 permutations </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 Sum.Sq. Expl.var.(%) p-value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> candy          32780.17        74.02       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> assessor        1951.08         4.41       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> candy:assessor  3493.49         7.89       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Residuals       5930.45        13.39      NA</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">perm.sstype</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Anova Simultaneous Component Analysis fitted using 'lm' (Linear Model) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_sstype, 1000 permutations </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 Sum.Sq. Expl.var.(%) p-value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> candy          32780.17        74.02       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> assessor        1951.08         4.41       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> candy:assessor  3493.49         7.89       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Residuals       5930.45        13.39      NA</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

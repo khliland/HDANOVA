@@ -29,7 +29,7 @@
 - [`limmpca()`](https://khliland.github.io/HDANOVA/reference/limmpca.md)
   : Linear Mixed Model PCA
 - [`permutation()`](https://khliland.github.io/HDANOVA/reference/permutation.md)
-  : Permutation for HDANOVA
+  : Permutation for SS-Type-Aligned HDANOVA
 - [`rotation()`](https://khliland.github.io/HDANOVA/reference/rotation.md)
   : Rotation test for HDANOVA
 - [`pls()`](https://khliland.github.io/HDANOVA/reference/pls.md) :

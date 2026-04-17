@@ -4,11 +4,24 @@ devtools::build_vignettes(clean=FALSE)
 Lage .tex:
 rmarkdown::pandoc_convert("vignette_C_ASCA.Rmd", to = "latex", from = "markdown", output = "vignette_C_ASCA.tex")
 
+-----== Current priorities (2026-04-16) ==-----
+- Sanity-check SSQs with a simple simulated mixed model where the random subject effect is small relative to the fixed effects; compare against the corresponding fixed-effect model without the random effect.
+- Update permutation workflows so they follow the latest SSQ computations.
+- Extend the documentation with explanations of the three SSQ strategies and the fixed-effect variants.
+- Check that REML and non-REML follow the same pattern with respect to respect_SStype.
+- Create predict.hdanova() that handles new data the same way as training data and returns the relevant LS matrices and related outputs; start with fixed models, then mixed MoM and REML.
+- Add log-likelihood test options for the hdanova model types where this is supported.
+- Add clear user feedback when REML is attempted without r() in the formula.
+- Check whether the current contrast descriptions are sufficient.
+- Check that documentation pages are linked together properly, and that functions without their own examples but referenced from asca() documentation point users correctly.
+- Check whether comb() with misspecified interactions, including wrong interaction order, can be caught and reported with a clear error message.
+- Either create a new vignette or extend the ASCA vignette to include the SSQ sanity-check example (small random effect vs corresponding fixed model).
+
 pkgdown
 
 ASCA:
 + Noe er galt med coding!="sum". Scores endrer seg, mens projections er like muligens fordi error ikke lenger er sentrert.
-- scale-parameter
++ scale-parameter
 - Skille ut Mean Effect som eget element?
 + Ellipser i 1D (ikke bare 3D)
 - loadingplot for 2 grupper, kopier fiks fra metabolomics-pakken.

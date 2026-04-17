@@ -466,9 +466,6 @@ also do this through the mixlm package, leveraging the r() function.
 ``` r
 
 mod <- lm(yield ~ feed*r(bull), data = dat, REML = TRUE)
-#> Registered S3 method overwritten by 'lme4':
-#>   method           from
-#>   na.action.merMod car
 #> boundary (singular) fit: see help('isSingular')
 print(Anova(mod, type="III"))
 #> Analysis of Deviance Table (Type III Wald chisquare tests)

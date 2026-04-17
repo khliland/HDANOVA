@@ -62,7 +62,7 @@ mod <- hdanova(assessment ~ candy + assessor, data=candies)
 modRot <- rotation(mod)
 summary(modRot)
 #> High-Dimensional Analysis of Variance fitted using 'lm' (Linear Model) 
-#> - SS type II, sum coding, restricted model, least squares estimation, 1000 rotations 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression, 1000 rotations 
 #>            Sum.Sq. Expl.var.(%) p-value
 #> candy     33416.66        74.48       0
 #> assessor   1961.37         4.37       0

@@ -4,7 +4,7 @@
 #'
 #' @description This function provides a high-dimensional analysis of variance (HDANOVA) method
 #' which can be used alone or as part of a larger analysis, e.g., ASCA, APCA, LiMM-PCA, MSCA or PC-ANOVA. It
-#' can be called directly or through the convenince functions \code{\link{asca}}, \code{\link{apca}},
+#' can be called directly or through the convenience functions \code{\link{asca}}, \code{\link{apca}},
 #' \code{\link{limmpca}}, \code{\link{msca}} and \code{\link{pcanova}}.
 #'
 #' @param formula Model formula accepting a single response (block) and predictors. See Details for more information.
@@ -13,27 +13,92 @@
 #' @param weights Optional object weights.
 #' @param na.action How to handle NAs (no action implemented).
 #' @param family Error distributions and link function for Generalized Linear Models.
-#' @param unrestricted Use unrestricted ANOVA decomposition (default = FALSE).
+#' @param scale Scaling of the response matrix. Defaults to \code{FALSE} (no scaling). For alternatives, see Details.
 #' @param add_error Add error to LS means, e.g., for APCA.
 #' @param aug_error Augment score matrices in backprojection. Default = "denominator"
-#' (of F test), "residual" (force error term), nueric value (alpha-value in LiMM-PCA).
-#' @param use_ED Use "effective dimensions" for score rescaling in LiMM-PCA.
+#' (of F test), "residual" (force error term), numeric value (alpha-value in LiMM-PCA).
 #' @param pca.in Compress response before ASCA (number of components).
+#' @param pls.in Compress response before ASCA using PLS (number of components).
 #' @param contrasts Effect coding: "contr.sum" (default = sum-coding), "contr.weighted" (not for lme4 models), "contr.reference", "contr.treatment".
-#' @param coding Defunct. Use 'contrasts' instead.
+#' @param unrestricted Use unrestricted ANOVA decomposition (default = FALSE).
+#' @param SStype Type of sum-of-squares: "I" = sequential, "II" (default) = last term, obeying marginality,
+#' "III" = last term, not obeying marginality.
+#' @param respect_SStype Logical; if \code{FALSE} (default), keep regression-based
+#' effect matrices in \code{LS}. If \code{TRUE}, expose SS-type-aligned
+#' effect matrices in \code{LS} while retaining regression matrices in
+#' \code{LS_regression}. This setting also propagates to
+#' \code{permutation()} when \code{respect_SStype = NULL} is used there.
+#' @param REML Parameter to mixlm: NULL (default) = sum-of-squares, TRUE = REML, FALSE = ML.
+#' @param REML_ssq_method Method for REML mixed-model SSQ decomposition:
+#' \code{"exact_refit"} (default), \code{"wald"}, or \code{"ls"}. This is
+#' only used when \code{REML} is \code{TRUE} or \code{FALSE} for mixed models
+#' with \code{r()} terms.
 #' @param equal_baseline Experimental: Set to \code{TRUE} to let interactions, where a main effect is missing,
 #' e.g., a nested model, be handled with the same baseline as a cross effect model. If \code{TRUE} the corresponding
 #' interactions will be put in quotation marks and included in the \code{model.frame}.
-#' @param SStype Type of sum-of-squares: "I" = sequential, "II" (default) = last term, obeying marginality,
-#' "III" = last term, not obeying marginality.
-#' @param REML Parameter to mixlm: NULL (default) = sum-of-squares, TRUE = REML, FALSE = ML.
-#' @param scale Scaling of the response matrix. Defaults to \code{FALSE} (no scaling). For alternatives, see Details.
+#' @param use_ED Use "effective dimensions" for score rescaling in LiMM-PCA.
 #'
 #' @details Scaling of the response matrix can be done by setting the \code{scale} parameter. If \code{scale=TRUE},
 #' each column is scaled by its standard deviation (autoscaling). A numeric value can be provided to scale
 #' the columns by specific quantities. If \code{scale} is a character string, the first element
 #' is interpreted as a factor name and the second element is interpreted as a factor level, whose samples
 #' the standard deviations are calculated from (reference group scaling).
+#'
+#' \strong{SStype and respect_SStype (fixed and MoM mixed models):}
+#' \code{SStype} controls how each effect's contribution is isolated from the others.
+#' Type I (sequential) assigns variance in the order terms appear in the formula;
+#' Type II (default) tests each term against all others that do not contain it, respecting
+#' marginality; Type III tests each term against the full model, ignoring marginality.
+#' For balanced designs the three types give identical results; differences arise in
+#' unbalanced or non-orthogonal designs.
+#'
+#' By default (\code{respect_SStype = FALSE}) the effect matrices in \code{LS} are regression
+#' projections — each effect's columns are projected independently from the full model
+#' coefficient matrix. This is consistent with the legacy ASCA workflow. When
+#' \code{respect_SStype = TRUE} the \code{LS} matrices are re-derived from QR contrasts
+#' that match the chosen \code{SStype}, so the Frobenius norm of \code{LS[[eff]]} equals
+#' the corresponding ANOVA sum of squares. The regression matrices are still available in
+#' \code{LS_regression}. For balanced, fully-crossed designs the two sets are numerically
+#' identical; for unbalanced designs they will differ, particularly for Type II and III.
+#'
+#' \strong{REML SSQ strategies (mixed models with \code{r()} terms):}
+#' When \code{REML = TRUE} or \code{REML = FALSE}, the model is fitted with lme4 and the
+#' classical ANOVA table is replaced by one of three decomposition strategies controlled by
+#' \code{REML_ssq_method}:
+#' \itemize{
+#'   \item \code{"exact_refit"} (default): For each effect a reduced model is re-fitted
+#'     (REML or ML as specified) and the SSQ is the difference in log-likelihoods scaled
+#'     to the sum-of-squares metric. Concretely, if \eqn{\ell_f} and \eqn{\ell_r} are the
+#'     log-likelihoods of the full and reduced models, the statistic is
+#'     \deqn{\mathrm{SSQ} = 2(\ell_f - \ell_r).}
+#'     This is the most principled approach but requires
+#'     one additional model fit per effect, making it slower for large models.
+#'   \item \code{"wald"}: Uses the Wald chi-square statistic from the full model divided
+#'     by the residual variance to obtain an approximate SSQ. For a fixed effect with
+#'     coefficient vector \eqn{\hat{\boldsymbol{\beta}}_j} and covariance
+#'     \eqn{\mathbf{V}_j = \mathrm{Var}(\hat{\boldsymbol{\beta}}_j)},
+#'     \deqn{\mathrm{SSQ} \approx \hat{\boldsymbol{\beta}}_j^\top \mathbf{V}_j^{-1} \hat{\boldsymbol{\beta}}_j \cdot \hat{\sigma}^2.}
+#'     No additional model fits are
+#'     required; fast but less accurate for small samples or near-singular random effects.
+#'   \item \code{"ls"}: Projects the REML/ML coefficient estimates through the fixed-effect
+#'     design matrix to recover a least-squares-style SSQ,
+#'     \deqn{\mathrm{SSQ} = \| \mathbf{X}_j \hat{\boldsymbol{\beta}}_j \|_F^2,}
+#'     where \eqn{\mathbf{X}_j} contains the columns of the design matrix for effect \eqn{j}.
+#'     Computationally cheap and
+#'     numerically stable but ignores the mixed-model covariance structure; best treated
+#'     as an approximation.
+#' }
+#'
+#' \strong{Permutation statistics vs. fitted-model SSQ:}
+#' Permutation testing (\code{\link{permutation}}) always uses QR-based projection
+#' statistics computed on the fixed-effect design matrix, regardless of \code{REML_ssq_method}.
+#' When \code{respect_SStype = FALSE} (default) the permutation statistic is a
+#' regression-projection norm; when \code{respect_SStype = TRUE} it is an SS-type-aligned
+#' QR contrast norm. Neither is identical to the fitted-model REML SSQ values reported in
+#' \code{object$ssq}, because REML/ML decompositions account for the random-effect
+#' covariance structure whereas permutation statistics do not. The p-values are still
+#' valid under their respective null hypotheses; the SSQ values should not be compared
+#' across the two sources.
 #'
 #' @return An \code{hdanova} object containing loadings, scores, explained variances, etc. The object has
 #' associated plotting (\code{\link{asca_plots}}) and result (\code{\link{asca_results}}) functions.
@@ -55,27 +120,101 @@
 #' @importFrom MASS ginv
 #' @export
 hdanova <- function(formula, data, subset, weights, na.action, family,
-                    unrestricted = FALSE,
+                    scale = FALSE,
                     add_error = FALSE, # TRUE => APCA
                     aug_error = "denominator", # "residual" => Mixed, alpha-value => LiMM-PCA
-                    use_ED = FALSE,
-                    pca.in = FALSE, # n>1 => LiMM-PCA and PC-ANOVA
+                    pca.in = FALSE,
+                    pls.in = FALSE,
                     contrasts = "contr.sum",
-                    coding, #c("sum","weighted","reference","treatment"),
-                    equal_baseline = FALSE,
+                    unrestricted = FALSE,
                     SStype = "II",
+                    respect_SStype = FALSE,
                     REML = NULL,
-                    scale = FALSE){
+                    REML_ssq_method = c("exact_refit", "wald", "ls"),
+                    equal_baseline = FALSE,
+                    use_ED = FALSE){
 
   # Simplify SStype
   if(is.character(SStype))
     SStype <- nchar(SStype)
-  if(!missing(coding))
-    stop("Input 'coding' has been exchanged with 'contrasts'. See ?hdanova")
+  if(!SStype %in% 1:3)
+    stop("'SStype' must be one of 'I', 'II' or 'III'.")
+
+  if(!missing(family))
+    stop("hdanova() currently supports LM/LMM-style workflows only in this implementation.")
+  if(any(grepl("|", formula, fixed = TRUE)))
+    stop("hdanova() currently supports mixlm-style random effects r(), not lme4 '|' notation.")
+  mixed_r <- any(grepl("r(", formula, fixed = TRUE))
+  if(!is.logical(unrestricted) || length(unrestricted) != 1 || is.na(unrestricted))
+    stop("'unrestricted' must be TRUE or FALSE.")
+  if(!is.logical(respect_SStype) || length(respect_SStype) != 1 || is.na(respect_SStype))
+    stop("'respect_SStype' must be TRUE or FALSE.")
+  aug_is_residual <- is.character(aug_error) && length(aug_error) == 1 &&
+    aug_error %in% c("residual", "residuals")
+  aug_is_denominator <- is.character(aug_error) && length(aug_error) == 1 &&
+    identical(aug_error, "denominator")
+  aug_is_numeric <- is.numeric(aug_error) && length(aug_error) == 1 && is.finite(aug_error)
+  if(!(aug_is_residual || aug_is_denominator || aug_is_numeric))
+    stop("'aug_error' must be 'denominator', 'residual'/'residuals', or a numeric alpha in [0,1].")
+  if(aug_is_numeric && (aug_error < 0 || aug_error > 1))
+    stop("Numeric 'aug_error' must be in [0,1].")
+  if(!is.logical(use_ED) || length(use_ED) != 1 || is.na(use_ED))
+    stop("'use_ED' must be TRUE or FALSE.")
+  pca_active <- !(is.logical(pca.in) && !pca.in) && !identical(pca.in, 0)
+  pls_active <- !(is.logical(pls.in) && !pls.in) && !identical(pls.in, 0)
+  if(pca_active && pls_active)
+    stop("Only one of 'pca.in' and 'pls.in' can be active at a time.")
+  if(!is.null(REML) && !is.logical(REML))
+    stop("'REML' must be NULL, TRUE or FALSE.")
+  if(is.logical(REML) && !mixed_r)
+    stop("'REML' is only supported for mixed models with r() terms.")
+  ssq_method <- match.arg(REML_ssq_method, c("exact_refit", "wald", "ls"))
+  ssq_method_kernel <- ssq_method
+  use_ED_active <- isTRUE(use_ED) && mixed_r && is.logical(REML) && aug_is_numeric
+  if(isTRUE(use_ED) && !use_ED_active)
+    warning("'use_ED' currently only affects numeric 'aug_error' in REML/ML mixed-model fits; using standard degrees of freedom instead.")
+
+  old_options <- options(contrasts = c(contrasts, "contr.poly"))
+  on.exit(options(old_options), add = TRUE)
+
+  ########################## Combined effects ##########################
+  # Check for combined factors and remove symbols from formula.
+  combined <- FALSE
+  if(grepl("comb(", as.character(formula)[3], fixed = TRUE)){
+    combined <- list()
+    form_no_r <- mixlm::rparse(formula)
+    tl <- attr(terms(form_no_r), "term.labels")
+    j <- 1
+    for(i in seq_along(tl)){
+      if(grepl("comb(", tl[i], fixed = TRUE)){
+        combined[[j]] <- attr(cparse(formula(paste0(".~", tl[i]))), "terms")[[1]]
+        j <- j + 1
+      }
+    }
+    formula <- cparse(formula)
+  }
 
   ## Get the data matrices
-  #Yorig <- Y <- data[[formula[[2]]]]
-  Y <- data[[formula[[2]]]]
+  formula_mf <- formula
+  if(mixed_r){
+    rw <- mixlm::random.worker(formula, data, REML)
+    formula_mf <- rw$formula
+  }
+
+  mf <- match.call(expand.dots = FALSE)
+  m <- match(c("formula", "data", "weights", "subset", "na.action"), names(mf), 0)
+  mf <- mf[c(1, m)]
+  if(missing(weights))
+    mf$weights <- NULL
+  if(missing(subset))
+    mf$subset <- NULL
+  if(missing(na.action))
+    mf$na.action <- NULL
+  mf$formula <- formula_mf
+  mf[[1]] <- as.name("model.frame")
+  mf_data <- eval(mf, envir = parent.frame())
+
+  Y <- stats::model.response(mf_data)
   if(inherits(Y, "AsIs"))
     Y <- unclass(Y)
   Yorig <- Y <- as.matrix(Y)
@@ -83,8 +222,6 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
   p <- ncol(Y)
   if(is.null(p))
     stop("Response must be a matrix.")
-  #  if(center && (!missing(family) && family!="binomial"))
-  #    Y <- Y - rep(colMeans(Y), each=N) # Centre Y by default, but not if family is binomial
 
   ########################### Scale response matrix ##########################
   if(is.logical(scale) && scale){
@@ -99,11 +236,13 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
     # Scale by factor and level
     if(length(scale) != 2)
       stop("Character 'scale' must have two elements: factor name and level")
-    if(!scale[1] %in% names(data))
+    if(!scale[1] %in% names(mf_data))
       stop(paste0("Factor '", scale[1], "' not found in data"))
-    if(!scale[2] %in% levels(data[[scale[1]]]))
+    fac <- mf_data[[scale[1]]]
+    fac_chr <- as.character(fac)
+    if(!scale[2] %in% fac_chr)
       stop(paste0("Level '", scale[2], "' not found in factor '", scale[1], "'"))
-    sd <- apply(Y[data[[scale[1]]] == scale[2],,drop=FALSE],2,sd)
+    sd <- apply(Y[fac_chr == scale[2],,drop=FALSE], 2, stats::sd)
     Y <- scale(Y, center = FALSE, scale = sd)
   }
 
@@ -115,552 +254,518 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
     # Dimensions according to explained variance
     if(pca.in < 1){
       pca <- .pca(Y)
-      pca.in <- min(which(cumsum(pca$explvar/100) >= pca.in))
+      pca.in <- min(which(cumsum(pca$explvar / 100) >= pca.in))
     }
     # Limit number of extracted components
     if(pca.in > p){
-      warning(paste0("Reducing 'pca.in' from ", pca.in, " to the number of variables (",p,")"))
+      warning(paste0("Reducing 'pca.in' from ", pca.in, " to the number of variables (", p, ")"))
       pca.in <- p
     }
     # PCA scores
     pca <- .pca(Y, ncomp = pca.in)
     Y <- pca$scores
   }
-  ssqY <- sum((Y-rep(colMeans(Y),each=N))^2)
-  residuals <- Y
 
-  mf <- match.call(expand.dots = FALSE)
-  m  <- match(c("formula", "data", "weights", "subset", "na.action", "family",
-                "unrestricted", "REML", "contrasts", "equal_baseline"), names(mf), 0)
-  mf <- mf[c(1, m)]                # Retain only the named arguments
-  lme4 <- FALSE
+  ########################## PLS of response matrix ##########################
+  if(pls.in != 0){
+    formula_pls <- mixlm::rparse(formula)
+    if(any(grepl("comb(", formula_pls, fixed = TRUE)))
+      formula_pls <- cparse(formula_pls)
 
+    tt_pls <- stats::delete.response(terms(formula_pls, data = mf_data))
+    Yresp_pls <- model.matrix(tt_pls, data = mf_data)
+    if("(Intercept)" %in% colnames(Yresp_pls))
+      Yresp_pls <- Yresp_pls[, colnames(Yresp_pls) != "(Intercept)", drop = FALSE]
+    if(ncol(Yresp_pls) == 0)
+      stop("'pls.in' requires at least one non-constant predictor column after stripping r()/comb() and removing intercept.")
+
+    max_pls <- min(pracma::Rank(Y), ncol(Y), nrow(Y) - 1, ncol(Yresp_pls))
+    if(max_pls < 1)
+      stop("'pls.in' has no estimable components for the current data.")
+
+    dat_pls <- data.frame(X = I(Y), Y = I(Yresp_pls))
+    if(is.logical(pls.in) && pls.in)
+      pls.in <- max_pls
+    if(!is.numeric(pls.in) || length(pls.in) != 1 || !is.finite(pls.in) || pls.in <= 0)
+      stop("'pls.in' must be FALSE, TRUE, or a positive numeric value.")
+
+    pls_fit <- NULL
+    if(pls.in < 1){
+      pls_fit <- pls::plsr(Y ~ X, data = dat_pls, ncomp = max_pls)
+      pls.in <- which(cumsum(pls::explvar(pls_fit) / 100) >= pls.in)[1]
+    }
+    pls.in <- as.integer(round(pls.in))
+    if(pls.in > max_pls){
+      warning(paste0("Reducing 'pls.in' from ", pls.in, " to ", max_pls, "."))
+      pls.in <- max_pls
+    }
+    if(is.null(pls_fit))
+      pls_fit <- pls::plsr(Y ~ X, data = dat_pls, ncomp = pls.in)
+    Y <- as.matrix(pls_fit$scores[, seq_len(pls.in), drop = FALSE])
+  }
+
+  mf_data[[1]] <- Y
+  p_fit <- ncol(Y)
+  fit.type <- if(mixed_r) "'lmm' (Linear Mixed Model)" else "'lm' (Linear Model)"
+
+  weights_vec <- stats::model.weights(mf_data)
+  if(!is.null(weights_vec)){
+    weights_vec <- as.numeric(weights_vec)
+    if(any(!is.finite(weights_vec)) || any(weights_vec < 0))
+      stop("'weights' must be finite and non-negative.")
+  }
+  models <- NULL
+  mom_anova <- NULL
   ########################## Decide model type ##########################
-  # Check for random effects using lmer notation (lme4) |
-  if( any(grepl("|",formula,fixed=TRUE))){
-    mixed <- TRUE
-    rw <- list(rformula = formula)
-    lme4 <- TRUE
-  } else {
-    # Check for random effects using mixlm notation r()
-    if( any(grepl("r(",formula,fixed=TRUE)) ){
-      rw <- mixlm::random.worker(formula, data, REML)
-      #mf$formula <- rw$formula
-      mixed <- TRUE
-    } else {
-      rw <- list(0)
-      mixed <- FALSE
+  if(is.logical(REML)){
+    resp_name <- as.character(formula[[2]])
+    build_reml_args <- function(ymat){
+      dat_i <- mf_data
+      dat_i[[resp_name]] <- ymat
+      args <- list(formula = formula,
+                   data = dat_i,
+                   REML = REML,
+                   contrasts = contrasts)
+      if(!is.null(weights_vec))
+        args$weights <- weights_vec
+      args
     }
-  }
-  # Add unrestricted to mf for use with mixlm
-  if(!lme4 && !is.logical(REML) && is.null(mf$unrestricted))
-    mf$unrestricted <- FALSE
-  if(!mixed){
-    # Fixed effect model
-    if(missing(family)){
-      # LM
-      fit.type <- "'lm' (Linear Model)"
-      fit.func <- "lm"
-    } else {
-      # GLM
-      fit.type <- "'glm' (Generalized Linear Model)"
-      fit.func <- "glm" # TODO: Check mixlm and glm
-    }
-  } else {
-    # Mixed model
-    if(missing(family)){
-      # LMM
-      fit.type <- "'lmm' (Linear Mixed Model)"
-      if(lme4){
-        fit.func <- "lmer"
-      } else {
-        fit.func <- "lm"
-      }
-    } else {
-      # GLMM
-      fit.type <- "'glmer' (Generalized Linear Mixed Model)"
-      fit.func <- "glmer" # TODO: Check mixlm and glmer
-    }
-  }
 
-  ########################## Combined effects ##########################
-  # Check for combined factors and remove symbols from formula.
-  combined <- FALSE
-  if(grepl("comb(", as.character(formula)[3], fixed=TRUE)){
-    combined <- list()
-    form_no_r <- mixlm::rparse(formula)
-    tl <- attr(terms(form_no_r),"term.labels")
-    j <- 1
-    for(i in 1:length(tl)){
-      if(grepl("comb(", tl[i], fixed=TRUE)){
-#        combined[[j]] <- attr(terms(cparse(formula(paste0(".~", tl[i])))), "term.labels")
-        combined[[j]] <- attr(cparse(formula(paste0(".~", tl[i]))), "terms")[[1]]
-        j <- j+1
+    base_mod <- do.call(mixlm::lm, build_reml_args(Y[, 1, drop = FALSE]))
+    models <- vector("list", p_fit)
+    names(models) <- colnames(Y)
+
+    for(i in seq_len(p_fit)){
+      if(i == 1){
+        modi <- base_mod
+      } else {
+        modi <- do.call(mixlm::lm, build_reml_args(Y[, i, drop = FALSE]))
       }
+      models[[i]] <- modi
+      u <- unlist(lme4::ranef(modi))
+      cfi <- c(lme4::fixef(modi), u)
+      if(i == 1){
+        coefs <- matrix(0.0, length(cfi), p_fit)
+        rownames(coefs) <- names(cfi)
+      }
+      coefs[, i] <- cfi
     }
-    formula <- cparse(formula)
+    mod <- base_mod
+
+    ls_dat <- mf_data
+    ls_dat[[resp_name]] <- Y[, 1, drop = FALSE]
+    ls_args <- list(formula = formula,
+            data = ls_dat,
+            unrestricted = unrestricted,
+            equal_baseline = equal_baseline,
+            contrasts = contrasts)
+    mod_ls <- do.call(mixlm::lm, ls_args)
+    mom_anova <- mixlm::AnovaMix(mod_ls, SStype = SStype)
+  } else {
+    lm_args <- list(formula = formula, data = mf_data, unrestricted = unrestricted,
+                    equal_baseline = equal_baseline, contrasts = contrasts)
+    if(!is.null(weights_vec))
+      lm_args$weights <- weights_vec
+    mod <- do.call(mixlm::lm, lm_args)
+    if(is.null(colnames(Y)))
+      colnames(Y) <- paste0("Y", seq_len(ncol(Y)))
+    resp_name <- as.character(formula[[2]])
+    models <- vector("list", p_fit)
+    names(models) <- colnames(Y)
+    for(i in seq_len(p_fit)){
+      dat_i <- mf_data
+      dat_i[[resp_name]] <- Y[, i, drop = FALSE]
+      lm_args_i <- list(formula = formula,
+                        data = dat_i,
+                        unrestricted = unrestricted,
+                        equal_baseline = equal_baseline,
+                        contrasts = contrasts)
+      if(!is.null(weights_vec))
+        lm_args_i$weights <- weights_vec
+      models[[i]] <- do.call(mixlm::lm, lm_args_i)
+    }
+    if(mixed_r)
+      mom_anova <- mixlm::Anova(mod, type = c("I", "II", "III")[SStype])
   }
 
   ########################## Dry-run to find properties ##########################
-  # Pre-run of model to extract useful information and names
-  mfPre <- mf
-  mfPre[[1]] <- as.name(fit.func)
-  mfPre[[3]] <- as.name("dat")
-  dat <- data
-  dat[[formula[[2]]]] <- Y[,1,drop=FALSE]
-  mod <- eval(mfPre, envir = environment())
-  effs   <- attr(terms(mod), "term.labels")
-  M      <- model.matrix(mod)
-  assign <- attr(M, "assign")
-  modFra <- model.frame(mod)
+  M <- model.matrix(mod)
+  X_fixed <- M
+  assign_fixed <- attr(M, "assign")
+  assign <- assign_fixed
+  modFra <- HDANOVA::extended.model.frame(model.frame(mod), mf_data)
+  effs <- attr(terms(mod), "term.labels")
+  effs_fixed <- effs
 
-  # Extend effs, assign and M with random effects
-  if(lme4 || is.logical(REML)){
-    X <- M
+  if(is.logical(REML)){
     Z <- as.matrix(lme4::getME(mod, "Z"))
     M <- cbind(M, Z)
     u <- lme4::ranef(mod)
     effs <- c(effs, names(u))
     max_assign <- max(assign)
-    for(i in 1:length(u)){
-      max_assign <- max_assign+1
-      assign <- c(assign, rep(max_assign, length(u[[i]][[1]])))
+    for(i in seq_along(u)){
+      max_assign <- max_assign + 1
+      assign <- c(assign, rep(max_assign, nrow(u[[i]])))
     }
   }
 
-  # Maximum number of dimensions for each effect
-  maxDir <- numeric(max(assign))
-  for(i in 1:max(assign))
-    maxDir[i] <- min(sum(assign==i), p)
+  n_terms <- length(effs)
+  if(n_terms == 0)
+    stop("No factors in model")
 
-  # Alphabetically sorted interactions
+  maxDir <- numeric(n_terms)
+  for(i in seq_len(n_terms))
+    maxDir[i] <- min(sum(assign == i), p)
   effsAB <- effs
-  # for(i in 1:length(effs)){
-  #   if(grepl(":", effs[i], fixed=TRUE)){
-  #     effsAB[i] <- paste(sort(strsplit(effs[i],":")[[1]]), collapse=":")
-  #   }
-  # }
-
-  # Exclude numeric effects and their interactions unless fit.func is lm
-  nums <- names(unlist(lapply(modFra, class)))[which(unlist(lapply(modFra, class)) %in% c("numeric","integer"))]
-  if(fit.func == "lm")
-    nums <- numeric(0)
-  if(length(nums)>0){
-    exclude  <- match(nums, rownames(attr(terms(modFra), "factors")))
-    approved <- which(colSums(attr(terms(modFra), "factors")[exclude,,drop=FALSE])==0)
-  } else {
-    approved <- 1:max(assign)
-  }
-  if(length(approved)==0)
-    stop('No factors in model')
-  approvedMain <- which(colSums(attr(terms(mod), "factors"))[approved]==1)
-  names(approved) <- effs[approved]
-  approvedAB <- approved
-  names(approvedAB) <- effsAB[approvedAB]
 
   ########################## ANOVA ##########################
-  # Main ANOVA loop over all responses
-  mf[[1]] <- as.name(fit.func)
-  mfPre[[3]] <- as.name("dat")
-  sel <- c(effs, "Residuals")
-  ssq <- numeric(length(sel))
-  names(ssq) <- sel
-  mod <- eval(mfPre, envir = environment())
-  anovas <- models <- list()
-  if(mixed)
-    formulaStr <- as.character(rw$rformula)
-  else
-    formulaStr <- as.character(formula)
-  warn_msgs <- character()
-  for(i in 1:ncol(Y)){
-    if(mixed){
-      dat[[formula[[2]]]] <- Y[,i,drop=FALSE]
-      if(is.logical(REML)){
-        suppressMessages(suppressWarnings(modi <- eval(mfPre, envir = environment())))
-      } else {
-        modi <- eval(mfPre, envir = environment())
-      }
-      if(lme4 || is.logical(REML)){
-        u <- unlist(lme4::ranef(modi))
-        if(i == 1)
-          coefs <- matrix(0.0, length(lme4::fixef(modi))+length(u), ncol(Y))
-        coefs[,i] <- c(lme4::fixef(modi),u)
-      } else {
-        if(i == 1)
-          coefs <- matrix(0.0, length(coefficients(modi)), ncol(Y))
-        coefs[,i] <- coefficients(modi)
-      }
-    } else {
-      dat[[formula[[2]]]] <- Y[,i,drop=FALSE]
-      modi <- eval(mfPre, envir = environment())
-      if(i == 1){
-        coefs <- matrix(0.0, length(coefficients(modi)), ncol(Y))
-        rownames(coefs) <- names(coefficients(modi))
-      }
-      coefs[,i] <- coefficients(modi)
-    }
+  qr_res <- .calc_SS_qr_loop(M, Y, assign, effs, SStype, weights = weights_vec)
+  SS_matrix <- qr_res$SS_matrix
+  Y_hat_full <- qr_res$Y_hat_full
+  QR_full <- qr_res$QR_full
+  residuals <- Y - Y_hat_full
+  obs_weights <- if(is.null(weights_vec)) rep(1, N) else weights_vec
+  SSE_full <- colSums(obs_weights * residuals^2)
 
-    if(SStype == 1){
-        ano <- anova(modi)
-    }
-    if(SStype == 2){
-      if(missing(family)){
-          ano <- Anova(modi, type="II", singular.ok=TRUE)
-      } else
-        ano <- Anova(modi, type="II", test.statistic = "F", singular.ok=TRUE)
-    }
-    if(SStype == 3){
-      if(missing(family)){
-          ano <- Anova(modi, type="III", singular.ok=TRUE)
-      } else
-        ano <- Anova(modi, type="III", test.statistic = "F", singular.ok=TRUE)
-    }
-    if(mixed){
-      if(is.logical(REML)){
-        vp <- .ML_variance_partition_single(modi, SStype)
-        ssq <- ssq + vp$Variance * N
-      } else
-        ssq <- ssq + ano$anova[sel,"Sum Sq"]
-    }
-    else
-      ssq <- ssq + ano[sel,"Sum Sq"]
-    models[[i]] <- modi
-    anovas[[i]] <- ano
+  df_res <- N - QR_full$rank
+  df_terms <- qr_res$df_terms
+  MS_matrix <- sweep(SS_matrix, 1, df_terms, "/")
+  MS_res <- SSE_full / df_res
+
+  if(!exists("coefs")){
+    coefs <- as.matrix(stats::coef(mod))
+    if(ncol(coefs) != p_fit)
+      coefs <- matrix(coefs, nrow = nrow(coefs), ncol = p_fit)
   }
-  if(length(warn_msgs) > 0)
-    warning(paste("Warning(s) from lmer:", warn_msgs, collapse = "\n"))
-  if(length(ssq) == length(c(effsAB, "Residuals")))
-    names(ssq) <- c(effsAB, "Residuals")
-  ssq_residual <- ssq[length(ssq)]
-  names(models) <- names(anovas) <- colnames(coefs) <- colnames(Y)
-
-  M      <- model.matrix(mod)
-  effs   <- attr(terms(mod), "term.labels")
-  assign <- attr(M, "assign")
-  modFra <- HDANOVA::extended.model.frame(model.frame(mod), data)
-
-  # Extend effs, assign and M with random effects
-  if(lme4 || is.logical(REML)){
-    M <- cbind(M, as.matrix(getME(mod, "Z")))
-    u <- lme4::ranef(mod)
-    effs <- c(effs, names(u))
-    max_assign <- max(assign)
-    for(i in 1:length(u)){
-      max_assign <- max_assign+1
-      assign <- c(assign, rep(max_assign, length(u[[i]][[1]])))
-    }
-  }
-
-  # # Sort interaction names alphabetically
-  # for(i in 1:length(colnames(modFra))){
-  #   if(grepl(":", colnames(modFra)[i], fixed=TRUE)){
-  #     colnames(modFra)[i] <- paste(sort(strsplit(colnames(modFra)[i],":")[[1]]), collapse=":")
-  #   }
-  # }
-  # # Sort interaction names alphabetically
-  # for(i in 1:length(effs)){
-  #   if(grepl(":", effs[i], fixed=TRUE)){
-  #     effs[i] <- paste(sort(strsplit(effs[i],":")[[1]]), collapse=":")
-  #   }
-  # }
+  colnames(coefs) <- colnames(Y)
 
   ########################## LS estimates ##########################
-  # Effect loop
-  LS <- effects <- list()
-  for(i in 1:length(approved)){
-    a <- approved[i]
-    # Exclude non-estimable levels:
-    estimable <- !is.na(rowSums(coefs[assign==a,, drop=FALSE]))
-    LS[[effs[a]]] <- M[, assign==a, drop=FALSE][,estimable,drop=FALSE] %*% coefs[assign==a,, drop=FALSE][estimable,,drop=FALSE]
-    colnames(LS[[effs[a]]]) <- colnames(Y)
-    effects[[effs[a]]] <- modFra[[effs[a]]]
+  LS_regression <- vector("list", n_terms)
+  names(LS_regression) <- effs
+  for(i in seq_len(n_terms)){
+    estimable <- !is.na(rowSums(coefs[assign == i, , drop = FALSE]))
+    LS_regression[[effs[i]]] <- M[, assign == i, drop = FALSE][, estimable, drop = FALSE] %*%
+      coefs[assign == i, , drop = FALSE][estimable, , drop = FALSE]
+    colnames(LS_regression[[effs[i]]]) <- colnames(Y)
   }
-
-  # Residuals
-  # Exclude non-estimable levels:
+  LS_SStype <- qr_res$effects
   estimable <- !is.na(rowSums(coefs))
-  residuals <- Y - M[,estimable,drop=FALSE] %*% coefs[estimable,,drop=FALSE]
-
-  # If model is of lme4 type, the sums-of-squares are not directly available
-  if(length(ssq) == 0){
-    for(i in 1:length(approved)){
-      a <- approved[i]
-      ssq[effs[a]] <- sum(LS[[effs[a]]]^2)
-    }
-    names(ssq) <- names(effects)
-    ssq_residual <- sum(residuals^2)
-    ssq[length(ssq)+1] <- ssq_residual
-    names(ssq)[length(ssq)] <- "Residuals"
-  }
+  residuals <- Y - M[, estimable, drop = FALSE] %*% coefs[estimable, , drop = FALSE]
+  SSE_full <- colSums(obs_weights * residuals^2)
+  MS_res <- SSE_full / df_res
 
   ########################## Augmented LS/errors ##########################
-  # Augment error term to LS for permutation testing, LiMM-PCA and similar
-  error <- LS_aug <- LS
-  if(aug_error == "residuals" || !mixed){ # Fixed effect models and forced "residuals"
-    # Input to hdanova: aug_error = "residual", # "denominator" => Mixed, alpha-value => LiMM-PCA
-    # Add residuals to all LSs (augmented for LiMM-PCA and similar)
-    for(i in 1:length(approved)){
-      a <- approved[i]
-      LS_aug[[effs[a]]] <- LS[[effs[a]]] + residuals
-      error[[effs[a]]] <- LS[[effs[a]]] + residuals
-    }
-    anonam <- rownames(ano)
-    # # Alphabetically sorted interaction names
-    # for(i in 1:length(anonam)){
-    #   if(grepl(":", anonam[i], fixed=TRUE)){
-    #     anonam[i] <- paste(sort(strsplit(anonam[i],":")[[1]]), collapse=":")
-    #   }
-    # }
-    dfNum   <- ano[["Df"]]
-    dfDenom <- c(rep(ano["Residuals","Df"], length(dfNum)-1),0)
-    names(dfNum) <- names(dfDenom) <- anonam # May need to limit to approved?
-  } else {
-    # Augment errors according to Mixed Model ANOVA and/or LiMM-PCA
-    if(!lme4 && !is.logical(REML)){
-      ets <- ano$err.terms
-      anonam <- rownames(ano$anova)
-      # # Alphabetically sorted interaction names
-      # for(i in 1:length(anonam)){
-      #   if(grepl(":", anonam[i], fixed=TRUE)){
-      #     anonam[i] <- paste(sort(strsplit(anonam[i],":")[[1]]), collapse=":")
-      #   }
-      # }
-      names(ets) <- anonam
-      dfDenom <- ano$denom.df
-      dfNum   <- ano$anova[["Df"]]
-      names(dfNum) <- names(dfDenom) <- anonam # May need to limit to approved?
-    } else {
-      formulaOld <- formula
-      formula <- formula(paste0(gsub("(1 | ", "r(", as.character(formula(mod)), fixed = TRUE)[c(2,1,3)], collapse=" "))
-      mfPre2 <- mfPre
-      mfPre2$REML <- NULL
-      # Add unrestricted to mf for use with mixlm
-      if(is.null(mfPre2$unrestricted))
-        mfPre2$unrestricted <- FALSE
-      mod_no_lme4 <- eval(mfPre2, envir = environment())
-      ano_no_lme4 <- mixlm::AnovaMix(mod_no_lme4, SStype = SStype)
-      formula <- formulaOld
-      ets <- ano_no_lme4$err.terms
-      no_eff <- rownames(ano_no_lme4$anova)
-      # # Alphabetically sorted interaction names
-      # for(i in 1:length(no_eff)){
-      #   if(grepl(":", no_eff[i], fixed=TRUE)){
-      #     no_eff[i] <- paste(sort(strsplit(no_eff[i],":")[[1]]), collapse=":")
-      #   }
-      # }
-      names(ets) <- no_eff
-      dfDenom <- ano_no_lme4$denom.df
-      dfNum <- ano_no_lme4$anova[["Df"]]
-      names(dfNum) <- no_eff
-      names(dfDenom) <- no_eff
+  den_structure <- .hda_collect_effect_structure(
+    formula = formula,
+    term_labels = effs,
+    model_frame = modFra,
+    mixed_r = mixed_r,
+    unrestricted = unrestricted,
+    random_info = if(exists("rw")) rw else NULL,
+    mom_anova = mom_anova
+  )
+  den_candidates <- .hda_find_denominator_candidates(den_structure)
+  den_rules <- .hda_build_denominator_rules(
+    structure = den_structure,
+    candidates = den_candidates,
+    mom_anova = mom_anova,
+    df_res = df_res
+  )
+  err_map <- .hda_apply_denominator_rules(
+    rules = den_rules,
+    MS_matrix = MS_matrix,
+    MS_res = MS_res,
+    df_terms = df_terms,
+    df_res = df_res,
+    term_labels = effs
+  )
+  MS_error_matrix <- err_map$MS_error_matrix
+  den_dfs <- err_map$den_dfs
+  den_labels <- err_map$den_labels
 
-      # Effective dimensions calculations
-      if(use_ED){
-        varcor_random <- lapply(models, VarCorr)
-        varcor_resid <- sapply(models, sigma)^2
-        randEffList <- getME(models[[1]], "flist")
-        ED <- list()
-        for(i in 1:ncol(Y)){
-          wrong.ED <- FALSE
-          y <- Y[,i]
-          q <- ncol(Z)
-          G <- diag(q) * 0
-          r0 <- 0
-          for(j in 1:length(randEffList)){
-            # TODO: nlevR only holds for full coding of random effects
-            nlevR <- nlevels(randEffList[[j]])
-            G[r0+(1:nlevR), r0+(1:nlevR)] <- diag(nlevR)*
-              max(varcor_random[[i]][[names(randEffList[j])]][1], 10^-12)
-            r0 <- r0 + nlevR
-          }
-          R <- diag(N) * varcor_resid[i]
-          Rinv <- diag(N) / varcor_resid[i]
+  F_matrix <- P_matrix <- matrix(NA_real_, nrow = n_terms, ncol = p_fit,
+                                 dimnames = list(effs, colnames(Y)))
+  for(i in seq_len(n_terms)){
+    F_matrix[i, ] <- MS_matrix[i, ] / MS_error_matrix[i, ]
+    P_matrix[i, ] <- stats::pf(F_matrix[i, ], df_terms[i], den_dfs[i], lower.tail = FALSE)
+  }
 
-          XRX <- t(X) %*% Rinv %*% X
-          ZRX <- t(Z) %*% Rinv %*% X
-          ZRZ <- t(Z) %*% Rinv %*% Z
-          # Catch singular matrix
-          try(Ginv <- solve(G), silent = TRUE)
-          if(!exists("Ginv")){
-            Ginv <- G*Inf
-            wrong.ED <- TRUE
-            warning("Random effects covariance matrix is singular, using Inf instead")
-          }
-          ZRZG <- ZRZ + Ginv
-          XRY <- t(X) %*% Rinv %*% y
-          ZRY <- t(Z) %*% Rinv %*% y
+  anovas <- vector("list", p_fit)
+  names(anovas) <- colnames(Y)
+  for(i in seq_len(p_fit)){
+    ano <- data.frame("Df" = c(df_terms, df_res),
+                      "Sum Sq" = c(SS_matrix[, i], SSE_full[i]),
+                      "Mean Sq" = c(MS_matrix[, i], MS_res[i]),
+                      "F value" = c(F_matrix[, i], NA_real_),
+                      "Pr(>F)" = c(P_matrix[, i], NA_real_),
+                      "Error Term" = c(den_labels, NA_character_),
+                      check.names = FALSE)
+    rownames(ano) <- c(effs, "Residuals")
+    anovas[[i]] <- ano
+  }
 
-          Q <- solve(rbind(cbind(XRX, t(ZRX)), cbind(ZRX, ZRZG)))
-          vecbc <- Q %*% rbind(XRY, ZRY)
+  effects <- setNames(lapply(effs, function(eff) modFra[[eff]]), effs)
+  aug_df_terms <- df_terms
+  if(mixed_r && !is.null(mom_anova) && !is.null(mom_anova$anova)){
+    mom_df <- stats::setNames(as.numeric(mom_anova$anova[["Df"]]), rownames(mom_anova$anova))
+    matched <- intersect(names(aug_df_terms), names(mom_df))
+    aug_df_terms[matched] <- mom_df[matched]
+  }
+  EDall <- NULL
+  if(use_ED_active){
+    ed_df_template <- c(aug_df_terms, Residuals = df_res)
+    EDall <- .hda_compute_effective_dimensions(models = models, Y = Y, X = X_fixed, Z = Z,
+                                               df_template = ed_df_template)
+  }
+  aug_regression <- .hda_build_augmented_effect_matrices(
+    LS_base = LS_regression,
+    residuals = residuals,
+    effs = effs,
+    mixed_r = mixed_r,
+    aug_is_residual = aug_is_residual,
+    aug_is_numeric = aug_is_numeric,
+    aug_error = aug_error,
+    df_terms = aug_df_terms,
+    den_dfs = den_dfs,
+    den_labels = den_labels,
+    den_rules = den_rules,
+    use_ED = use_ED_active,
+    EDall = EDall
+  )
+  aug_SStype <- .hda_build_augmented_effect_matrices(
+    LS_base = LS_SStype,
+    residuals = residuals,
+    effs = effs,
+    mixed_r = mixed_r,
+    aug_is_residual = aug_is_residual,
+    aug_is_numeric = aug_is_numeric,
+    aug_error = aug_error,
+    df_terms = aug_df_terms,
+    den_dfs = den_dfs,
+    den_labels = den_labels,
+    den_rules = den_rules,
+    use_ED = use_ED_active,
+    EDall = EDall
+  )
+  LS_regression_out <- if(isTRUE(add_error)) aug_regression$LS_aug else LS_regression
+  LS_SStype_out <- if(isTRUE(add_error)) aug_SStype$LS_aug else LS_SStype
+  effect_source <- if(isTRUE(respect_SStype)) "SStype" else "regression"
+  LS <- if(isTRUE(respect_SStype)) LS_SStype_out else LS_regression_out
+  error <- if(isTRUE(respect_SStype)) aug_SStype$error else aug_regression$error
+  LS_aug <- if(isTRUE(respect_SStype)) aug_SStype$LS_aug else aug_regression$LS_aug
+  ssq_method_used <- "qr"
+  ssq_source <- "qr"
 
-          H <- M %*% Q %*% t(M) %*% Rinv
-          K <- Q %*% cbind(rbind(XRX, ZRX), rbind(t(ZRX), ZRZ))
-          K_diag <- diag(K)[-(1:ncol(X))]
-          ED_rand <- numeric(length(randEffList))
-          r0 <- 0
-          for(j in 1:length(randEffList)){
-            nlevR <- nlevels(randEffList[[j]])
-            ED_rand[j] <- sum(K_diag[r0+(1:nlevR)])
-            r0 <- r0 + nlevR
-          }
-          if(wrong.ED)
-            ED_rand <- rep(NaN, length(ED_rand))
-          ED[[i]] <- ED_rand
-        }
-        EDm <- matrix(unlist(ED), nrow = length(randEffList))
-        EDm <- pmax(EDm, 1)
-        sortedRandEffList <- names(randEffList)
-        # # Alphabetically sorted interaction names
-        # for(i in 1:length(sortedRandEffList)){
-        #   if(grepl(":", sortedRandEffList[i], fixed=TRUE)){
-        #     sortedRandEffList[i] <- paste(sort(strsplit(sortedRandEffList[i],":")[[1]]), collapse=":")
-        #   }
-        # }
-        rownames(EDm) <- sortedRandEffList
-        EDall <- matrix(dfNum, nrow = length(dfNum), ncol = ncol(EDm))
-        rownames(EDall) <- names(dfNum)
-        colnames(EDall) <- colnames(Y)
-        EDall["Residuals", ] <- colSums(EDall) + 1 - colSums(EDm)
-        EDall[rownames(EDm), ] <- EDm
-      }
-    }
-    for(i in 1:length(approved)){
-      a <- approved[i]
-      C <- 1
+  approved <- seq_len(n_terms)
+  names(approved) <- effs
+  approvedAB <- approved
+  approvedComb <- as.list(approved)
+  names(approvedComb) <- names(approvedAB)
+  eff_combined <- setNames(rep(FALSE, n_terms), effs)
 
-      if(is.numeric(aug_error)){
-        alpha <- aug_error
-        if(use_ED && any(is.nan(EDall[effs[a],]))){
-          warning("Indeterminate effective dimensions, using degrees of freedom instead")
-          use_ED <- FALSE
-        }
-        if(use_ED){
-          C <- sqrt(EDall[effs[a],] / EDall[as.numeric(names(ets[[effs[a]]])),]) *
-            qf(1-alpha, EDall[effs[a],], EDall[as.numeric(names(ets[[effs[a]]])),])
-          C <- matrix(C, nrow=nrow(Y), ncol=ncol(Y), byrow=TRUE)
-        } else {
-          # LiMM-PCA -> sqrt(dfNum / dfDenom * F(dfNum, dfDenom, 1-alpha))
-          #             sqrt(dfNum / dfDenom * pf(1-alpha, dfNum, dfDenom))
-          C <- sqrt(dfNum[effs[a]] / dfDenom[effs[a]] * qf(1-alpha, dfNum[effs[a]], dfDenom[effs[a]]))
-          C <- matrix(C, nrow(Y), ncol(Y))
-        }
-      }
-
-      if(as.numeric(names(ets[effs[[a]]][[1]])) == length(effs)+1){
-        # Error term is residual
-        LS_aug[[effs[a]]] <- LS[[effs[a]]] + residuals * C
-        error[[effs[a]]] <- LS[[effs[a]]] + residuals * C
-        attr(error[[effs[a]]], 'term') <- "residuals"
+  if(is.logical(REML)){
+    if(exists(".ML_variance_partition_all_types", mode = "function", inherits = TRUE)){
+      vp <- .ML_variance_partition_all_types(models, type = SStype, method = ssq_method_kernel)
+      ssq <- stats::setNames(rep(0, length(effs) + 1), c(effs, "Residuals"))
+      common_terms <- intersect(names(ssq), vp$Term)
+      if(length(common_terms) > 0)
+        ssq[common_terms] <- vp$SSQ[match(common_terms, vp$Term)]
+      ssq_method_used <- ssq_method
+      ssq_source <- "all_types"
+    } else if(exists(".ML_variance_partition_single", mode = "function", inherits = TRUE)){
+      ssq <- stats::setNames(rep(0, length(effs) + 1), c(effs, "Residuals"))
+      for(i in seq_along(models))
+        ssq <- ssq + .ML_variance_partition_single(models[[i]], SStype)$Variance * N
+      ssq_method_used <- "legacy_single"
+      ssq_source <- "single"
+    } else if("HDANOVA" %in% loadedNamespaces()){
+      if(exists(".ML_variance_partition_all_types", envir = asNamespace("HDANOVA"), mode = "function", inherits = FALSE)){
+        vp_fun_post <- get(".ML_variance_partition_all_types", envir = asNamespace("HDANOVA"))
+        vp <- vp_fun_post(models, type = SStype, method = ssq_method_kernel)
+        ssq <- stats::setNames(rep(0, length(effs) + 1), c(effs, "Residuals"))
+        common_terms <- intersect(names(ssq), vp$Term)
+        if(length(common_terms) > 0)
+          ssq[common_terms] <- vp$SSQ[match(common_terms, vp$Term)]
+        ssq_method_used <- ssq_method
+        ssq_source <- "all_types"
       } else {
-        # Other error term
-        if(exists("no_eff"))
-          lsa <- LS[no_eff[as.numeric(names(ets[effs[[a]]][[1]]))]]     # TODO: Check what happens here when adding a numeric effect
-        else
-          lsa <- LS[as.numeric(names(ets[effs[[a]]][[1]]))]     # TODO: Check what happens here when adding a numeric effect
-        # Loop over and sum up (in case of compound errors)
-        for(j in 1:length(lsa)){
-          error[[effs[a]]] <- error[[effs[a]]] + lsa[[j]] * C
-        }
-        LS_aug[[effs[a]]] <- LS_aug[[effs[a]]]+error[[effs[a]]]
+        vp_fun_post <- get(".ML_variance_partition_single", envir = asNamespace("HDANOVA"))
+        ssq <- stats::setNames(rep(0, length(effs) + 1), c(effs, "Residuals"))
+        for(i in seq_along(models))
+          ssq <- ssq + vp_fun_post(models[[i]], SStype)$Variance * N
+        ssq_method_used <- "legacy_single"
+        ssq_source <- "single"
       }
+    } else {
+      warning("Variance-partition helper not found; using QR-based SSQ fallback for REML branch.")
+      ssq_terms <- rowSums(SS_matrix)
+      ssq <- c(stats::setNames(ssq_terms, effs), Residuals = sum(SSE_full))
+      ssq_method_used <- "qr_fallback"
+      ssq_source <- "qr"
     }
+  } else {
+    ssq_terms <- rowSums(SS_matrix)
+    ssq <- c(stats::setNames(ssq_terms, effs), Residuals = sum(SSE_full))
+    ssq_method_used <- if(isTRUE(respect_SStype)) "qr_sstype" else "qr_regression"
+    ssq_source <- "qr"
   }
+  ssqY <- sum((Y - rep(colMeans(Y), each = N))^2)
 
-  if(add_error){
-    # Add residuals to all LSs
-    for(i in 1:length(approved)){
-      a <- approved[i]
-      LS[[effs[a]]] <- LS_aug[[effs[a]]]
-    }
-  }
+  dfNum <- c(df_terms, Residuals = df_res)
+  dfDenom <- c(stats::setNames(den_dfs, effs), Residuals = 0)
+  denoms <- c(vapply(den_labels, function(lbl){
+    if(identical(lbl, "Residuals"))
+      return(length(effs) + 1)
+    if(lbl %in% effs)
+      return(match(lbl, effs))
+    NA_real_
+  }, numeric(1)), NA_real_)
+  names(denoms) <- names(dfDenom)
 
   ########################## Combined effects ##########################
-  # Combine effects if the comb() function is used
-  eff_combined <- rep(FALSE, length(effs))
-  names(eff_combined) <- effs
-  remove <- numeric()
-  approvedComb <- as.list(approved)
+  remove <- integer(0)
   if(is.list(combined)){
-    for(i in 1:length(combined)){
-      approved <- c(approved, length(effs)+1)
-      approvedAB <- c(approvedAB, length(effs)+1)
-      approvedComb[[length(approvedComb)+1]] <- numeric()
-      combName <- paste(combined[[i]], collapse="+")
-      names(approved)[length(approved)] <- names(approvedAB)[length(approvedAB)] <- combName
-      LS[[approved[length(approved)]]] <- 0*LS[[effs[[approved[1]]]]]
+    for(i in seq_along(combined)){
+      combName <- paste(combined[[i]], collapse = "+")
+      effs <- c(effs, combName)
+      maxDir <- c(maxDir, 0L)
+      approved <- c(approved, length(effs))
+      approvedAB <- c(approvedAB, length(effs))
+      approvedComb <- c(approvedComb, list(integer(0)))
+      names(approved)[length(approved)] <- combName
+      names(approvedAB)[length(approvedAB)] <- combName
+
+      LS[[approved[length(approved)]]] <- 0 * LS[[effs[[approved[1]]]]]
       names(LS)[approved[length(approved)]] <- combName
-      effs[approved[length(approved)]] <- combName
+      LS_regression_out[[approved[length(approved)]]] <- 0 * LS_regression_out[[effs[[approved[1]]]]]
+      names(LS_regression_out)[approved[length(approved)]] <- combName
+      LS_SStype_out[[approved[length(approved)]]] <- 0 * LS_SStype_out[[effs[[approved[1]]]]]
+      names(LS_SStype_out)[approved[length(approved)]] <- combName
+      LS_aug[[approved[length(approved)]]] <- 0 * LS_aug[[effs[[approved[1]]]]]
+      names(LS_aug)[approved[length(approved)]] <- combName
+      aug_regression$LS_aug[[approved[length(approved)]]] <- 0 * aug_regression$LS_aug[[effs[[approved[1]]]]]
+      names(aug_regression$LS_aug)[approved[length(approved)]] <- combName
+      aug_SStype$LS_aug[[approved[length(approved)]]] <- 0 * aug_SStype$LS_aug[[effs[[approved[1]]]]]
+      names(aug_SStype$LS_aug)[approved[length(approved)]] <- combName
       eff_combined[approved[length(approved)]] <- TRUE
       names(eff_combined)[approved[length(approved)]] <- combName
-      error[[approved[length(approved)]]] <- 0*residuals
+      error[[approved[length(approved)]]] <- 0 * residuals
       names(error)[approved[length(approved)]] <- combName
+      aug_regression$error[[approved[length(approved)]]] <- 0 * residuals
+      names(aug_regression$error)[approved[length(approved)]] <- combName
+      aug_SStype$error[[approved[length(approved)]]] <- 0 * residuals
+      names(aug_SStype$error)[approved[length(approved)]] <- combName
       ssq[approved[length(approved)]] <- 0
       names(ssq)[approved[length(approved)]] <- combName
       maxDir[approved[length(approved)]] <- 0
+
       for(dis in combined[[i]]){
-        # if(grepl(":", dis, fixed=TRUE)) # Reorder interactions to alphabetical order
-        #   dis <- paste(sort(strsplit(dis,":")[[1]]), collapse=":")
         if(any(!(dis %in% names(approvedAB))))
           stop("Cannot combine a continuous effect with a categorical factor.")
-        remove <- c(remove, which(effsAB==dis))
-        # Remove from approved the entry named dis
-        LS[[approved[length(approved)]]] <- LS[[approved[length(approved)]]] + LS[[effs[approvedAB[names(approvedAB)==dis]]]]
-        ssq[approved[length(approved)]] <- ssq[approved[length(approved)]] + ssq[effs[approvedAB[names(approvedAB)==dis]]]
-        maxDir[approved[length(approved)]] <- max(maxDir[approved[length(approved)]], maxDir[approvedAB[names(approvedAB)==dis]])
-        # Accumulate combined effect numbers
-        approvedComb[[length(approvedComb)]] <- c(approvedComb[[length(approvedComb)]], approvedAB[names(approvedAB)==dis])
-        approved <- approved[names(approvedAB)!=dis]
-        approvedAB <- approvedAB[names(approvedAB)!=dis]
+        remove <- c(remove, which(effsAB == dis))
+        idx_dis <- approvedAB[names(approvedAB) == dis]
+        LS[[approved[length(approved)]]] <- LS[[approved[length(approved)]]] + LS[[effs[idx_dis]]]
+        LS_regression_out[[approved[length(approved)]]] <- LS_regression_out[[approved[length(approved)]]] +
+          LS_regression_out[[effs[idx_dis]]]
+        LS_SStype_out[[approved[length(approved)]]] <- LS_SStype_out[[approved[length(approved)]]] +
+          LS_SStype_out[[effs[idx_dis]]]
+        LS_aug[[approved[length(approved)]]] <- LS_aug[[approved[length(approved)]]] + LS_aug[[effs[idx_dis]]]
+        aug_regression$LS_aug[[approved[length(approved)]]] <- aug_regression$LS_aug[[approved[length(approved)]]] +
+          aug_regression$LS_aug[[effs[idx_dis]]]
+        aug_SStype$LS_aug[[approved[length(approved)]]] <- aug_SStype$LS_aug[[approved[length(approved)]]] +
+          aug_SStype$LS_aug[[effs[idx_dis]]]
+        ssq[approved[length(approved)]] <- ssq[approved[length(approved)]] + ssq[effs[idx_dis]]
+        maxDir[approved[length(approved)]] <- max(maxDir[approved[length(approved)]], maxDir[idx_dis])
+        approvedComb[[length(approvedComb)]] <- c(approvedComb[[length(approvedComb)]], idx_dis)
+        approved <- approved[names(approvedAB) != dis]
+        approvedAB <- approvedAB[names(approvedAB) != dis]
       }
-      # Assume residual error for combined effect?
-      error[[approved[length(approved)]]] <- LS[[approved[length(approved)]]] + residuals
-      #      error[[approved[length(approved)]]] <- error[[approved[length(approved)]]] + error[[effs[approvedAB[names(approvedAB)==dis]]]]
-      LS_aug[[approved[length(approved)]]] <- error[[approved[length(approved)]]]
-      names(LS_aug)[approved[length(approved)]] <- combName
-      names(approvedComb)[approved[length(approved)]] <- combName
-    }
-  } else {
-    names(approvedComb) <- names(approvedAB)
-  }
-  if(names(ssq)[length(ssq)] == "Residuals")
-    ssq <- c(ssq[setdiff(1:(length(ssq)-1), remove)],ssq_residual)
-  else {
-    ssq <- c(ssq[setdiff(1:(length(ssq)), remove)],ssq_residual)
-  }
-  names(ssq)[length(ssq)] <- "Residuals"
-  eff_combined <- eff_combined[approved]
 
-  # Create model.frame object
+      error[[approved[length(approved)]]] <- LS[[approved[length(approved)]]] + residuals
+      aug_regression$error[[approved[length(approved)]]] <- LS_regression_out[[approved[length(approved)]]] + residuals
+      aug_SStype$error[[approved[length(approved)]]] <- LS_SStype_out[[approved[length(approved)]]] + residuals
+      LS_aug[[approved[length(approved)]]] <- error[[approved[length(approved)]]]
+      aug_regression$LS_aug[[approved[length(approved)]]] <- aug_regression$error[[approved[length(approved)]]]
+      aug_SStype$LS_aug[[approved[length(approved)]]] <- aug_SStype$error[[approved[length(approved)]]]
+      names(approvedComb)[length(approvedComb)] <- combName
+    }
+
+    if(names(ssq)[length(ssq)] == "Residuals")
+      ssq <- c(ssq[setdiff(seq_len(length(ssq) - 1), remove)], ssq[length(ssq)])
+    else
+      ssq <- c(ssq[setdiff(seq_along(ssq), remove)], Residuals = sum(SSE_full))
+    names(ssq)[length(ssq)] <- "Residuals"
+    eff_combined <- eff_combined[approved]
+  }
+
   model <- model.frame(mod)
   model[[1]] <- Yorig
 
   ########################## Return ##########################
-  obj <- list(LS=LS, effects=effects, coefficients=coefs, Y=Yorig, X=M, residuals=residuals,
-              error=error, eff_combined=eff_combined, SStype=SStype, contrasts=contrasts, unrestricted=unrestricted,
-              ssq=ssq, ssqY=ssqY, explvar=ssq/ssqY, models=models, anovas=anovas, model.frame=modFra,
-              call=match.call(), fit.type=fit.type, add_error=add_error, dfNum=dfNum, dfDenom=dfDenom,
-              model=model,
-              more=list(approved=approved, approvedAB=approvedAB, effs=effs, assign=assign,
-                        approvedComb=approvedComb, N=N, LS_aug=LS_aug, REML=REML, lme4=lme4,
-                        maxDir=maxDir, p=p, pca.in=pca.in))
-  if(pca.in!=0){
-    obj$Ypca <- list(pca=pca, ncomp=pca.in)
-  }
-  if(use_ED)
+  obj <- list(LS = LS,
+              LS_regression = LS_regression_out,
+              LS_SStype = LS_SStype_out,
+              effects = effects,
+              coefficients = coefs,
+              Y = Yorig,
+              Y_fit = Y,
+              X = M,
+              residuals = residuals,
+              error = error,
+              error_regression = aug_regression$error,
+              error_SStype = aug_SStype$error,
+              eff_combined = eff_combined,
+              SStype = SStype,
+              contrasts = contrasts,
+              unrestricted = unrestricted,
+              ssq = ssq,
+              ssqY = ssqY,
+              explvar = ssq / ssqY,
+              models = if(is.null(models)) list(mod) else models,
+              anovas = anovas,
+              model.frame = modFra,
+              call = match.call(),
+              fit.type = fit.type,
+              add_error = add_error,
+              dfNum = dfNum,
+              dfDenom = dfDenom,
+              denoms = denoms,
+              model = model,
+              permute = NULL,
+              more = list(approved = approved,
+                          approvedAB = approvedAB,
+                          effs = effs,
+                          assign = assign,
+                          assign_fixed = assign_fixed,
+                          X_fixed = X_fixed,
+                          effs_fixed = effs_fixed,
+                          approvedComb = approvedComb,
+                          N = N,
+                          LS_aug = LS_aug,
+                          LS_aug_regression = aug_regression$LS_aug,
+                          LS_aug_SStype = aug_SStype$LS_aug,
+                          REML = REML,
+                          lme4 = FALSE,
+                          maxDir = maxDir,
+                          p = p,
+                          pca.in = pca.in,
+                          pls.in = pls.in,
+                          Y_fit = Y,
+                          weights = weights_vec,
+                          respect_SStype = respect_SStype,
+                          effect_source = effect_source,
+                          ssq_method = ssq_method_used,
+                          ssq_source = ssq_source,
+                          version = 2))
+  if(!is.null(EDall))
     obj$ED <- EDall
-  if(exists("ets")){
-    denoms <- unlist(lapply(ets, function(e){ifelse(is.na(e),NA,as.numeric(names(e)))}))
-    names(denoms) <- names(ets)
-    obj$denoms <- denoms
-  } else {
-    denoms <- c(rep(which(names(dfDenom) == "Residuals"), length(dfDenom)-1),NA)
-    names(denoms) <- names(dfDenom)
-    obj$denoms <- denoms
-  }
-  class(obj) <- c('hdanova', 'list')
-  return(obj)
+  if(pca.in != 0)
+    obj$Ypca <- list(pca = pca, ncomp = pca.in)
+  if(pls.in != 0)
+    obj$Ypls <- list(pls = pls_fit, ncomp = pls.in)
+  class(obj) <- c("hdanova", "list")
+  obj
 }
-
 
 dummyvar <- function(x){
   dv <- model.matrix(~x-1, data.frame(x=x, check.names=FALSE))
@@ -818,4 +923,221 @@ fparse <- function(f) {
     return(unlist(res))
   }
   unique(parsecall(right))
+}
+
+.hda_build_augmented_effect_matrices <- function(LS_base,
+                                                 residuals,
+                                                 effs,
+                                                 mixed_r,
+                                                 aug_is_residual,
+                                                 aug_is_numeric,
+                                                 aug_error,
+                                                 df_terms,
+                                                 den_dfs,
+                                                 den_labels,
+                                                 den_rules = NULL,
+                                                 use_ED = FALSE,
+                                                 EDall = NULL){
+  n_terms <- length(effs)
+  LS_aug <- vector("list", n_terms)
+  error <- vector("list", n_terms)
+  names(LS_aug) <- names(error) <- effs
+  force_residual <- aug_is_residual || !mixed_r
+
+  for(i in seq_len(n_terms)){
+    eff <- effs[i]
+    den_idx <- NA_real_
+    den_indices <- NA_real_
+    den_coefs <- 1
+    den_residual_only <- FALSE
+    if(force_residual){
+      err_component <- residuals
+    } else {
+      if(!is.null(den_rules) && length(den_rules) >= i){
+        rule_i <- den_rules[[i]]
+        if(!is.null(rule_i$indices) && length(rule_i$indices) > 0)
+          den_indices <- as.numeric(rule_i$indices)
+        if(!is.null(rule_i$coefficients) && length(rule_i$coefficients) == length(den_indices))
+          den_coefs <- as.numeric(rule_i$coefficients)
+      }
+      if(all(is.na(den_indices))){
+        if(!is.null(den_labels) && length(den_labels) >= i && den_labels[i] %in% effs)
+          den_idx <- match(den_labels[i], effs)
+        if(is.na(den_idx) && !is.null(den_labels) && length(den_labels) >= i && identical(den_labels[i], "Residuals"))
+          den_idx <- length(effs) + 1
+        den_indices <- den_idx
+        den_coefs <- 1
+      }
+      den_indices <- den_indices[is.finite(den_indices)]
+      if(length(den_indices) == 0){
+        den_indices <- length(effs) + 1
+        den_coefs <- 1
+      }
+      den_residual_only <- all(den_indices == (length(effs) + 1))
+
+      if(aug_is_numeric){
+        df_num_i <- as.numeric(df_terms[i])
+        df_den_i <- as.numeric(den_dfs[i])
+        use_effective_dimensions <- isTRUE(use_ED) && !is.null(EDall)
+        if(use_effective_dimensions){
+          den_names <- ifelse(den_indices == (length(effs) + 1), "Residuals", effs[den_indices])
+          if(length(den_names) == 1){
+            den_ed <- EDall[den_names, ]
+          } else {
+            den_ed <- EDall[den_names, , drop = FALSE]
+          }
+          if(any(is.nan(EDall[eff, ])) || any(is.nan(den_ed))){
+            warning("Indeterminate effective dimensions, using degrees of freedom instead")
+            use_effective_dimensions <- FALSE
+          }
+        }
+        if(use_effective_dimensions){
+          scale_i <- sqrt(EDall[eff, ] / den_ed *
+            stats::qf(1 - aug_error, EDall[eff, ], den_ed))
+        } else {
+          scale_i <- sqrt(df_num_i / df_den_i * stats::qf(1 - aug_error, df_num_i, df_den_i))
+        }
+      } else {
+        scale_i <- 1
+      }
+      scale_i <- matrix(scale_i, nrow = nrow(residuals), ncol = ncol(residuals), byrow = TRUE)
+
+      err_component <- 0 * residuals
+      for(j in seq_along(den_indices)){
+        idx_j <- den_indices[j]
+        coef_j <- if(length(den_coefs) >= j) den_coefs[j] else 1
+        if(idx_j == (length(effs) + 1)){
+          err_component <- err_component + coef_j * residuals * scale_i
+        } else if(idx_j >= 1 && idx_j <= length(effs)){
+          err_component <- err_component + coef_j * LS_base[[effs[idx_j]]] * scale_i
+        }
+      }
+      den_idx <- if(length(den_indices) == 1) den_indices else NA_real_
+    }
+
+    if(!force_residual && !is.na(den_idx) && den_idx <= length(effs)){
+      error[[eff]] <- LS_base[[eff]] + err_component
+      LS_aug[[eff]] <- LS_base[[eff]] + error[[eff]]
+    } else {
+      LS_aug[[eff]] <- LS_base[[eff]] + err_component
+      error[[eff]] <- LS_aug[[eff]]
+      if(!force_residual && isTRUE(den_residual_only))
+        attr(error[[eff]], "term") <- "residuals"
+    }
+  }
+
+  list(LS_aug = LS_aug, error = error)
+}
+
+.hda_compute_effective_dimensions <- function(models, Y, X, Z, df_template){
+  varcor_random <- lapply(models, lme4::VarCorr)
+  varcor_resid <- vapply(models, function(mod) stats::sigma(mod)^2, numeric(1))
+  randEffList <- lme4::getME(models[[1]], "flist")
+  if(length(randEffList) == 0)
+    return(NULL)
+
+  ED <- vector("list", ncol(Y))
+  N <- nrow(Y)
+  q <- ncol(Z)
+
+  for(i in seq_len(ncol(Y))){
+    wrong.ED <- FALSE
+    G <- diag(q) * 0
+    r0 <- 0
+    for(j in seq_along(randEffList)){
+      nlevR <- nlevels(randEffList[[j]])
+      G[r0 + (1:nlevR), r0 + (1:nlevR)] <- diag(nlevR) *
+        max(varcor_random[[i]][[names(randEffList)[j]]][1], 10^-12)
+      r0 <- r0 + nlevR
+    }
+    Rinv <- diag(N) / varcor_resid[i]
+
+    XRX <- t(X) %*% Rinv %*% X
+    ZRX <- t(Z) %*% Rinv %*% X
+    ZRZ <- t(Z) %*% Rinv %*% Z
+    Ginv <- NULL
+    Ginv_try <- try(solve(G), silent = TRUE)
+    if(inherits(Ginv_try, "try-error")){
+      Ginv <- G * Inf
+      wrong.ED <- TRUE
+      warning("Random effects covariance matrix is singular, using Inf instead")
+    } else {
+      Ginv <- Ginv_try
+    }
+    ZRZG <- ZRZ + Ginv
+    Q <- solve(rbind(cbind(XRX, t(ZRX)), cbind(ZRX, ZRZG)))
+    K <- Q %*% cbind(rbind(XRX, ZRX), rbind(t(ZRX), ZRZ))
+    K_diag <- diag(K)[-seq_len(ncol(X))]
+    ED_rand <- numeric(length(randEffList))
+    r0 <- 0
+    for(j in seq_along(randEffList)){
+      nlevR <- nlevels(randEffList[[j]])
+      ED_rand[j] <- sum(K_diag[r0 + (1:nlevR)])
+      r0 <- r0 + nlevR
+    }
+    if(wrong.ED)
+      ED_rand <- rep(NaN, length(ED_rand))
+    ED[[i]] <- ED_rand
+  }
+
+  EDm <- matrix(unlist(ED), nrow = length(randEffList))
+  EDm <- pmax(EDm, 1)
+  rownames(EDm) <- names(randEffList)
+
+  EDall <- matrix(df_template, nrow = length(df_template), ncol = ncol(EDm))
+  rownames(EDall) <- names(df_template)
+  colnames(EDall) <- colnames(Y)
+  EDall["Residuals", ] <- colSums(EDall) + 1 - colSums(EDm)
+  EDall[rownames(EDm), ] <- EDm
+  EDall
+}
+
+.calc_SS_qr_loop <- function(X, Y, assign, term_labels, SStype, weights = NULL){
+  n_terms <- length(term_labels)
+  p <- ncol(Y)
+  SS_matrix <- matrix(0, nrow = n_terms, ncol = p,
+                      dimnames = list(term_labels, colnames(Y)))
+  effects <- setNames(vector("list", n_terms), term_labels)
+  df_terms <- vapply(seq_len(n_terms), function(i) sum(assign == i), integer(1))
+  names(df_terms) <- term_labels
+  sqrt_weights <- if(is.null(weights)) rep(1, nrow(X)) else sqrt(weights)
+
+  full_fit <- .weighted_qr_fit(X, Y, sqrt_weights)
+  QR_full <- full_fit$QR
+  Y_hat_full <- full_fit$fitted
+
+  for(i in seq_len(n_terms)){
+    if(SStype == 1){
+      Y_hat_curr <- .weighted_qr_fit(X[, which(assign <= i), drop = FALSE], Y, sqrt_weights)$fitted
+      Y_hat_prev <- .weighted_qr_fit(X[, which(assign < i), drop = FALSE], Y, sqrt_weights)$fitted
+    } else if(SStype == 2){
+      is_higher <- grepl(paste0("^", term_labels[i], ":"), term_labels) |
+        grepl(paste0(":", term_labels[i], "$"), term_labels)
+      Y_hat_curr <- .weighted_qr_fit(X[, which(!(assign %in% which(is_higher))), drop = FALSE], Y, sqrt_weights)$fitted
+      Y_hat_prev <- .weighted_qr_fit(X[, which(!(assign %in% c(i, which(is_higher)))), drop = FALSE], Y, sqrt_weights)$fitted
+    } else {
+      Y_hat_curr <- Y_hat_full
+      Y_hat_prev <- .weighted_qr_fit(X[, which(assign != i), drop = FALSE], Y, sqrt_weights)$fitted
+    }
+    effects[[term_labels[i]]] <- Y_hat_curr - Y_hat_prev
+    SS_matrix[i, ] <- colSums((effects[[term_labels[i]]] * sqrt_weights)^2)
+  }
+
+  list(SS_matrix = SS_matrix,
+       effects = effects,
+       df_terms = df_terms,
+       QR_full = QR_full,
+       Y_hat_full = Y_hat_full)
+}
+
+.weighted_qr_fit <- function(X, Y, sqrt_weights){
+  X_weighted <- X * sqrt_weights
+  Y_weighted <- Y * sqrt_weights
+  QR <- qr(X_weighted)
+  coefs <- qr.coef(QR, Y_weighted)
+  estimable <- !is.na(rowSums(coefs))
+  fitted <- matrix(0, nrow = nrow(X), ncol = ncol(Y), dimnames = dimnames(Y))
+  if(any(estimable))
+    fitted <- X[, estimable, drop = FALSE] %*% coefs[estimable, , drop = FALSE]
+  list(QR = QR, coefficients = coefs, fitted = fitted)
 }

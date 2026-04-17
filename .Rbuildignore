@@ -10,3 +10,4 @@ development
 ^pkgdown$
 ^.github$
 ^\.github$
+^vignettes/\.build\.timestamp$

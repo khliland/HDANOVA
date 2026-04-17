@@ -93,7 +93,7 @@ candies$num <- eff <- 1:165
 mod <- apca(assessment ~ candy + assessor + num, data=candies)
 summary(mod)
 #> Anova Principal Component Analysis fitted using 'lm' (Linear Model) 
-#> - SS type II, sum coding, restricted model, least squares estimation 
+#> - SS type II, sum coding, restricted model, least squares estimation, SSQ method: qr_regression 
 #>            Sum.Sq. Expl.var.(%)
 #> candy     32438.46        72.30
 #> assessor   1823.59         4.06
