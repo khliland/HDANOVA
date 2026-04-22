@@ -49,6 +49,15 @@ An updated `hdanova` object with rotation-test results stored in
 `object$permute` for compatibility with existing summary and plotting
 tools.
 
+## See also
+
+Base fitting:
+[`hdanova`](https://khliland.github.io/HDANOVA/reference/hdanova.md).
+Permutation alternative:
+[`permutation`](https://khliland.github.io/HDANOVA/reference/permutation.md).
+Plot helper:
+[`rotationplot`](https://khliland.github.io/HDANOVA/reference/asca_plots.md).
+
 ## Examples
 
 ``` r

@@ -11,6 +11,8 @@
 #' @param add_residuals \code{logical} add residuals to the estimates (default = FALSE).
 #'
 #' @returns A matrix of the extracted estimates.
+#' @seealso Model fitting and related outputs: \code{\link{hdanova}},
+#' \code{\link{asca_results}} and \code{\link{predict.hdanova}}.
 #' @examples
 #' # Load candies data
 #' data(candies)

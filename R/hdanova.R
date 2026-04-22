@@ -29,6 +29,8 @@
 #' \code{LS_regression}. This setting also propagates to
 #' \code{permutation()} when \code{respect_SStype = NULL} is used there.
 #' @param REML Parameter to mixlm: NULL (default) = sum-of-squares, TRUE = REML, FALSE = ML.
+#' If supplied without any \code{r()} terms in the formula, it is ignored with a warning and
+#' the model is fitted as fixed-effects.
 #' @param REML_ssq_method Method for REML mixed-model SSQ decomposition:
 #' \code{"exact_refit"} (default), \code{"wald"}, or \code{"ls"}. This is
 #' only used when \code{REML} is \code{TRUE} or \code{FALSE} for mixed models
@@ -166,8 +168,10 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
     stop("Only one of 'pca.in' and 'pls.in' can be active at a time.")
   if(!is.null(REML) && !is.logical(REML))
     stop("'REML' must be NULL, TRUE or FALSE.")
-  if(is.logical(REML) && !mixed_r)
-    stop("'REML' is only supported for mixed models with r() terms.")
+  if(is.logical(REML) && !mixed_r){
+    warning("'REML' was supplied but no random-effects r() terms were found in the formula; ignoring 'REML' and fitting a fixed-effects model.")
+    REML <- NULL
+  }
   ssq_method <- match.arg(REML_ssq_method, c("exact_refit", "wald", "ls"))
   ssq_method_kernel <- ssq_method
   use_ED_active <- isTRUE(use_ED) && mixed_r && is.logical(REML) && aug_is_numeric
@@ -625,6 +629,32 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
   ########################## Combined effects ##########################
   remove <- integer(0)
   if(is.list(combined)){
+    ## --- Validate comb() terms before processing ---
+    for(i in seq_along(combined)){
+      comb_terms <- combined[[i]]
+      if(length(comb_terms) < 2)
+        stop(paste0("'comb()' must contain at least two terms; got: comb(",
+                    paste(comb_terms, collapse = " + "), ")."))
+      for(dis in comb_terms){
+        if(!(dis %in% effsAB)){
+          # Check whether the term is a reordered interaction of a known effect
+          if(grepl(":", dis, fixed = TRUE)){
+            dis_sorted <- paste(sort(strsplit(dis, ":", fixed = TRUE)[[1]]), collapse = ":")
+            effsAB_sorted <- vapply(effsAB, function(e)
+              paste(sort(strsplit(e, ":", fixed = TRUE)[[1]]), collapse = ":"), character(1))
+            match_perm <- effsAB[effsAB_sorted == dis_sorted]
+            if(length(match_perm) > 0){
+              stop(paste0("Term '", dis, "' not found in model effects. ",
+                          "Interaction terms follow R's colon-order; ",
+                          "did you mean '", match_perm[1], "'?"))
+            }
+          }
+          stop(paste0("Term '", dis, "' specified in comb() was not found among model effects: ",
+                      paste(effsAB, collapse = ", "), "."))
+        }
+      }
+    }
+    ## --- end validation ---
     for(i in seq_along(combined)){
       combName <- paste(combined[[i]], collapse = "+")
       effs <- c(effs, combName)

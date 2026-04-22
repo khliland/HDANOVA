@@ -30,6 +30,17 @@ An updated `hdanova` object with PLS results.
 For residuals, PCA is performed instead of PLS as there is no natural
 response.
 
+## See also
+
+Main wrapper:
+[`apls`](https://khliland.github.io/HDANOVA/reference/apls.md). Related
+decomposition:
+[`sca`](https://khliland.github.io/HDANOVA/reference/sca.md). Plotting
+and summaries:
+[`asca_plots`](https://khliland.github.io/HDANOVA/reference/asca_plots.md)
+and
+[`asca_results`](https://khliland.github.io/HDANOVA/reference/asca_results.md).
+
 ## Examples
 
 ``` r

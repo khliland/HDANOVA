@@ -27,6 +27,10 @@
 #' Workhorse function underpinning most methods: \code{\link{hdanova}}.
 #' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 #'
+#' @examples
+#' # For examples using print()/summary() for PC-ANOVA objects, see
+#' # ?pcanova.
+#'
 #' @export
 summary.pcanova <- function(object, ...){
   anos <- object$anovas

@@ -41,6 +41,11 @@ Scores and loadings have their own extensions of \code{scores()} and \code{loadi
 \code{scores.pcanova} and \code{loadings.pcanova}. Special to ASCA is that scores are on a
 factor level basis, while back-projected samples have their own function in \code{projections.pcanova}.
 }
+\examples{
+# For examples using print()/summary() for PC-ANOVA objects, see
+# ?pcanova.
+
+}
 \references{
 Luciano G, Næs T. Interpreting sensory data by combining principal
 component analysis and analysis of variance. Food Qual Prefer. 2009;20(3):167-175.

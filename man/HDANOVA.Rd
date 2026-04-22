@@ -63,7 +63,9 @@ effect matrices in \code{LS} while retaining regression matrices in
 \code{LS_regression}. This setting also propagates to
 \code{permutation()} when \code{respect_SStype = NULL} is used there.}
 
-\item{REML}{Parameter to mixlm: NULL (default) = sum-of-squares, TRUE = REML, FALSE = ML.}
+\item{REML}{Parameter to mixlm: NULL (default) = sum-of-squares, TRUE = REML, FALSE = ML.
+If supplied without any \code{r()} terms in the formula, it is ignored with a warning and
+the model is fitted as fixed-effects.}
 
 \item{REML_ssq_method}{Method for REML mixed-model SSQ decomposition:
 \code{"exact_refit"} (default), \code{"wald"}, or \code{"ls"}. This is

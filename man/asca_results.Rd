@@ -59,6 +59,11 @@ Scores and loadings have their own extensions of \code{scores()} and \code{loadi
 \code{scores.asca} and \code{loadings.asca}. Special to ASCA is that scores are on a
 factor level basis, while back-projected samples have their own function in \code{projections.asca}.
 }
+\examples{
+# For end-to-end examples using summary(), scores(), loadings(), and
+# projections(), see ?asca and ?apca.
+
+}
 \references{
 \itemize{
 \item Smilde, A., Jansen, J., Hoefsloot, H., Lamers,R., Van Der Greef, J., and Timmerman, M.(2005). ANOVA-Simultaneous Component Analysis (ASCA): A new tool for analyzing designed metabolomics data. Bioinformatics, 21(13), 3043–3048.

@@ -31,6 +31,11 @@ Usage of the functions are shown using generics in the examples in \code{\link{p
 Plot routines are available as
 \code{scoreplot.pcanova} and \code{loadingplot.pcanova}.
 }
+\examples{
+# For end-to-end examples using scoreplot()/loadingplot() on PC-ANOVA
+# objects, see ?pcanova.
+
+}
 \references{
 Luciano G, Næs T. Interpreting sensory data by combining principal
 component analysis and analysis of variance. Food Qual Prefer. 2009;20(3):167-175.

@@ -25,3 +25,9 @@ mod <- sca(mod)
 scoreplot(mod)
 
 }
+\seealso{
+Model constructors and wrappers: \code{\link{hdanova}},
+\code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}} and
+\code{\link{msca}}.
+Plotting and summaries: \code{\link{asca_plots}} and \code{\link{asca_results}}.
+}

@@ -5,6 +5,10 @@
 #' @param object A \code{hdanova} object.
 #'
 #' @returns An updated \code{hdanova} object with SCA results.
+#' @seealso Model constructors and wrappers: \code{\link{hdanova}},
+#' \code{\link{asca}}, \code{\link{apca}}, \code{\link{limmpca}} and
+#' \code{\link{msca}}.
+#' Plotting and summaries: \code{\link{asca_plots}} and \code{\link{asca_results}}.
 #' @examples
 #' # Load candies data
 #' data(candies)

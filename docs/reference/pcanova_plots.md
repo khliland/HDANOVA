@@ -68,3 +68,10 @@ Extraction of results and plotting:
 [`asca_plots`](https://khliland.github.io/HDANOVA/reference/asca_plots.md),
 [`pcanova_results`](https://khliland.github.io/HDANOVA/reference/pcanova_results.md)
 and `pcanova_plots`
+
+## Examples
+
+``` r
+# For end-to-end examples using scoreplot()/loadingplot() on PC-ANOVA
+# objects, see ?pcanova.
+```

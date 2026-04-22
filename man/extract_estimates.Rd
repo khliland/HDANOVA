@@ -38,3 +38,7 @@ inter <- extract_estimates(mod, c("candy:assessor"))
 image(t(inter), main="Interaction effect", xlab="Attribute", ylab="Sample")
 
 }
+\seealso{
+Model fitting and related outputs: \code{\link{hdanova}},
+\code{\link{asca_results}} and \code{\link{predict.hdanova}}.
+}

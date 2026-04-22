@@ -7,6 +7,9 @@
 #' @param ... Additional arguments (not used).
 #'
 #' @returns An updated \code{hdanova} object with PLS results.
+#' @seealso Main wrapper: \code{\link{apls}}.
+#' Related decomposition: \code{\link{sca}}.
+#' Plotting and summaries: \code{\link{asca_plots}} and \code{\link{asca_results}}.
 #' @details For residuals, PCA is performed instead of PLS as there is no natural response.
 #' @examples
 #' # Load candies data

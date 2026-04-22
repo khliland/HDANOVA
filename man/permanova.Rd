@@ -24,3 +24,8 @@ Wrapper for the \code{\link[vegan]{adonis2}} function to allow ordinary formula 
 data(caldana)
 (pr <- permanova(compounds ~ light * time, caldana))
 }
+\seealso{
+Related wrappers and model families: \code{\link{prc}},
+\code{\link{asca}}, \code{\link{apca}}, \code{\link{apls}},
+\code{\link{limmpca}}, \code{\link{msca}} and \code{\link{pcanova}}.
+}

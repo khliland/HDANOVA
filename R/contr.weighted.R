@@ -8,9 +8,3 @@ contr.weighted <- function (x, base){
   dimnames(contr) <- list(names(frequencies),names(frequencies[-base]))
   return(contr)
 }
-#   dv <- dummyvar(x)
-#   contr <- crossprod(dv*rep(median(sqrt(colSums(dv)))/colSums(dv), each=nrow(dv)))
-#   contr[base, ] <- -contr[base,base]
-#   browser()
-#   contr[,-base]
-# }

@@ -113,6 +113,8 @@ Extraction of results and plotting:
 [`pcanova_results`](https://khliland.github.io/HDANOVA/reference/pcanova_results.md)
 and
 [`pcanova_plots`](https://khliland.github.io/HDANOVA/reference/pcanova_plots.md)
+Prediction on new data:
+[`predict_asca_family`](https://khliland.github.io/HDANOVA/reference/predict_asca_family.md).
 
 ## Examples
 

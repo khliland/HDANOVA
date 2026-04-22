@@ -80,3 +80,10 @@ Extraction of results and plotting:
 [`asca_plots`](https://khliland.github.io/HDANOVA/reference/asca_plots.md),
 `pcanova_results` and
 [`pcanova_plots`](https://khliland.github.io/HDANOVA/reference/pcanova_plots.md)
+
+## Examples
+
+``` r
+# For examples using print()/summary() for PC-ANOVA objects, see
+# ?pcanova.
+```

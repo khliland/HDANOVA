@@ -38,3 +38,8 @@ image(t(mm[seq(165,1,-1),]), main="Model Matrix", xlab="dummy values", ylab="sam
      axes=FALSE)
 par(par.old)
 }
+\seealso{
+Core model constructors: \code{\link{asca}}, \code{\link{apca}},
+\code{\link{apls}}, \code{\link{limmpca}}, \code{\link{msca}} and
+\code{\link{pcanova}}.
+}

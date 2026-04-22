@@ -39,6 +39,10 @@
 #' Workhorse function underpinning most methods: \code{\link{hdanova}}.
 #' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 #'
+#' @examples
+#' # For end-to-end examples using scoreplot()/loadingplot(), see
+#' # ?asca, ?apca, ?apls, ?limmpca and ?msca.
+#'
 #' @export
 loadingplot.asca <- function(object, factor = 1, comps = 1:2, ...){
   if(inherits(object,"pcanova")){

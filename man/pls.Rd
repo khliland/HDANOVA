@@ -33,3 +33,8 @@ mod <- pls(mod)
 scoreplot(mod)
 
 }
+\seealso{
+Main wrapper: \code{\link{apls}}.
+Related decomposition: \code{\link{sca}}.
+Plotting and summaries: \code{\link{asca_plots}} and \code{\link{asca_results}}.
+}

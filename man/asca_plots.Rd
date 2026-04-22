@@ -83,6 +83,11 @@ Usage of the functions are shown using generics in the examples in \code{\link{a
 Plot routines are available as
 \code{scoreplot.asca} and \code{loadingplot.asca}.
 }
+\examples{
+# For end-to-end examples using scoreplot()/loadingplot(), see
+# ?asca, ?apca, ?apls, ?limmpca and ?msca.
+
+}
 \references{
 \itemize{
 \item Smilde, A., Jansen, J., Hoefsloot, H., Lamers,R., Van Der Greef, J., and Timmerman, M.(2005). ANOVA-Simultaneous Component Analysis (ASCA): A new tool for analyzing designed metabolomics data. Bioinformatics, 21(13), 3043–3048.

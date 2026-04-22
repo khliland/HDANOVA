@@ -31,6 +31,17 @@ permanova(formula, data, ...)
 
 An ANOVA table with permutation-based p-values.
 
+## See also
+
+Related wrappers and model families:
+[`prc`](https://khliland.github.io/HDANOVA/reference/prc.md),
+[`asca`](https://khliland.github.io/HDANOVA/reference/asca.md),
+[`apca`](https://khliland.github.io/HDANOVA/reference/apca.md),
+[`apls`](https://khliland.github.io/HDANOVA/reference/apls.md),
+[`limmpca`](https://khliland.github.io/HDANOVA/reference/limmpca.md),
+[`msca`](https://khliland.github.io/HDANOVA/reference/msca.md) and
+[`pcanova`](https://khliland.github.io/HDANOVA/reference/pcanova.md).
+
 ## Examples
 
 ``` r

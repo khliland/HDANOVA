@@ -18,12 +18,22 @@
   : ASCA Plot Methods
 - [`biplot(`*`<asca>`*`)`](https://khliland.github.io/HDANOVA/reference/biplot.asca.md)
   : Biplot for ASCA models
+- [`predict(`*`<asca>`*`)`](https://khliland.github.io/HDANOVA/reference/predict_asca_family.md)
+  [`predict(`*`<apca>`*`)`](https://khliland.github.io/HDANOVA/reference/predict_asca_family.md)
+  [`predict(`*`<msca>`*`)`](https://khliland.github.io/HDANOVA/reference/predict_asca_family.md)
+  [`predict(`*`<apls>`*`)`](https://khliland.github.io/HDANOVA/reference/predict_asca_family.md)
+  [`predict(`*`<limmpca>`*`)`](https://khliland.github.io/HDANOVA/reference/predict_asca_family.md)
+  : Predict Methods for ASCA-family Objects
 - [`apca()`](https://khliland.github.io/HDANOVA/reference/apca.md) :
   ANOVA Principal Component Analysis - APCA
 - [`apls()`](https://khliland.github.io/HDANOVA/reference/apls.md) :
   Analysis of Variance Partial Least Squares - APLS
 - [`hdanova()`](https://khliland.github.io/HDANOVA/reference/hdanova.md)
   : High-Dimensional Analysis of Variance
+- [`logLik(`*`<hdanova>`*`)`](https://khliland.github.io/HDANOVA/reference/logLik.hdanova.md)
+  : Log-Likelihood for HDANOVA Objects
+- [`predict(`*`<hdanova>`*`)`](https://khliland.github.io/HDANOVA/reference/predict.hdanova.md)
+  : Predict for HDANOVA Objects
 - [`msca()`](https://khliland.github.io/HDANOVA/reference/msca.md) :
   Multilevel Simultaneous Component Analysis - MSCA
 - [`limmpca()`](https://khliland.github.io/HDANOVA/reference/limmpca.md)

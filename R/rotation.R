@@ -17,6 +17,10 @@
 #' @returns An updated \code{hdanova} object with rotation-test results stored in
 #' \code{object$permute} for compatibility with existing summary and plotting tools.
 #'
+#' @seealso Base fitting: \code{\link{hdanova}}.
+#' Permutation alternative: \code{\link{permutation}}.
+#' Plot helper: \code{\link{rotationplot}}.
+#'
 #' @examples
 #' # Load candies data
 #' data(candies)

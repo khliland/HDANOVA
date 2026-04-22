@@ -46,6 +46,9 @@ prc <- function(formula, data, ...) {
 #'
 #' @return An ANOVA table with permutation-based p-values.
 #' @export
+#' @seealso Related wrappers and model families: \code{\link{prc}},
+#' \code{\link{asca}}, \code{\link{apca}}, \code{\link{apls}},
+#' \code{\link{limmpca}}, \code{\link{msca}} and \code{\link{pcanova}}.
 #'
 #' @examples
 #' data(caldana)

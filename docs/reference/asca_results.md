@@ -109,3 +109,10 @@ Extraction of results and plotting: `asca_results`,
 [`pcanova_results`](https://khliland.github.io/HDANOVA/reference/pcanova_results.md)
 and
 [`pcanova_plots`](https://khliland.github.io/HDANOVA/reference/pcanova_plots.md)
+
+## Examples
+
+``` r
+# For end-to-end examples using summary(), scores(), loadings(), and
+# projections(), see ?asca and ?apca.
+```

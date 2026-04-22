@@ -25,6 +25,7 @@
 <url><loc>https://khliland.github.io/HDANOVA/reference/index.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/limmpca.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/loadings.pcanova.html</loc></url>
+<url><loc>https://khliland.github.io/HDANOVA/reference/logLik.hdanova.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/model.frame.asca.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/msca.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/pcanova.html</loc></url>
@@ -34,6 +35,8 @@
 <url><loc>https://khliland.github.io/HDANOVA/reference/permutation.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/pls.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/prc.html</loc></url>
+<url><loc>https://khliland.github.io/HDANOVA/reference/predict.hdanova.html</loc></url>
+<url><loc>https://khliland.github.io/HDANOVA/reference/predict_asca_family.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/reexports.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/rotation.html</loc></url>
 <url><loc>https://khliland.github.io/HDANOVA/reference/scores.pcanova.html</loc></url>

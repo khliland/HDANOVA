@@ -10,6 +10,9 @@
 #' @param ... Not implemented
 #'
 #' @returns A \code{data.frame} or \code{matrix} object.
+#' @seealso Core model constructors: \code{\link{asca}}, \code{\link{apca}},
+#' \code{\link{apls}}, \code{\link{limmpca}}, \code{\link{msca}} and
+#' \code{\link{pcanova}}.
 #' @export
 #'
 #' @examples

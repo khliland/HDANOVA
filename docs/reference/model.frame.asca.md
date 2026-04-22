@@ -31,6 +31,16 @@ model.matrix(object, ...)
 
 A `data.frame` or `matrix` object.
 
+## See also
+
+Core model constructors:
+[`asca`](https://khliland.github.io/HDANOVA/reference/asca.md),
+[`apca`](https://khliland.github.io/HDANOVA/reference/apca.md),
+[`apls`](https://khliland.github.io/HDANOVA/reference/apls.md),
+[`limmpca`](https://khliland.github.io/HDANOVA/reference/limmpca.md),
+[`msca`](https://khliland.github.io/HDANOVA/reference/msca.md) and
+[`pcanova`](https://khliland.github.io/HDANOVA/reference/pcanova.md).
+
 ## Examples
 
 ``` r

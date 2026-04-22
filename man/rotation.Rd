@@ -51,3 +51,8 @@ summary(modRot)
 rotationplot(modRot, factor="candy")
 
 }
+\seealso{
+Base fitting: \code{\link{hdanova}}.
+Permutation alternative: \code{\link{permutation}}.
+Plot helper: \code{\link{rotationplot}}.
+}

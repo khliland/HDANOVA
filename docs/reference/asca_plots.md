@@ -157,3 +157,10 @@ Extraction of results and plotting:
 [`pcanova_results`](https://khliland.github.io/HDANOVA/reference/pcanova_results.md)
 and
 [`pcanova_plots`](https://khliland.github.io/HDANOVA/reference/pcanova_plots.md)
+
+## Examples
+
+``` r
+# For end-to-end examples using scoreplot()/loadingplot(), see
+# ?asca, ?apca, ?apls, ?limmpca and ?msca.
+```

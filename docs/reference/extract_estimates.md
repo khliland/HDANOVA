@@ -33,6 +33,14 @@ extract_estimates(object, factors, subtract = FALSE, add_residuals = FALSE)
 
 A matrix of the extracted estimates.
 
+## See also
+
+Model fitting and related outputs:
+[`hdanova`](https://khliland.github.io/HDANOVA/reference/hdanova.md),
+[`asca_results`](https://khliland.github.io/HDANOVA/reference/asca_results.md)
+and
+[`predict.hdanova`](https://khliland.github.io/HDANOVA/reference/predict.hdanova.md).
+
 ## Examples
 
 ``` r

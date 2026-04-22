@@ -8,9 +8,12 @@ reference:
   - asca_results
   - asca_plots
   - biplot.asca
+  - predict_asca_family
   - apca
   - apls
   - hdanova
+  - logLik.hdanova
+  - predict.hdanova
   - msca
   - limmpca
   - permutation

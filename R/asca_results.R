@@ -32,6 +32,10 @@
 #' Workhorse function underpinning most methods: \code{\link{hdanova}}.
 #' Extraction of results and plotting: \code{\link{asca_results}}, \code{\link{asca_plots}}, \code{\link{pcanova_results}} and \code{\link{pcanova_plots}}
 #'
+#' @examples
+#' # For end-to-end examples using summary(), scores(), loadings(), and
+#' # projections(), see ?asca and ?apca.
+#'
 #' @export
 print.hdanova <- function(x, ...){
   mod <- "High-Dimensional Analysis of Variance"

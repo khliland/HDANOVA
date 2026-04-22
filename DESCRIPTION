@@ -1,8 +1,8 @@
 Package: HDANOVA
 Type: Package
 Title: High-Dimensional Analysis of Variance
-Version: 0.8.5.1
-Date: 2026-04-13
+Version: 0.8.6
+Date: 2026-04-22
 Authors@R: 
     c(person(given = "Kristian Hovde",
              family = "Liland",
@@ -26,7 +26,10 @@ Imports: car,
     RSpectra
 LinkingTo: Rcpp,
     RcppArmadillo
-Suggests: knitr, vegan
+Suggests: knitr,
+    testthat (>= 3.0.0),
+    vegan
+Config/testthat/edition: 3
 License: GPL (>= 2)
 URL: https://khliland.github.io/HDANOVA/, https://github.com/khliland/HDANOVA/
 BugReports: https://github.com/khliland/HDANOVA/issues/
