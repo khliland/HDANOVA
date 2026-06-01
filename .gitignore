@@ -49,3 +49,10 @@ rsconnect/
 .DS_Store
 /doc/
 /Meta/
+.positai
+
+# Manuscript
+manuscript
+
+# VS Code
+.vscode

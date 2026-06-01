@@ -13,12 +13,12 @@ rmarkdown::pandoc_convert("vignette_C_ASCA.Rmd", to = "latex", from = "markdown"
 + Add clear user feedback when REML is attempted without r() in the formula.
 + Check whether the current contrast descriptions are sufficient.
 + Check that documentation pages are linked together properly, and that functions without their own examples but referenced from asca() documentation point users correctly.
-+ Include limmpca() in the same predict regime as asca() and friends.
-+ Check whether comb() with misspecified interactions, including wrong interaction order, can be caught and reported with a clear error message.
+- Include limmpca() in the same predict regime as asca() and friends.
+- Check whether comb() with misspecified interactions, including wrong interaction order, can be caught and reported with a clear error message.
 - Either create a new vignette or extend the ASCA vignette to include the SSQ sanity-check example (small random effect vs corresponding fixed model).
-+ Add (unit) tests to the package.
+- Add (unit) tests to the package.
 - Add log-likelihood test options for the hdanova model types where this is supported.
-+ Update pkgdown.
+- Update pkgdown.
 
 pkgdown
 

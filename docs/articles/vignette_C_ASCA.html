@@ -70,6 +70,9 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Start the HDANOVA R package</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://khliland.github.io/HDANOVA/">HDANOVA</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Registered S3 method overwritten by 'lme4':</span></span>
+<span><span class="co">#&gt;   method           from</span></span>
+<span><span class="co">#&gt;   na.action.merMod car</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'HDANOVA'</span></span>
 <span><span class="co">#&gt; The following object is masked from 'package:stats':</span></span>
@@ -544,8 +547,6 @@ estimation.</p>
 <span><span class="co">#&gt; boundary (singular) fit: see help('isSingular')</span></span>
 <span><span class="co">#&gt; boundary (singular) fit: see help('isSingular')</span></span>
 <span><span class="co">#&gt; boundary (singular) fit: see help('isSingular')</span></span>
-<span><span class="co">#&gt; Warning in pracma::Rank(object$LS[[object$more$effs[i]]]): Rank calculation may</span></span>
-<span><span class="co">#&gt; be problematic.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod.rm.limmpca</span><span class="op">)</span></span>
 <span><span class="co">#&gt; LiMM-PCA fitted using 'lmm' (Linear Mixed Model) </span></span>
 <span><span class="co">#&gt; - SS type III, sum coding, restricted model, REML estimation, SSQ method: exact_refit </span></span>

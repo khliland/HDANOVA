@@ -19,7 +19,7 @@
 #' (of F test), "residual" (force error term), numeric value (alpha-value in LiMM-PCA).
 #' @param pca.in Compress response before ASCA (number of components).
 #' @param pls.in Compress response before ASCA using PLS (number of components).
-#' @param contrasts Effect coding: "contr.sum" (default = sum-coding), "contr.weighted" (not for lme4 models), "contr.reference", "contr.treatment".
+#' @param contrasts Effect coding: "contr.sum" (default), "contr.weighted" (not for lme4 models), "contr.reference", "contr.treatment". Can also be specified shorthand without "contr.", e.g., "sum", or as a named vector for different coding per factor.
 #' @param unrestricted Use unrestricted ANOVA decomposition (default = FALSE).
 #' @param SStype Type of sum-of-squares: "I" = sequential, "II" (default) = last term, obeying marginality,
 #' "III" = last term, not obeying marginality.
@@ -162,6 +162,33 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
     stop("Numeric 'aug_error' must be in [0,1].")
   if(!is.logical(use_ED) || length(use_ED) != 1 || is.na(use_ED))
     stop("'use_ED' must be TRUE or FALSE.")
+
+  if(!is.character(contrasts) || length(contrasts) < 1 || any(is.na(contrasts)))
+    stop("'contrasts' must be a character value or character vector without NA.")
+  contrast_aliases <- c(
+    "sum" = "contr.sum",
+    "weighted" = "contr.weighted",
+    "reference" = "contr.reference",
+    "treatment" = "contr.treatment",
+    "contr.sum" = "contr.sum",
+    "contr.weighted" = "contr.weighted",
+    "contr.reference" = "contr.reference",
+    "contr.treatment" = "contr.treatment"
+  )
+  contrast_names <- names(contrasts)
+  contrast_vals <- unname(contrasts)
+  if(any(!contrast_vals %in% names(contrast_aliases)))
+    stop("Each value in 'contrasts' must be one of: 'sum', 'weighted', 'reference', 'treatment', 'contr.sum', 'contr.weighted', 'contr.reference', or 'contr.treatment'.")
+  contrasts <- unname(contrast_aliases[contrast_vals])
+  if(!is.null(contrast_names))
+    names(contrasts) <- contrast_names
+
+  # Runtime-safe mapping: model.matrix resolves contrast names via get().
+  # Keep user-facing alias `contr.reference` in output metadata, but execute
+  # with `contr.treatment`, which is always available from stats.
+  contrasts_runtime <- contrasts
+  contrasts_runtime[contrasts_runtime == "contr.reference"] <- "contr.treatment"
+
   pca_active <- !(is.logical(pca.in) && !pca.in) && !identical(pca.in, 0)
   pls_active <- !(is.logical(pls.in) && !pls.in) && !identical(pls.in, 0)
   if(pca_active && pls_active)
@@ -178,7 +205,11 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
   if(isTRUE(use_ED) && !use_ED_active)
     warning("'use_ED' currently only affects numeric 'aug_error' in REML/ML mixed-model fits; using standard degrees of freedom instead.")
 
-  old_options <- options(contrasts = c(contrasts, "contr.poly"))
+  if(length(contrasts_runtime) == 1){
+    old_options <- options(contrasts = c(contrasts_runtime, "contr.poly"))
+  } else {
+    old_options <- options("contrasts")
+  }
   on.exit(options(old_options), add = TRUE)
 
   ########################## Combined effects ##########################
@@ -217,6 +248,25 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
   mf$formula <- formula_mf
   mf[[1]] <- as.name("model.frame")
   mf_data <- eval(mf, envir = parent.frame())
+
+  contrasts_model <- contrasts_runtime
+  if(length(contrasts_runtime) > 1){
+    pred_data <- mf_data[, -1, drop = FALSE]
+    factor_preds <- names(pred_data)[vapply(pred_data, is.factor, logical(1))]
+    if(length(factor_preds) == 0)
+      stop("A vector 'contrasts' specification requires at least one factor predictor.")
+
+    if(is.null(names(contrasts_runtime)) || any(names(contrasts_runtime) == "")){
+      if(length(contrasts_runtime) > length(factor_preds))
+        stop("Length of unnamed 'contrasts' cannot exceed the number of factor predictors.")
+      names(contrasts_runtime) <- factor_preds[seq_along(contrasts_runtime)]
+    } else {
+      bad_names <- setdiff(names(contrasts_runtime), factor_preds)
+      if(length(bad_names) > 0)
+        stop("Named entries in 'contrasts' must match factor predictors in the model.")
+    }
+    contrasts_model <- as.list(contrasts_runtime)
+  }
 
   Y <- stats::model.response(mf_data)
   if(inherits(Y, "AsIs"))
@@ -329,7 +379,7 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
       args <- list(formula = formula,
                    data = dat_i,
                    REML = REML,
-                   contrasts = contrasts)
+                   contrasts = contrasts_model)
       if(!is.null(weights_vec))
         args$weights <- weights_vec
       args
@@ -362,12 +412,12 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
             data = ls_dat,
             unrestricted = unrestricted,
             equal_baseline = equal_baseline,
-            contrasts = contrasts)
+          contrasts = contrasts_model)
     mod_ls <- do.call(mixlm::lm, ls_args)
     mom_anova <- mixlm::AnovaMix(mod_ls, SStype = SStype)
   } else {
     lm_args <- list(formula = formula, data = mf_data, unrestricted = unrestricted,
-                    equal_baseline = equal_baseline, contrasts = contrasts)
+                    equal_baseline = equal_baseline, contrasts = contrasts_model)
     if(!is.null(weights_vec))
       lm_args$weights <- weights_vec
     mod <- do.call(mixlm::lm, lm_args)
@@ -383,7 +433,7 @@ hdanova <- function(formula, data, subset, weights, na.action, family,
                         data = dat_i,
                         unrestricted = unrestricted,
                         equal_baseline = equal_baseline,
-                        contrasts = contrasts)
+                        contrasts = contrasts_model)
       if(!is.null(weights_vec))
         lm_args_i$weights <- weights_vec
       models[[i]] <- do.call(mixlm::lm, lm_args_i)

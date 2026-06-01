@@ -11,3 +11,10 @@ development
 ^.github$
 ^\.github$
 ^vignettes/\.build\.timestamp$
+^\.positai$
+^\.claude$
+manuscript
+^manuscript$
+^\.vscode
+.vscode
+^.vscode$

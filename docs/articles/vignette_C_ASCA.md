@@ -4,6 +4,9 @@
 
 # Start the HDANOVA R package
 library(HDANOVA)
+#> Registered S3 method overwritten by 'lme4':
+#>   method           from
+#>   na.action.merMod car
 #> 
 #> Attaching package: 'HDANOVA'
 #> The following object is masked from 'package:stats':
@@ -611,8 +614,6 @@ mod.rm.limmpca <- limmpca(yield ~ r(daughter) + feed*r(time), data = long, pca.i
 #> boundary (singular) fit: see help('isSingular')
 #> boundary (singular) fit: see help('isSingular')
 #> boundary (singular) fit: see help('isSingular')
-#> Warning in pracma::Rank(object$LS[[object$more$effs[i]]]): Rank calculation may
-#> be problematic.
 summary(mod.rm.limmpca)
 #> LiMM-PCA fitted using 'lmm' (Linear Mixed Model) 
 #> - SS type III, sum coding, restricted model, REML estimation, SSQ method: exact_refit 

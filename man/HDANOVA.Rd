@@ -50,7 +50,7 @@ hdanova(
 
 \item{pls.in}{Compress response before ASCA using PLS (number of components).}
 
-\item{contrasts}{Effect coding: "contr.sum" (default = sum-coding), "contr.weighted" (not for lme4 models), "contr.reference", "contr.treatment".}
+\item{contrasts}{Effect coding: "contr.sum" (default), "contr.weighted" (not for lme4 models), "contr.reference", "contr.treatment". Can also be specified shorthand without "contr.", e.g., "sum", or as a named vector for different coding per factor.}
 
 \item{unrestricted}{Use unrestricted ANOVA decomposition (default = FALSE).}
 
